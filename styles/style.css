@@ -1,0 +1,21 @@
+.circle {
+  font-size: 8px;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+.circle p {
+  margin: 0;
+  padding: 0;
+}
+.blue-circle {
+  background-color: blue;
+}
+.red-circle {
+  background-color: red;
+}
+.green-circle {
+  background-color: green;
+}
