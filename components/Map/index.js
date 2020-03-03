@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Map, TileLayer } from "react-leaflet";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import withStore from "./../../utils/withStore.js";
@@ -16,6 +16,9 @@ const addProperty = item =>
     value: MarkerIcon(item.type, item.date)
   });
 const MapComponent = props => {
+  useEffect(() => {
+    props.store.getCrimes();
+  }, []);
   const [position, setPosition] = useState({
     lat: -126.609375,
     lng: 109.63151025772095
@@ -42,8 +45,8 @@ const MapComponent = props => {
         <Marker
           key={index}
           position={{
-            lat: item.lat,
-            lng: item.lng
+            lat: item.AddressId.lat,
+            lng: item.AddressId.lng
           }}
           icon={item.marker}
           id={index}

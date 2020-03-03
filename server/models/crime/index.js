@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../../utils/database.js");
+const Address = require("./../address");
 
 const Crime = sequelize.define("crimes", {
   id: {
@@ -29,7 +30,7 @@ const Crime = sequelize.define("crimes", {
   },
   kui: {
     allowNull: false,
-    type: Sequelize.INTEGER
+    type: Sequelize.BIGINT
   },
   createdAt: {
     type: Sequelize.DATE
@@ -38,3 +39,9 @@ const Crime = sequelize.define("crimes", {
     type: Sequelize.DATE
   }
 });
+Crime.belongsTo(Address, {
+  foreignKey: "addressId",
+  as: "AddressId"
+})
+Address.hasMany(Crime)
+module.exports = Crime;

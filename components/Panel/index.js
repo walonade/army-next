@@ -15,9 +15,8 @@ import {
   Select,
   Button
 } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import AutoComplite from "./../AutoComplite";
 import DataPicker from "./../DataPicker";
-import TimePicker from "./../TimePicker";
 import SmartInput from "./../SmartInput";
 import { makeStyles } from "@material-ui/core/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
@@ -54,8 +53,8 @@ const Panel = props => {
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
   const handleChangeCrimeTime = useCallback(time => setCrimeTime(moment(time)));
   const handleChangeValueKUI = useCallback(event => setValueKUI(event));
-  const handleChangeAddressOfCrime = useCallback(event =>
-    setAddressOfCrime(event.target.value)
+  const handleChangeAddressOfCrime = useCallback((event, newValue) =>
+    setAddressOfCrime(newValue.value)
   );
   const handleSelectAddressOfCrime = useCallback(value =>
     setAddressOfCrime(value)
@@ -80,7 +79,7 @@ const Panel = props => {
     if (
       kindOfCrime &&
       crimeData &&
-      // addressOfCrime &&
+      addressOfCrime &&
       objectOfCrime &&
       valueKUI &&
       service !== ""
@@ -88,9 +87,7 @@ const Panel = props => {
       props.store.addToCrimes(data);
     }
   });
-  useEffect(() => {
-    props.store.getAdresses();
-  }, []);
+  const getAddresses = useCallback(() => props.store.getAdresses());
   return (
     <Fragment>
       <br />
@@ -164,20 +161,13 @@ const Panel = props => {
               onChange={handleChangeValueKUI}
               className={classes.formControl}
             />
-            <Autocomplete
+            <AutoComplite
+              getDataFromServer={getAddresses}
               options={props.store.addresses}
               getOptionLabel={getAutoItem}
-              debug
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  className={classes.formControl}
-                  id="placeCommit"
-                  label="Место совершения"
-                  value={addressOfCrime}
-                  onChange={handleChangeAddressOfCrime}
-                />
-              )}
+              onChange={handleChangeAddressOfCrime}
+              value={addressOfCrime}
+              className={classes.formControl}
             />
             <TextField
               className={classes.formControl}
