@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import cookie from "js-cookie";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 export const logout = () => {
   cookie.remove("token");
   window.localStorage.setItem("logout", Date.now());
@@ -9,25 +9,48 @@ export const logout = () => {
 };
 export const setToken = token => {
   cookie.set("token", token, { expires: 1 });
-  Router.push("/user");
 };
-export const auth = ctx => {
-  const { token } = nextCookie(ctx);
-  if (ctx.req && !token) {
-    ctx.res.writeHead(302, { Location: "/login" });
-    ctx.res.end();
-    return;
+export const setAdmin = boolean => {
+  cookie.set("isAdmin", boolean, { expires: 1 });
+};
+export const auth = (ctx, forAdmin) => {
+  const { token, isAdmin } = nextCookie(ctx);
+  const url = forAdmin ? "admin" : "public";
+  if (forAdmin) {
+    if (!isAdmin) {
+      if (typeof window === "undefined") {
+        ctx.res.writeHead(302, { Location: "/admin/login" });
+        ctx.res.end();
+      } else {
+        Router.push("/admin/login");
+      }
+    }
+  }
+  if (!forAdmin) {
+    if (isAdmin) {
+      if (typeof window === "undefined") {
+        ctx.res.writeHead(302, { Location: "/public/login" });
+        ctx.res.end();
+      } else {
+        Router.push("/public/login");
+      }
+    }
   }
   if (!token) {
-    Router.push("/login");
+    if (typeof window === "undefined") {
+      ctx.res.writeHead(302, { Location: `/${url}/login` });
+      ctx.res.end();
+    } else {
+      Router.push(`/${url}/login`);
+    }
   }
   return token;
 };
-export const withAuthSync = WrappedComponent => {
+export const withAuthSync = (WrappedComponent, forAdmin = false) => {
   const Wrapper = props => {
     const syncLogout = event => {
       if (event.key === "logout") {
-        Router.push("/login");
+        Router.push("/public/login");
       }
     };
     useEffect(() => {
@@ -39,9 +62,9 @@ export const withAuthSync = WrappedComponent => {
     });
     return <WrappedComponent {...props} />;
   };
-  Wrapper.Layout = WrappedComponent.Layout
+  Wrapper.Layout = WrappedComponent.Layout;
   Wrapper.getInitialProps = async ctx => {
-    const token = auth(ctx);
+    const token = auth(ctx, forAdmin);
     const componentProps =
       WrappedComponent.getInitialProps &&
       (await WrappedComponent.getInitialProps(ctx));

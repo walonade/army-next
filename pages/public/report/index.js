@@ -18,4 +18,4 @@ const Table = () => {
   );
 };
 Table.Layout = CabinetLayout;
-export default withAuthSync(Table, true);
+export default withAuthSync(Table);

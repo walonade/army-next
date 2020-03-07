@@ -32,6 +32,10 @@ const Crime = sequelize.define("crimes", {
     allowNull: false,
     type: Sequelize.BIGINT
   },
+  // service: {
+  //   allowNull: false,
+  //   type: Sequelize.STRING
+  // },
   createdAt: {
     type: Sequelize.DATE
   },

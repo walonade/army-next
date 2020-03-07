@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Map, TileLayer } from "react-leaflet";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import withStore from "./../../utils/withStore.js";
@@ -16,15 +16,12 @@ const addProperty = item =>
     value: MarkerIcon(item.type, item.date)
   });
 const MapComponent = props => {
-  useEffect(() => {
-    props.store.getCrimes();
-  }, []);
   const [position, setPosition] = useState({
     lat: -126.609375,
     lng: 109.63151025772095
   });
   const [zoom, setZoom] = useState(2);
-  const mapData = props.store.crimes.map(item => addProperty(item));
+  const mapData = props.store.CrimeStore.crimes.map(item => addProperty(item));
   const showPosition = useCallback(event => console.log(event.latlng));
   return (
     <Map
@@ -50,6 +47,13 @@ const MapComponent = props => {
           }}
           icon={item.marker}
           id={index}
+          address={item.address}
+          date={item.date}
+          kui={item.kui}
+          rota={item.rota}
+          type={item.type}
+          objectOfCrime={item.objectOfCrime}
+          remove={props.store.CrimeStore.deleteInListCrimes[index]}
         />
       ))}
     </Map>

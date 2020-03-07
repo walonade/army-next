@@ -8,13 +8,7 @@ const changeNumber = number => {
 };
 export default (t, d) => {
   const date = moment(d);
-  const year = date.year();
-  const month = date.month();
-  const day = date.date();
   const hour = date.hour();
-  const minute = date.minute();
-  const setDate = `${changeNumber(day)}.${changeNumber(month)}.${year}`;
-  const setTime = `${hour}.${minute}`;
   const type = cutWord(t);
   let className;
   if (hour >= 8 && hour <= 17) {
@@ -25,7 +19,7 @@ export default (t, d) => {
     className = "green";
   }
   return L.divIcon({
-    html: `<div><p>«${type}»</p><p>${setDate}</p><p>вр.${setTime}</p><div>`,
+    html: `<div><p>«${type}»</p><div>`,
     className: `${className}-circle circle`,
     iconSize: [50, 50]
   });

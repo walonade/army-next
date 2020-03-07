@@ -7,7 +7,7 @@ import { ThemeProvider } from "styled-components";
 import "leaflet/dist/leaflet.css";
 import "./../styles/normalize.css";
 import "./../styles/style.css"
-
+import 'typeface-roboto';
 const theme = {
   primary: "green"
 };

@@ -1,23 +1,24 @@
-import React, { useState, useCallback } from "react";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker
+  KeyboardDateTimePicker
 } from "@material-ui/pickers";
+import ruLocale from "date-fns/locale/ru";
 import DateFnsUtils from "@date-io/date-fns";
 export default props => {
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardTimePicker
+    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+      <KeyboardDateTimePicker
+        autoOk
         className={props.className}
-        margin="normal"
         variant="inline"
         disableToolbar
-        id="time-picker"
+        margin="normal"
         ampm={false}
-        label="Время"
+        id={props.id}
+        label={props.label}
+        format="dd/MM/yyyy HH:mm"
         value={props.value}
         onChange={props.onChange}
-        KeyboardButtonProps={{ "aria-label": "change time" }}
       />
     </MuiPickersUtilsProvider>
   );

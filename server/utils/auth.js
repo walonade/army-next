@@ -1,14 +1,6 @@
 const expjwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
-const getTokenFromHeaders = req => {
-  const {
-    headers: { authorization }
-  } = req;
-  if (authorization && authorization.split(" ")[0] === "Bearer") {
-    return authorization.split(" ")[1];
-  }
-  return null;
-};
+const getTokenFromHeaders = require('./getToken.js');
 module.exports.auth = {
   required: expjwt({
     secret: "secret",

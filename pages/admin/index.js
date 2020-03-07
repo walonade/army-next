@@ -6,4 +6,4 @@ const Admin = () => {
   return <Grid>tgsdgfghfhghfg</Grid>;
 };
 Admin.Layout = CabinetLayout;
-export default withAuthSync(Admin)
+export default withAuthSync(Admin, true)

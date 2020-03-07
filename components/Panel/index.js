@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
 import withStore from "./../../utils/withStore.js";
 import { useRouter } from "next/router";
-import moment from "moment";
 import { kindOfCrimeData } from "./../../data";
+import moment from 'moment'
 import {
   Typography,
   Grid,
@@ -16,7 +16,8 @@ import {
   Button
 } from "@material-ui/core";
 import AutoComplite from "./../AutoComplite";
-import DataPicker from "./../DataPicker";
+import DateTimePicker from "./../DateTimePicker";
+import DatePicker from "./../DatePicker";
 import SmartInput from "./../SmartInput";
 import { makeStyles } from "@material-ui/core/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
@@ -36,7 +37,8 @@ const Panel = props => {
   const [kindOfCrime, setKindOfCrime] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [openKindOfCrime, setOpenKindOfCrime] = useState(false);
-  const [dateFrom, setDateFrom] = useState(moment());
+  const [openService, setOpenService] = useState(false);
+  const [dateFrom, setDateFrom] = useState(moment(moment() - 36000));
   const [dateTo, setDateTo] = useState(moment());
   const [valueKUI, setValueKUI] = useState(0);
   const [crimeData, setCrimeData] = useState(moment());
@@ -48,8 +50,16 @@ const Panel = props => {
   );
   const handleCloseKindOfCrime = useCallback(() => setOpenKindOfCrime(false));
   const handleOpenKindOfCrime = useCallback(() => setOpenKindOfCrime(true));
-  const handleChangeDateFrom = useCallback(time => setDateFrom(moment(time)));
-  const handleChangeDateTo = useCallback(time => setDateTo(moment(time)));
+  const handleOpenService = useCallback(() => setOpenService(true));
+  const handleCloseService = useCallback(() => setOpenService(false));
+  const handleChangeDateFrom = useCallback(time => {
+    if(time > dateTo) return
+    setDateFrom(moment(time))
+  });
+  const handleChangeDateTo = useCallback(time => {
+    if(time < dateFrom) return
+    setDateTo(moment(time))
+  });
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
   const handleChangeCrimeTime = useCallback(time => setCrimeTime(moment(time)));
   const handleChangeValueKUI = useCallback(event => setValueKUI(event));
@@ -65,7 +75,13 @@ const Panel = props => {
   const handleChangeService = useCallback(event =>
     setService(event.target.value)
   );
-  const updateList = useCallback(() => {});
+  const updateList = useCallback(() => {
+    const data = {
+      from: dateFrom,
+      to: dateTo
+    };
+    props.store.CrimeStore.getCrimes(data)
+  });
   const addToList = useCallback(() => {
     const data = {
       type: kindOfCrime,
@@ -73,7 +89,6 @@ const Panel = props => {
       address: addressOfCrime,
       service,
       object: objectOfCrime,
-      rota: 1,
       kui: valueKUI
     };
     if (
@@ -84,10 +99,12 @@ const Panel = props => {
       valueKUI &&
       service !== ""
     ) {
-      props.store.addToCrimes(data);
+      props.store.CrimeStore.addToCrimes(data);
     }
   });
-  const getAddresses = useCallback(() => props.store.getAdresses());
+  const getAddresses = useCallback(() =>
+    props.store.AddressStore.getAdresses()
+  );
   return (
     <Fragment>
       <br />
@@ -102,39 +119,37 @@ const Panel = props => {
       </Grid>
       <br />
       <Grid container justify="space-around">
-        <DataPicker
+        <DatePicker
           className={classes.formControl}
-          id="dateFrom"
           label="От"
+          max={dateTo}
           value={dateFrom}
           onChange={handleChangeDateFrom}
         />
-        <DataPicker
+      <DatePicker
           className={classes.formControl}
-          id="dateTo"
           label="До"
+          min={dateFrom}
           value={dateTo}
           onChange={handleChangeDateTo}
         />
       </Grid>
+      <Grid container justify="flex-end">
+        <IconButton onClick={updateList}>
+          <DescriptionIcon />
+        </IconButton>
+      </Grid>
+      <Divider />
       <br />
       {router.pathname !== "/" && "/admin" ? (
         <Fragment>
-          <Grid container justify="flex-end">
-            <IconButton onClick={updateList}>
-              <DescriptionIcon />
-            </IconButton>
-          </Grid>
-          <Divider />
-          <br />
           <Grid container justify="center">
             <Typography variant="h6">Добавление записи</Typography>
           </Grid>
           <Grid container justify="center">
             <FormControl className={classes.formControl}>
-              <InputLabel id="kind-of-crime">Тип преступления</InputLabel>
+              <InputLabel>Тип преступления</InputLabel>
               <Select
-                id="kind-of-crime-select"
                 label="Тип преступления"
                 open={openKindOfCrime}
                 onClose={handleCloseKindOfCrime}
@@ -149,7 +164,7 @@ const Panel = props => {
                 ))}
               </Select>
             </FormControl>
-            <DataPicker
+            <DateTimePicker
               value={crimeData}
               className={classes.formControl}
               onChange={handleChangeCrimeData}
@@ -163,22 +178,30 @@ const Panel = props => {
             />
             <AutoComplite
               getDataFromServer={getAddresses}
-              options={props.store.addresses}
+              options={props.store.AddressStore.addresses}
               getOptionLabel={getAutoItem}
               onChange={handleChangeAddressOfCrime}
               value={addressOfCrime}
               className={classes.formControl}
             />
+            <FormControl className={classes.formControl}>
+              <InputLabel>Cлужба раскрывшая</InputLabel>
+              <Select
+                open={openService}
+                onClose={handleCloseService}
+                onOpen={handleOpenService}
+                value={service}
+                onChange={handleChangeService}
+              >
+                {["Войсковой наряд", "МВД"].map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               className={classes.formControl}
-              id="service"
-              label="Служба раскрывшая"
-              value={service}
-              onChange={handleChangeService}
-            />
-            <TextField
-              className={classes.formControl}
-              id="odject-of-crimes"
               label="Объект преступления"
               value={objectOfCrime}
               onChange={handleChangeObjectOfCrime}
