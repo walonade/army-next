@@ -13,7 +13,7 @@ export default class {
   }
   @action async removeAddress(id) {
     try {
-      const response = await fetch(`/api/admin/addresses/${id}`, {
+      const response = await fetch(`/api/admin/address/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
@@ -25,12 +25,17 @@ export default class {
         this.addressesForAdmin = this.addressesForAdmin.filter(
           item => item.id !== id
         );
+        this.rootStore.NotificationStore.add("удалено", "success")
+      }
+      if (response.status === 401 || response.status === 500) {
+        const json = await response.json()
+        this.rootStore.NotificationStore.add(json.message)
       }
     } catch (e) {}
   }
   @action async changeAddress(id) {
     try {
-      const response = await fetch(`/api/admin/addresses/${id}`, {
+      const response = await fetch(`/api/admin/address/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
@@ -49,7 +54,7 @@ export default class {
   }
   @action async getAllAddresses() {
     try {
-      const response = await fetch("/api/admin/addresses/get", {
+      const response = await fetch("/api/admin/address/get", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,

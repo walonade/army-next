@@ -20,14 +20,18 @@ export default memo(
     return (
       <Marker position={props.position} icon={props.icon}>
         <Popup>
-          <IconButton onClick={props.remove}>
-            <DeleteOutlineIcon />
-          </IconButton>
+          {!props.showButton ? (
+            <IconButton onClick={props.remove}>
+              <DeleteOutlineIcon />
+            </IconButton>
+          ) : null}
           <h4>{props.type}</h4>
+          <h4>{`${props.patrol} отдел полиции`}</h4>
           <h4>Адрес: {props.address}</h4>
           <h4>Дата: {setDate}</h4>
           <h4>Время: {setTime}</h4>
-          <h4>Объект: {props.objectOfCrime}</h4>
+          <h4>Объект: {props.object}</h4>
+          <h4>КУИ: {props.kui}</h4>
         </Popup>
       </Marker>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Map, TileLayer } from "react-leaflet";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import withStore from "./../../utils/withStore.js";
@@ -23,6 +23,9 @@ const MapComponent = props => {
   const [zoom, setZoom] = useState(2);
   const mapData = props.store.CrimeStore.crimes.map(item => addProperty(item));
   const showPosition = useCallback(event => console.log(event.latlng));
+  useEffect(() => {
+    props.store.CrimeStore.getCrimes();
+  }, [])
   return (
     <Map
       onClick={showPosition}
@@ -52,8 +55,10 @@ const MapComponent = props => {
           kui={item.kui}
           rota={item.rota}
           type={item.type}
-          objectOfCrime={item.objectOfCrime}
+          object={item.object}
+          patrol={item.patrol}
           remove={props.store.CrimeStore.deleteInListCrimes[index]}
+          showButton={props.store.isAdmin}
         />
       ))}
     </Map>

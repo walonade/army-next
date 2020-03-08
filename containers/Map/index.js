@@ -10,9 +10,6 @@ const addProperty = item =>
     value: MarkerIcon(item.type, item.date)
   });
 const MapContainer = props => {
-  useEffect(() => {
-    props.store.getCrimes();
-  }, []);
   const mapData = props.store.crimes.map(item => addProperty(item));
   return (
     <Map>

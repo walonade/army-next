@@ -1,5 +1,7 @@
-import {withAuthSync} from "./../../utils/auth.js"
+import { withAuthSync } from "./../../utils/auth";
+import CabinetLayout from "./../../layouts/Cabinet";
 const Public = () => {
-  return <div>jjkklhofghfg</div>
-}
-export default withAuthSync(Public)
+  return <div>jjkklhofghfg</div>;
+};
+Public.Layout = CabinetLayout;
+export default withAuthSync(Public);

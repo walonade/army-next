@@ -6,12 +6,12 @@ import DefaultLayout from "./../layouts/Main";
 import { ThemeProvider } from "styled-components";
 import "leaflet/dist/leaflet.css";
 import "./../styles/normalize.css";
-import "./../styles/style.css"
-import 'typeface-roboto';
+import "./../styles/style.css";
+import "typeface-roboto";
+import Notification from "./../components/Snackbar";
 const theme = {
   primary: "green"
 };
-
 export default class App extends NextApp {
   state = {
     store: new Store()
@@ -41,6 +41,7 @@ export default class App extends NextApp {
         <ThemeProvider theme={theme}>
           <Layout>
             <Component {...pageProps} />
+            <Notification />
           </Layout>
         </ThemeProvider>
       </Provider>

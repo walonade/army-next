@@ -5,8 +5,13 @@ export default class {
     this.rootStore = rootStore;
   }
   @observable crimes = [];
-  @action async getCrimes(data) {
-    const response = await fetch("/api/crime/get", {
+  @action async getCrimes() {
+    const data = {
+      from: this.rootStore.fromDate,
+      to: this.rootStore.toDate
+    };
+    const url = this.rootStore.isAdmin ? "admin/" : ""
+    const response = await fetch(`/api/${url}crime/get`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -16,8 +21,7 @@ export default class {
       },
       body: JSON.stringify(data)
     });
-    const resData = await response.json();
-    this.crimes = resData;
+    if (response.status === 200) this.crimes = await response.json();
   }
   @action async addToCrimes(data) {
     const response = await fetch("/api/crime/add", {
@@ -34,6 +38,11 @@ export default class {
       const resData = await response.json();
       const fixResData = { ...resData.crime, AddressId: resData.addressData };
       this.crimes = [...this.crimes, fixResData];
+      this.rootStore.NotificationStore.add("добавлено", "success")
+    }
+    if (response.status === 401 || response.status === 500) {
+      const json = await response.json()
+      this.rootStore.NotificationStore.add(json.message)
     }
   }
   @action async removeFromCrimes(id) {
@@ -45,8 +54,13 @@ export default class {
         Accept: "application/json"
       }
     });
-    if (response.status === 200) {
+    if (response.status === 204) {
       this.crimes = this.crimes.filter(item => item.id !== id);
+      this.rootStore.NotificationStore.add("удалено", "success")
+    }
+    if (response.status === 401 || response.status === 500) {
+      const json = await response.json()
+      this.rootStore.NotificationStore.add(json.message)
     }
   }
   @computed get deleteInListCrimes() {

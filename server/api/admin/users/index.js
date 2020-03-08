@@ -7,45 +7,49 @@ const { auth } = require("./../../../utils/auth.js");
 const bcrypt = require("bcryptjs");
 router.post("/create", auth.required, async (req, res) => {
   const { login, password, isAdmin, rota } = req.body;
-  const token = getTokenFromHeaders(req);
   const hashPassword = await bcrypt.hash(password, 10);
   const id = v4();
   try {
     const admin = await User.findOne({
-      where: { token },
+      where: { token: getTokenFromHeaders(req) },
       attributes: ["isAdmin"]
     });
-    if (admin.isAdmin) {
-      const candidate = await User.findOne({
-        where: { login },
-        attributes: ["login"]
-      });
-      if (candidate === null) {
-        const user = await User.create({
-          id,
-          login,
-          rota,
-          password: hashPassword,
-          isAdmin
+    if (admin !== null) {
+      if (admin.isAdmin) {
+        const candidate = await User.findOne({
+          where: { login },
+          attributes: ["login"]
         });
-        user.save();
-        res.status(201).json(user);
+        if (candidate === null) {
+          const user = await User.create({
+            id,
+            login,
+            rota,
+            password: hashPassword,
+            isAdmin
+          });
+          user.save();
+          res.status(201).json(user);
+        } else {
+          res
+            .status(401)
+            .json({ message: "такой пользователь уже существует" });
+        }
       } else {
-        res.status(403).json({ message: "такой пользователь уже существует" });
+        res.status(401).json({ message: "вы не администратор" });
       }
     } else {
-      res.status(403).json({ message: "вы не администратор" });
+      res.status(401).json({ message: "вы не авторизованы" });
     }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "bad response" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
 router.post("/get", auth.required, async (req, res) => {
   try {
-    const token = getTokenFromHeaders(req);
     const admin = await User.findOne({
-      where: { token },
+      where: { token: getTokenFromHeaders(req) },
       attributes: ["isAdmin"]
     });
     if (admin.isAdmin) {
@@ -54,29 +58,28 @@ router.post("/get", auth.required, async (req, res) => {
       });
       res.status(200).json(users);
     } else {
-      res.status(403).json({ message: "вы не администратор" });
+      res.status(401).json({ message: "вы не администратор" });
     }
   } catch (e) {
-    res.status(500).json({ message: "bad response" });
+    res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
 router.delete("/:id", auth.required, async (req, res) => {
   try {
-    const token = getTokenFromHeaders(req);
     const admin = await User.findOne({
-      where: { token },
+      where: { token: getTokenFromHeaders(req) },
       attributes: ["isAdmin"]
     });
     if (admin.isAdmin) {
       const user = await User.findByPk(req.params.id);
       user.destroy();
-      res.status(200).json({});
+      res.status(204);
     } else {
-      res.status(403).json({ message: "вы не администратор" });
+      res.status(401).json({ message: "вы не администратор" });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "bad response" });
+    res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
 module.exports = router;

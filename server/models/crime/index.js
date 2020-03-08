@@ -20,7 +20,7 @@ const Crime = sequelize.define("crimes", {
     allowNull: false,
     type: Sequelize.STRING
   },
-  objectOfCrime: {
+  object: {
     allowNull: false,
     type: Sequelize.STRING
   },
@@ -32,10 +32,14 @@ const Crime = sequelize.define("crimes", {
     allowNull: false,
     type: Sequelize.BIGINT
   },
-  // service: {
-  //   allowNull: false,
-  //   type: Sequelize.STRING
-  // },
+  service: {
+    allowNull: false,
+    type: Sequelize.STRING
+  },
+  patrol: {
+    allowNull: false,
+    type: Sequelize.STRING
+  },
   createdAt: {
     type: Sequelize.DATE
   },
@@ -46,6 +50,6 @@ const Crime = sequelize.define("crimes", {
 Crime.belongsTo(Address, {
   foreignKey: "addressId",
   as: "AddressId"
-})
-Address.hasMany(Crime)
+});
+Address.hasMany(Crime);
 module.exports = Crime;

@@ -13,6 +13,7 @@ const CrimeRoute = require('./api/crimes');
 const AdminRoute = require('./api/admin');
 const AdminRouteUser = require('./api/admin/users');
 const AdminRouteAddress = require('./api/admin/addresses');
+const AdminRouteCrime = require('./api/admin/crimes');
 app.prepare().then(() => {
   const server = express();
   server.use(express.urlencoded({ extended: true }));
@@ -21,8 +22,9 @@ app.prepare().then(() => {
   server.use("/api/address", AddressRoute);
   server.use("/api/crime", CrimeRoute);
   server.use("/api/admin", AdminRoute);
-  server.use("/api/admin/users", AdminRouteUser);
-  server.use("/api/admin/addresses", AdminRouteAddress);
+  server.use("/api/admin/user", AdminRouteUser);
+  server.use("/api/admin/address", AdminRouteAddress);
+  server.use("/api/admin/crime", AdminRouteCrime);
   server.all("*", (req, res) => {
     return handle(req, res);
   });

@@ -2,7 +2,7 @@ import React, { Fragment, useState, useCallback, useEffect } from "react";
 import withStore from "./../../utils/withStore.js";
 import { useRouter } from "next/router";
 import { kindOfCrimeData } from "./../../data";
-import moment from 'moment'
+import moment from "moment";
 import {
   Typography,
   Grid,
@@ -38,10 +38,12 @@ const Panel = props => {
   const [suggestions, setSuggestions] = useState([]);
   const [openKindOfCrime, setOpenKindOfCrime] = useState(false);
   const [openService, setOpenService] = useState(false);
-  const [dateFrom, setDateFrom] = useState(moment(moment() - 36000));
+  const [openPatrol, setOpenPatrol] = useState(false);
+  const [dateFrom, setDateFrom] = useState(moment(moment()));
   const [dateTo, setDateTo] = useState(moment());
   const [valueKUI, setValueKUI] = useState(0);
   const [crimeData, setCrimeData] = useState(moment());
+  const [patrol, setPatrol] = useState("");
   const [addressOfCrime, setAddressOfCrime] = useState("");
   const [objectOfCrime, setObjectOfCrime] = useState("");
   const [service, setService] = useState("");
@@ -52,13 +54,15 @@ const Panel = props => {
   const handleOpenKindOfCrime = useCallback(() => setOpenKindOfCrime(true));
   const handleOpenService = useCallback(() => setOpenService(true));
   const handleCloseService = useCallback(() => setOpenService(false));
-  const handleChangeDateFrom = useCallback(time => {
-    if(time > dateTo) return
-    setDateFrom(moment(time))
+  const handleOpenPatrol = useCallback(() => setOpenPatrol(true));
+  const handleClosePatrol = useCallback(() => setOpenPatrol(false));
+  const handleChangeDateFrom = useCallback(date => {
+    if (date > dateTo) return;
+    props.store.setFromDate(moment(date));
   });
-  const handleChangeDateTo = useCallback(time => {
-    if(time < dateFrom) return
-    setDateTo(moment(time))
+  const handleChangeDateTo = useCallback(date => {
+    if (date < dateFrom) return;
+    props.store.setToDate(moment(date));
   });
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
   const handleChangeCrimeTime = useCallback(time => setCrimeTime(moment(time)));
@@ -75,21 +79,21 @@ const Panel = props => {
   const handleChangeService = useCallback(event =>
     setService(event.target.value)
   );
-  const updateList = useCallback(() => {
-    const data = {
-      from: dateFrom,
-      to: dateTo
-    };
-    props.store.CrimeStore.getCrimes(data)
-  });
+  const handleChangePatrol = useCallback(event =>
+    setPatrol(event.target.value)
+  );
+  const updateList = useCallback(() =>
+    props.store.CrimeStore.getCrimes()
+  );
   const addToList = useCallback(() => {
     const data = {
       type: kindOfCrime,
       date: crimeData,
       address: addressOfCrime,
-      service,
       object: objectOfCrime,
-      kui: valueKUI
+      kui: valueKUI,
+      service,
+      patrol
     };
     if (
       kindOfCrime &&
@@ -97,7 +101,8 @@ const Panel = props => {
       addressOfCrime &&
       objectOfCrime &&
       valueKUI &&
-      service !== ""
+      service &&
+      patrol !== ""
     ) {
       props.store.CrimeStore.addToCrimes(data);
     }
@@ -122,15 +127,15 @@ const Panel = props => {
         <DatePicker
           className={classes.formControl}
           label="От"
-          max={dateTo}
-          value={dateFrom}
+          max={props.store.toDate}
+          value={props.store.fromDate}
           onChange={handleChangeDateFrom}
         />
-      <DatePicker
+        <DatePicker
           className={classes.formControl}
           label="До"
-          min={dateFrom}
-          value={dateTo}
+          min={props.store.fromDate}
+          value={props.store.toDate}
           onChange={handleChangeDateTo}
         />
       </Grid>
@@ -141,85 +146,97 @@ const Panel = props => {
       </Grid>
       <Divider />
       <br />
-      {router.pathname !== "/" && "/admin" ? (
-        <Fragment>
-          <Grid container justify="center">
-            <Typography variant="h6">Добавление записи</Typography>
-          </Grid>
-          <Grid container justify="center">
-            <FormControl className={classes.formControl}>
-              <InputLabel>Тип преступления</InputLabel>
-              <Select
-                label="Тип преступления"
-                open={openKindOfCrime}
-                onClose={handleCloseKindOfCrime}
-                onOpen={handleOpenKindOfCrime}
-                value={kindOfCrime}
-                onChange={handleChangeKindOfCrime}
-              >
-                {kindOfCrimeData.map((item, index) => (
-                  <MenuItem key={index} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <DateTimePicker
-              value={crimeData}
-              className={classes.formControl}
-              onChange={handleChangeCrimeData}
-              label="Укажите дату/время"
-            />
-            <SmartInput
-              label="№ КУИ"
-              value={valueKUI}
-              onChange={handleChangeValueKUI}
-              className={classes.formControl}
-            />
-            <AutoComplite
-              getDataFromServer={getAddresses}
-              options={props.store.AddressStore.addresses}
-              getOptionLabel={getAutoItem}
-              onChange={handleChangeAddressOfCrime}
-              value={addressOfCrime}
-              className={classes.formControl}
-            />
-            <FormControl className={classes.formControl}>
-              <InputLabel>Cлужба раскрывшая</InputLabel>
-              <Select
-                open={openService}
-                onClose={handleCloseService}
-                onOpen={handleOpenService}
-                value={service}
-                onChange={handleChangeService}
-              >
-                {["Войсковой наряд", "МВД"].map((item, index) => (
-                  <MenuItem key={index} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              className={classes.formControl}
-              label="Объект преступления"
-              value={objectOfCrime}
-              onChange={handleChangeObjectOfCrime}
-            />
-          </Grid>
-          <br />
-          <Grid container justify="center">
-            <Button
-              onClick={addToList}
-              variant="contained"
-              color="primary"
-              className={classes.button}
-            >
-              Добавить
-            </Button>
-          </Grid>
-        </Fragment>
-      ) : null}
+      <Grid container justify="center">
+        <Typography variant="h6">Добавление записи</Typography>
+      </Grid>
+      <Grid container justify="center">
+        <FormControl className={classes.formControl}>
+          <InputLabel>Тип преступления</InputLabel>
+          <Select
+            label="Тип преступления"
+            open={openKindOfCrime}
+            onClose={handleCloseKindOfCrime}
+            onOpen={handleOpenKindOfCrime}
+            value={kindOfCrime}
+            onChange={handleChangeKindOfCrime}
+          >
+            {kindOfCrimeData.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <DateTimePicker
+          value={crimeData}
+          className={classes.formControl}
+          onChange={handleChangeCrimeData}
+          label="Укажите дату/время"
+        />
+        <SmartInput
+          label="№ КУИ"
+          value={valueKUI}
+          onChange={handleChangeValueKUI}
+          className={classes.formControl}
+        />
+        <AutoComplite
+          getDataFromServer={getAddresses}
+          options={props.store.AddressStore.addresses}
+          getOptionLabel={getAutoItem}
+          onChange={handleChangeAddressOfCrime}
+          value={addressOfCrime}
+          className={classes.formControl}
+        />
+        <FormControl className={classes.formControl}>
+          <InputLabel>Отдел полиции</InputLabel>
+          <Select
+            open={openPatrol}
+            onClose={handleClosePatrol}
+            onOpen={handleOpenPatrol}
+            value={patrol}
+            onChange={handleChangePatrol}
+          >
+            {["Северный", "Южный", "Центральный"].map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Cлужба раскрывшая</InputLabel>
+          <Select
+            open={openService}
+            onClose={handleCloseService}
+            onOpen={handleOpenService}
+            value={service}
+            onChange={handleChangeService}
+          >
+            {["Войсковой наряд", "МВД"].map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          className={classes.formControl}
+          label="Объект преступления"
+          value={objectOfCrime}
+          onChange={handleChangeObjectOfCrime}
+        />
+      </Grid>
+      <br />
+      <Grid container justify="center">
+        <Button
+          onClick={addToList}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+        >
+          Добавить
+        </Button>
+      </Grid>
     </Fragment>
   );
 };

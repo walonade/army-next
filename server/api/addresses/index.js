@@ -6,9 +6,9 @@ const { auth } = require("./../../utils/auth.js");
 router.get('/', async (req, res) => {
   try {
     const addresses = await Address.findAll({attributes: ["value"]})
-    res.status(200).json(JSON.parse(JSON.stringify(addresses)))
+    res.status(200).json(addresses)
   } catch (e) {
-    res.status(400).json({"message": "не верно"})
+    res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 })
 module.exports = router;

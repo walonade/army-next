@@ -1,4 +1,4 @@
-import CabinetLayout from "./../../../layouts/Cabinet";
+import CabinetLayout from "./../../../layouts/AdminCabinet";
 import dynamic from "next/dynamic";
 const Map = dynamic(import("./../../../components/Map"), {ssr: false});
 import { withAuthSync } from "./../../../utils/auth.js";

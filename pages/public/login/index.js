@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from "react";
 import Form from "./../../../components/AuthorizationForm";
-import Router from "next/router";
-import { setToken } from "./../../../utils/auth.js";
-import fetch from "isomorphic-unfetch";
-export default () => {
+import withStore from "./../../../utils/withStore.js";
+export default withStore(props => {
   const [data, setData] = useState({
     login: "",
     password: ""
@@ -14,21 +12,9 @@ export default () => {
   const handleSetPassword = useCallback(event =>
     setData({ ...data, password: event.target.value })
   );
-  const onSubmit = useCallback(async event => {
+  const onSubmit = useCallback(event => {
     event.preventDefault();
-    const response = await fetch("/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-    if (response.status === 200) {
-      const { token } = await response.json();
-      setToken(token);
-      Router.push("/public");
-    }
+    props.store.UserStore.login("user", data)
   });
   return (
     <Form
@@ -39,4 +25,4 @@ export default () => {
       onSubmit={onSubmit}
     />
   );
-};
+})
