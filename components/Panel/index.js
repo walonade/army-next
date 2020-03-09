@@ -82,9 +82,7 @@ const Panel = props => {
   const handleChangePatrol = useCallback(event =>
     setPatrol(event.target.value)
   );
-  const updateList = useCallback(() =>
-    props.store.CrimeStore.getCrimes()
-  );
+  const updateList = useCallback(() => props.store.CrimeStore.getCrimes());
   const addToList = useCallback(() => {
     const data = {
       type: kindOfCrime,
@@ -212,11 +210,13 @@ const Panel = props => {
             value={service}
             onChange={handleChangeService}
           >
-            {["Войсковой наряд", "МВД"].map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
+            {["не раскрыто", "войсковой наряд", "УП", "совместный"].map(
+              (item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              )
+            )}
           </Select>
         </FormControl>
         <TextField

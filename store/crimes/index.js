@@ -1,5 +1,7 @@
 import { action, observable, computed } from "mobx";
 import fetch from "isomorphic-unfetch";
+import moment from "moment";
+import { dayOfWeek } from "./../../data";
 export default class {
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -10,7 +12,7 @@ export default class {
       from: this.rootStore.fromDate,
       to: this.rootStore.toDate
     };
-    const url = this.rootStore.isAdmin ? "admin/" : ""
+    const url = this.rootStore.isAdmin ? "admin/" : "";
     const response = await fetch(`/api/${url}crime/get`, {
       method: "POST",
       credentials: "include",
@@ -38,11 +40,11 @@ export default class {
       const resData = await response.json();
       const fixResData = { ...resData.crime, AddressId: resData.addressData };
       this.crimes = [...this.crimes, fixResData];
-      this.rootStore.NotificationStore.add("добавлено", "success")
+      this.rootStore.NotificationStore.add("добавлено", "success");
     }
     if (response.status === 401 || response.status === 500) {
-      const json = await response.json()
-      this.rootStore.NotificationStore.add(json.message)
+      const json = await response.json();
+      this.rootStore.NotificationStore.add(json.message);
     }
   }
   @action async removeFromCrimes(id) {
@@ -56,14 +58,33 @@ export default class {
     });
     if (response.status === 204) {
       this.crimes = this.crimes.filter(item => item.id !== id);
-      this.rootStore.NotificationStore.add("удалено", "success")
+      this.rootStore.NotificationStore.add("удалено", "success");
     }
     if (response.status === 401 || response.status === 500) {
-      const json = await response.json()
-      this.rootStore.NotificationStore.add(json.message)
+      const json = await response.json();
+      this.rootStore.NotificationStore.add(json.message);
     }
   }
   @computed get deleteInListCrimes() {
     return this.crimes.map(item => () => this.removeFromCrimes(item.id));
+  }
+  @computed get updatedCrimes() {
+    this.crimes.map(item =>
+      Object.defineProperties(item, {
+        compDate: {
+          writable: true,
+          value: moment(item.date).format("DD.MM.YYYY")
+        },
+        compTime: {
+          writable: true,
+          value: moment(item.date).format("HH:mm")
+        },
+        compDayOfWeek: {
+          writable: true,
+          value: dayOfWeek(item.date)
+        }
+      })
+    );
+    return this.crimes;
   }
 }

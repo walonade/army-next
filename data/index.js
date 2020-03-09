@@ -1,3 +1,4 @@
+import moment from "moment";
 const kindOfCrimeData = [
   "Убийство",
   "УПВЗ",
@@ -11,6 +12,20 @@ const kindOfCrimeData = [
   "Наркотик",
   "Мелкое хищение",
   "Хол. оружие"
+];
+const months = [
+  "Январь",
+  "Февраль",
+  "Март",
+  "Апрель",
+  "Май",
+  "Июнь",
+  "Июль",
+  "Август",
+  "Сентябрь",
+  "Октябрь",
+  "Ноябрь",
+  "Декабрь"
 ];
 const timeofCrimes = [
   "00.00-02.00",
@@ -28,15 +43,26 @@ const timeofCrimes = [
   "Общий итог",
   "в %"
 ];
-const weekDays = [
+const days = [
   "Понедельник",
   "Вторник",
   "Среда",
   "Четверг",
   "Пятница",
   "Суббота",
-  "Воскресение",
-  "Общий итог",
-  "в %"
+  "Воскресение"
 ];
-export { kindOfCrimeData, timeofCrimes, weekDays };
+const weekDays = [...days, "Общий итог", "в %"];
+const dayOfWeek = date => {
+  const dayNumber = moment(date).weekday();
+  return dayNumber === 0 ? days[6] : days[dayNumber - 1];
+};
+const monthOfYear = date => `${months[moment(date).month()].toLowerCase()}а`;
+const setTitleDate = date => {
+  return {
+    day: date.get("date"),
+    month: monthOfYear(date),
+    year: date.get("year")
+  };
+};
+export { kindOfCrimeData, timeofCrimes, weekDays, dayOfWeek, monthOfYear, setTitleDate };

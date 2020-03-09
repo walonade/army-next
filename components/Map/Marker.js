@@ -6,17 +6,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
 export default memo(
   props => {
-    const changeNumber = number => {
-      return number < 10 ? `0${number}` : number;
-    };
-    const date = moment(props.date);
-    const year = date.year();
-    const month = date.month();
-    const day = date.date();
-    const hour = date.hour();
-    const minute = date.minute();
-    const setDate = `${changeNumber(day)}.${changeNumber(month)}.${year}`;
-    const setTime = `${hour}.${minute}`;
+    const setDate = moment(props.date).format("DD.MM.YYYY").toString()
+    const setTime = moment(props.date).format("HH:mm").toString()
     return (
       <Marker position={props.position} icon={props.icon}>
         <Popup>
