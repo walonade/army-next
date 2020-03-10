@@ -27,7 +27,7 @@ const Tr = memo(
 const EmptyTr = () => (
   <tr>
     {[...Array(10)].map((item, index) => (
-      <td key={index}>-</td>
+      <td key={index}></td>
     ))}
   </tr>
 );
