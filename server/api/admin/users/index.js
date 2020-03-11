@@ -2,57 +2,44 @@ const { Router } = require("express");
 const { v4 } = require("uuid");
 const router = Router();
 const User = require("./../../../models/user");
-const { getTokenFromHeaders } = require("./../../../utils/getToken.js");
 const { auth } = require("./../../../utils/auth.js");
+const isAttach = require("./../../../utils/isAttach.js");
 const bcrypt = require("bcryptjs");
-router.post("/create", auth.required, async (req, res) => {
-  const { login, password, isAdmin, rota } = req.body;
-  const hashPassword = await bcrypt.hash(password, 10);
-  const id = v4();
+router.post("/create", auth.required, isAttach, async (req, res) => {
   try {
-    const admin = await User.findOne({
-      where: { token: getTokenFromHeaders(req) },
-      attributes: ["isAdmin"]
-    });
-    if (admin !== null) {
-      if (admin.isAdmin) {
-        const candidate = await User.findOne({
-          where: { login },
-          attributes: ["login"]
+    const { login, password, isAdmin, rota } = req.body;
+    const hashPassword = await bcrypt.hash(password, 10);
+    const id = v4();
+    const admin = req.currentUser.isAdmin;
+    if (admin) {
+      const candidate = await User.findOne({
+        where: { login },
+        attributes: ["login"]
+      });
+      if (candidate === null) {
+        const user = await User.create({
+          id,
+          login,
+          rota,
+          password: hashPassword,
+          isAdmin
         });
-        if (candidate === null) {
-          const user = await User.create({
-            id,
-            login,
-            rota,
-            password: hashPassword,
-            isAdmin
-          });
-          user.save();
-          res.status(201).json(user);
-        } else {
-          res
-            .status(401)
-            .json({ message: "такой пользователь уже существует" });
-        }
+        user.save();
+        res.status(201).json(user);
       } else {
-        res.status(401).json({ message: "вы не администратор" });
+        res.status(401).json({ message: "такой пользователь уже существует" });
       }
     } else {
-      res.status(401).json({ message: "вы не авторизованы" });
+      res.status(401).json({ message: "вы не администратор" });
     }
   } catch (e) {
-    console.log(e);
     res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
-router.post("/get", auth.required, async (req, res) => {
+router.post("/get", auth.required, isAttach, async (req, res) => {
   try {
-    const admin = await User.findOne({
-      where: { token: getTokenFromHeaders(req) },
-      attributes: ["isAdmin"]
-    });
-    if (admin.isAdmin) {
+    const admin = req.currentUser.isAdmin;
+    if (admin) {
       const users = await User.findAll({
         attributes: ["login", "isAdmin", "id", "rota"]
       });
@@ -64,13 +51,10 @@ router.post("/get", auth.required, async (req, res) => {
     res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
-router.delete("/:id", auth.required, async (req, res) => {
+router.delete("/:id", auth.required, isAttach, async (req, res) => {
   try {
-    const admin = await User.findOne({
-      where: { token: getTokenFromHeaders(req) },
-      attributes: ["isAdmin"]
-    });
-    if (admin.isAdmin) {
+    const admin = req.currentUser.isAdmin;
+    if (admin) {
       const user = await User.findByPk(req.params.id);
       user.destroy();
       res.status(204);
@@ -78,7 +62,6 @@ router.delete("/:id", auth.required, async (req, res) => {
       res.status(401).json({ message: "вы не администратор" });
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });

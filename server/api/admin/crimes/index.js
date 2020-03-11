@@ -5,19 +5,12 @@ const { v4 } = require("uuid");
 const moment = require("moment");
 const Crime = require("./../../../models/crime");
 const Address = require("./../../../models/address");
-const User = require("./../../../models/user");
 const { auth } = require("./../../../utils/auth");
-const { getTokenFromHeaders } = require("./../../../utils/getToken");
-router.post("/get", auth.required, async (req, res) => {
+const isAttach = require('./../../../utils/isAttach.js');
+router.post("/get", auth.required, isAttach, async (req, res) => {
   try {
-    const user = await User.findOne({
-      where: {
-        token: getTokenFromHeaders(req)
-      },
-      attributes: ["isAdmin"]
-    });
-    if (user !== null) {
-      if (user.isAdmin) {
+    const admin = req.currentUser.isAdmin;
+      if (admin) {
         const { from, to } = req.body;
         const format = "YYYY-MM-DD HH:mm:ss";
         const fromBase = moment(from)
@@ -42,12 +35,8 @@ router.post("/get", auth.required, async (req, res) => {
       } else {
         res.status(401).json({ message: "вы не авторизованы" });
       }
-    } else {
-      res.status(401).json({ message: "вы не авторизованы" });
-    }
   } catch (e) {
     res.status(500).json({ message: "возникли проблемы с сервером" });
-    console.log(e);
   }
 });
 module.exports = router;

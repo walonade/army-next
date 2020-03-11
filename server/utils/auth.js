@@ -4,12 +4,12 @@ const getTokenFromHeaders = require('./getToken.js');
 module.exports.auth = {
   required: expjwt({
     secret: "secret",
-    userProperty: "payload",
+    userProperty: "tokenData",
     getToken: getTokenFromHeaders
   }),
   optional: expjwt({
     secret: "secret",
-    userProperty: "payload",
+    userProperty: "tokenData",
     getToken: getTokenFromHeaders,
     credentialsRequired: false
   })

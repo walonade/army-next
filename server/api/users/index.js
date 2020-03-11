@@ -16,8 +16,6 @@ router.post("/login", auth.optional, async (req, res) => {
         const isSame = await bcrypt.compare(password, candidate.password);
         if (isSame) {
           const token = generateJWT(candidate.id, candidate.login);
-          candidate.token = token;
-          candidate.save();
           res.status(200).json({ token });
         } else {
           res.status(404).json({ message: "не верный логин пароль" });

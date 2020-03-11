@@ -117,5 +117,6 @@ export {
   weekDays,
   dayOfWeek,
   monthOfYear,
-  setTitleDate
+  setTitleDate,
+  days
 };
