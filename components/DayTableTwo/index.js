@@ -5,6 +5,7 @@ import withStore from "./../../utils/withStore.js";
 import moment from "moment";
 import { setTitleDate, kindOfCrimeData, timeofCrimes } from "./../../data";
 export default withStore(props => {
+  let list = props.store.CrimeStore.updatedCrimes;
   const titleDate = useMemo(() => setTitleDate(props.store.toDate), [
     props.store.toDate.get("date")
   ]);
@@ -12,7 +13,7 @@ export default withStore(props => {
     let crimeCount = 0;
     const fromTF = moment(fromTime, "HH:mm");
     const toTF = moment(toTime, "HH:mm");
-    props.store.CrimeStore.updatedCrimes.forEach(item => {
+    list.forEach(item => {
       const itTF = moment(item.compTime, "HH:mm");
       if (item.type === kindOfCrimeData[crimeIndex]) {
         if (fromTF <= itTF && itTF < toTF) crimeCount = crimeCount + 1;
@@ -21,7 +22,6 @@ export default withStore(props => {
     return crimeCount;
   };
   const setCrimeFull = (fromTime, toTime) => {
-    let arr = props.store.CrimeStore.updatedCrimes;
     let crimeCount = 0;
     let crimePercent = 0;
     let crimeFalsy = 0;
@@ -29,11 +29,11 @@ export default withStore(props => {
     let crimeTrufyPercent = 0;
     const fromTF = moment(fromTime, "HH:mm");
     const toTF = moment(toTime, "HH:mm");
-    arr.forEach(item => {
+    list.forEach(item => {
       const itTF = moment(item.compTime, "HH:mm");
       if (fromTF <= itTF && itTF < toTF) {
         crimeCount = crimeCount + 1;
-        crimePercent = Math.floor((crimeCount / arr.length) * 100);
+        crimePercent = Math.floor((crimeCount / list.length) * 100);
         if (item.service === "не раскрыто") {
           crimeFalsy = crimeFalsy + 1;
           crimeFalsyPercent = Math.floor((crimeFalsy / crimeCount) * 100);
@@ -50,7 +50,7 @@ export default withStore(props => {
   };
   const setEnd = crimeIndex => {
     let count = 0;
-    props.store.CrimeStore.updatedCrimes.forEach(item => {
+    list.forEach(item => {
       if (item.type === kindOfCrimeData[crimeIndex]) {
         count = count + 1;
       }
@@ -58,34 +58,30 @@ export default withStore(props => {
     return count;
   };
   const fullPercent = () => {
-    let arr = props.store.CrimeStore.updatedCrimes;
     let falsy = 0;
     let falsyPercent = 0;
     let trufyPercent = 0;
-    arr.forEach(item => {
+    list.forEach(item => {
       if (item.service === "не раскрыто") {
         falsy = falsy + 1;
-        falsyPercent = Math.floor((falsy / arr.length) * 100);
+        falsyPercent = Math.floor((falsy / list.length) * 100);
         trufyPercent = 100 - falsyPercent;
       }
     });
     return { falsyPercent, trufyPercent };
   };
   const fullAll = crimeIndex => {
-    let arr = props.store.CrimeStore.updatedCrimes;
     let count = 0;
     let percent = 0;
-    arr.forEach(item => {
+    list.forEach(item => {
       if (item.type === kindOfCrimeData[crimeIndex]) {
         count = count + 1;
-        percent = Math.floor((count / arr.length) * 100);
+        percent = Math.floor((count / list.length) * 100);
       }
     });
     return percent;
   };
-  const memoFullPercent = useMemo(() => fullPercent(), [
-    props.store.CrimeStore.updatedCrimes.length
-  ]);
+  const memoFullPercent = useMemo(() => fullPercent(), [list.length]);
   return (
     <Fragment>
       <TableDiv>
@@ -137,14 +133,8 @@ export default withStore(props => {
               <td>{setEnd(9)}</td>
               <td>{setEnd(10)}</td>
               <td>{setEnd(11)}</td>
-              <td>
-                {props.store.CrimeStore.updatedCrimes.length !== 0
-                  ? props.store.CrimeStore.updatedCrimes.length
-                  : 0}
-              </td>
-              <td>
-                {props.store.CrimeStore.updatedCrimes.length !== 0 ? 100 : 0}
-              </td>
+              <td>{list.length !== 0 ? list.length : 0}</td>
+              <td>{list.length !== 0 ? 100 : 0}</td>
               <td>{memoFullPercent.trufyPercent}</td>
               <td>{memoFullPercent.trufyPercent}</td>
             </tr>
@@ -162,12 +152,8 @@ export default withStore(props => {
               <td>{fullAll(9)}</td>
               <td>{fullAll(10)}</td>
               <td>{fullAll(11)}</td>
-              <td>
-                {props.store.CrimeStore.updatedCrimes.length !== 0 ? 100 : 0}
-              </td>
-              <td>
-                {props.store.CrimeStore.updatedCrimes.length !== 0 ? 100 : 0}
-              </td>
+              <td>{list.length !== 0 ? 100 : 0}</td>
+              <td>{list.length !== 0 ? 100 : 0}</td>
               <td>{memoFullPercent.trufyPercent}</td>
               <td>{memoFullPercent.trufyPercent}</td>
             </tr>

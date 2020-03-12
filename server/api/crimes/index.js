@@ -40,25 +40,43 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
 });
 router.post("/get", auth.required, isAttach, async (req, res) => {
   try {
-    const { from, to } = req.body;
     const user = req.currentUser;
-    const format = "YYYY-MM-DD HH:mm:ss";
-    const fromBase = moment(from)
-      .set("hour", 0)
-      .set("minute", 0)
-      .set("second", 0);
-    const toBase = moment(to)
-      .set("hour", 23)
-      .set("minute", 59)
-      .set("second", 59);
-    const dateFrom = moment(fromBase).format(format);
-    const dateTo = moment(toBase).format(format);
     if (!user.isAdmin) {
+      const { from, to } = req.body;
+      const format = "YYYY-MM-DD HH:mm:ss";
+      const fromBase = moment(from)
+        .set("hour", 0)
+        .set("minute", 0)
+        .set("second", 0);
+      const toBase = moment(to)
+        .set("hour", 23)
+        .set("minute", 59)
+        .set("second", 59);
+      let fromBaseDiff;
+      let toBaseDiff;
+      const dateFrom = moment(fromBase).format(format);
+      const dateTo = moment(toBase).format(format);
+      const daysDiffrent = toBase.diff(fromBase, "days");
+      if (daysDiffrent !== 0) {
+        fromBaseDiff = fromBase
+          .set("year", fromBase.get("year") - 1)
+          .format(format);
+        toBaseDiff = toBase.set("year", toBase.get("year") - 1).format(format);
+      }
+      const search =
+        daysDiffrent > 7
+          ? {
+              [Op.or]: [
+                { [Op.between]: [fromBaseDiff, toBaseDiff] },
+                { [Op.between]: [dateFrom, dateTo] }
+              ]
+            }
+          : { [Op.between]: [dateFrom, dateTo] };
       const crimes = await Crime.findAll({
         where: {
           rota: user.rota,
           date: {
-            [Op.between]: [dateFrom, dateTo]
+            ...search
           }
         },
         include: [{ model: Address, as: "AddressId" }]

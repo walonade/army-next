@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
 import withStore from "./../../utils/withStore.js";
 import { useRouter } from "next/router";
-import { kindOfCrimeData } from "./../../data";
+import { kindOfCrimeData, patrols } from "./../../data";
 import moment from "moment";
 import {
   Typography,
@@ -39,8 +39,6 @@ const Panel = props => {
   const [openKindOfCrime, setOpenKindOfCrime] = useState(false);
   const [openService, setOpenService] = useState(false);
   const [openPatrol, setOpenPatrol] = useState(false);
-  const [dateFrom, setDateFrom] = useState(moment(moment()));
-  const [dateTo, setDateTo] = useState(moment());
   const [valueKUI, setValueKUI] = useState(0);
   const [crimeData, setCrimeData] = useState(moment());
   const [patrol, setPatrol] = useState("");
@@ -57,11 +55,11 @@ const Panel = props => {
   const handleOpenPatrol = useCallback(() => setOpenPatrol(true));
   const handleClosePatrol = useCallback(() => setOpenPatrol(false));
   const handleChangeDateFrom = useCallback(date => {
-    if (date > dateTo) return;
+    if (date > props.store.dateTo) return;
     props.store.setFromDate(moment(date));
   });
   const handleChangeDateTo = useCallback(date => {
-    if (date < dateFrom) return;
+    if (date < props.store.dateFrom) return;
     props.store.setToDate(moment(date));
   });
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
@@ -194,7 +192,7 @@ const Panel = props => {
             value={patrol}
             onChange={handleChangePatrol}
           >
-            {["Северный", "Южный", "Центральный"].map((item, index) => (
+            {patrols.map((item, index) => (
               <MenuItem key={index} value={item}>
                 {item}
               </MenuItem>

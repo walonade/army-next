@@ -27,6 +27,7 @@ const months = [
   "Ноябрь",
   "Декабрь"
 ];
+const patrols = ["Северный", "Центральный", "Южный"]
 const timeofCrimes = [
   {
     id: 0,
@@ -118,5 +119,6 @@ export {
   dayOfWeek,
   monthOfYear,
   setTitleDate,
-  days
+  days,
+  patrols
 };
