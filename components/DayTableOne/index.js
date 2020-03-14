@@ -1,37 +1,60 @@
 import React, { Fragment, memo, useMemo } from "react";
-import TableDiv from "./../TableDiv";
+import {
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableFooter,
+  TableContainer,
+  Paper,
+  Typography
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import withStore from "./../../utils/withStore.js";
 import moment from "moment";
-import { setTitleDate } from "./../../data";
+import { setTitleDate, tableOneHead, patrols } from "./../../data";
+const useStyles = makeStyles({
+  root: {
+    marginTop: 20,
+    marginBottom: 20
+  }
+})
 const Tr = memo(
   props => {
     const { item, index } = props;
     return (
-      <tr>
-        <td>{index + 1}</td>
-        <td>{item.type}</td>
-        <td>{item.compDate}</td>
-        <td>{item.kui}</td>
-        <td>{item.address}</td>
-        <td>{item.service}</td>
-        <td>{item.object}</td>
-        <td>{item.compTime}</td>
-        <td>{item.compDayOfWeek}</td>
-        <td></td>
-      </tr>
+      <TableRow hover={true}>
+        <TableCell align="center">{index + 1}</TableCell>
+        <TableCell align="center">{item.type}</TableCell>
+        <TableCell align="center">{item.compDate}</TableCell>
+        <TableCell align="center">{item.kui}</TableCell>
+        <TableCell align="center">{item.address}</TableCell>
+        <TableCell align="center">{item.service}</TableCell>
+        <TableCell align="center">{item.object}</TableCell>
+        <TableCell align="center">{item.compTime}</TableCell>
+        <TableCell align="center">{item.compDayOfWeek}</TableCell>
+        <TableCell align="center"></TableCell>
+      </TableRow>
     );
   },
   (prevProps, nextProps) =>
     prevProps.item.id === nextProps.item.id ? true : false
 );
-const EmptyTr = () => (
-  <tr>
-    {[...Array(10)].map((item, index) => (
-      <td key={index}></td>
-    ))}
-  </tr>
-);
+const EmptyTr = () => {
+  const arr = [...Array(10)];
+  return (
+    <TableRow hover={true}>
+      {arr.map((item, index) => (
+        <TableCell key={index} align="center">
+          -
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
 export default withStore(props => {
+  const classes = useStyles()
   const {
     tableOneNorth,
     tableOneCenter,
@@ -82,125 +105,100 @@ export default withStore(props => {
   ]);
   const mostCriminal = useMemo(() => {
     const sortArr = [
-      { name: "Северный", length: tableOneNorth.length },
-      { name: "Центральный", length: tableOneCenter.length },
-      { name: "Южный", length: tableOneSouth.length }
+      { name: patrols[0], length: tableOneNorth.length },
+      { name: patrols[1], length: tableOneCenter.length },
+      { name: patrols[2], length: tableOneSouth.length }
     ];
-    sortArr.sort((a, b) =>  b.length - a.length);
+    sortArr.sort((a, b) => b.length - a.length);
     return updatedCrimes.length === 0 ? "___________" : sortArr[0].name;
   }, [updatedCrimes.length]);
-
+  const headData = useMemo(
+    () =>
+      tableOneHead.map(item => (
+        <TableCell key={item} variant="head" align="center">
+          {item}
+        </TableCell>
+      )),
+    [tableOneHead.length]
+  );
   return (
-    <Fragment>
-      <TableDiv>
-        <h3>
-          Ежедневный анализ
-          <br /> криминогенной обстановки по преступлениям совершённых на улицах
-          на «<u> {titleDate.day} </u>» <u>{titleDate.month}</u>&nbsp;
-          {titleDate.year}г.
-        </h3>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                №<br />
-                п/п
-              </th>
-              <th>
-                виды
+    <TableContainer component={Paper} className={classes.root}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell colSpan={10} align="center">
+              <Typography variant="h6">
+                Ежедневный анализ криминогенной обстановки по преступлениям
+                совершённых на улицах на «<u> {titleDate.day} </u>»{" "}
+                <u>{titleDate.month}</u> {titleDate.year}г.
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>{headData}</TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell align="center" colSpan={10}>
+              <Typography variant="overline">Северный отдел полиции</Typography>
+            </TableCell>
+          </TableRow>
+          {tableOneNorth.length !== 0 ? (
+            tableOneNorth.map((item, index) => (
+              <Tr key={item.id} item={item} index={index} />
+            ))
+          ) : (
+            <EmptyTr />
+          )}
+          <TableRow>
+            <TableCell align="center" colSpan={10}>
+              <Typography variant="overline">
+                Центральный отдел полиции
+              </Typography>
+            </TableCell>
+          </TableRow>
+          {tableOneCenter.length !== 0 ? (
+            tableOneCenter.map((item, index) => (
+              <Tr key={item.id} item={item} index={index} />
+            ))
+          ) : (
+            <EmptyTr />
+          )}
+          <TableRow>
+            <TableCell align="center" colSpan={10}>
+              <Typography variant="overline">Южный отдел полиции</Typography>
+            </TableCell>
+          </TableRow>
+          {tableOneSouth.length !== 0 ? (
+            tableOneSouth.map((item, index) => (
+              <Tr key={item.id} item={item} index={index} />
+            ))
+          ) : (
+            <EmptyTr />
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={10} align="right">
+              <Typography>
+                За <u>{textDate}</u> совершено <u>{updatedCrimes.length}</u>{" "}
+                {memoizeWord} на улицах г. Павлодар, <br />
+                По северному отделу полиции - <u>{countNorth.count}</u> из них
+                раскрыто - <u>{countNorth.trufy}</u> нераскрыто -{" "}
+                <u>{countNorth.falsy}</u> <br />
+                По центральному отделу полиции - <u>{countCenter.count}</u> из
+                них раскрыто - <u>{countCenter.trufy}</u> нераскрыто -{" "}
+                <u>{countCenter.falsy}</u>
                 <br />
-                преступления
-              </th>
-              <th>
-                дата
+                По южному отделу полиции - <u>{countSouth.count}</u> из них
+                раскрыто - <u>{countSouth.trufy}</u> нераскрыто -{" "}
+                <u>{countSouth.falsy}</u>
                 <br />
-                совершения
-              </th>
-              <th>
-                №<br />
-                КУЗ
-              </th>
-              <th>
-                место
-                <br />
-                совершения
-              </th>
-              <th>
-                служба
-                <br />
-                раскрывшая
-              </th>
-              <th>
-                Объект
-                <br />
-                преступления
-              </th>
-              <th>
-                Время
-                <br />
-                совершения
-              </th>
-              <th>
-                день
-                <br />
-                недели
-              </th>
-              <th>
-                допущены на
-                <br />
-                маршр. патрул в/нарядов
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th colSpan={10}>Северный отдел полиции</th>
-            </tr>
-            {tableOneNorth.length !== 0 ? (
-              tableOneNorth.map((item, index) => (
-                <Tr key={item.id} item={item} index={index} />
-              ))
-            ) : (
-              <EmptyTr />
-            )}
-            <tr>
-              <th colSpan={10}>Центральный отдел полиции</th>
-            </tr>
-            {tableOneCenter.length !== 0 ? (
-              tableOneCenter.map((item, index) => (
-                <Tr key={item.id} item={item} index={index} />
-              ))
-            ) : (
-              <EmptyTr />
-            )}
-            <tr>
-              <th colSpan={10}>Южный отдел полиции</th>
-            </tr>
-            {tableOneSouth.length !== 0 ? (
-              tableOneSouth.map((item, index) => (
-                <Tr key={item.id} item={item} index={index} />
-              ))
-            ) : (
-              <EmptyTr />
-            )}
-          </tbody>
-        </table>
-      </TableDiv>
-      <p>
-        За <u>{textDate}</u> совершено <u>{updatedCrimes.length}</u>{" "}
-        {memoizeWord} на улицах г. Павлодар, <br />
-        По северному отделу полиции - <u>{countNorth.count}</u> из них раскрыто
-        - <u>{countNorth.trufy}</u> нераскрыто - <u>{countNorth.falsy}</u>{" "}
-        <br />
-        По центральному отделу полиции - <u>{countCenter.count}</u> из них
-        раскрыто - <u>{countCenter.trufy}</u> нераскрыто -{" "}
-        <u>{countCenter.falsy}</u>
-        <br />
-        По южному отделу полиции - <u>{countSouth.count}</u> из них раскрыто -{" "}
-        <u>{countSouth.trufy}</u> нераскрыто - <u>{countSouth.falsy}</u>
-        <br />
-        Вывод: Криминогенным районом является <u>{mostCriminal}</u>
-      </p>
-    </Fragment>
+                Вывод: Криминогенным районом является <u>{mostCriminal}</u>
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 });

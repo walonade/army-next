@@ -10,10 +10,6 @@ const User = sequelize.define("users", {
     allowNull: false,
     type: Sequelize.STRING
   },
-  token: {
-    allowNull: true,
-    type: Sequelize.STRING
-  },
   rota: {
     allowNull: true,
     type: Sequelize.INTEGER

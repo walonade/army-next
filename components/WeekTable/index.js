@@ -1,7 +1,17 @@
 import React, { Fragment, useMemo } from "react";
 import withStore from "./../../utils/withStore.js";
-import TableDiv from "./../TableDiv";
-import TableHead from "./../TableHead";
+import {
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableFooter,
+  TableContainer,
+  Paper,
+  Typography
+} from "@material-ui/core";
+import MyTableHead from "./../TableHead";
 import { weekDays, kindOfCrimeData, days } from "./../../data";
 export default withStore(props => {
   const list = props.store.CrimeStore.updatedCrimes;
@@ -92,80 +102,95 @@ export default withStore(props => {
     return percent;
   };
   return (
-    <Fragment>
-      <TableDiv>
-        <h3>
-          Еженедельный анализ
-          <br />
-          по видам преступлений и дням недели совершённые на улицах с{" "}
-          <u>{textDate.fromDate}</u> по <u>{textDate.toDate}</u> {textDate.year}
-          г.
-        </h3>
-        <table>
-          <TableHead week={true} />
-          <tbody>
-            {days.map(item => (
-              <tr key={item}>
-                <th>{item}</th>
-                <td>{setCrime(item, 0)}</td>
-                <td>{setCrime(item, 1)}</td>
-                <td>{setCrime(item, 2)}</td>
-                <td>{setCrime(item, 3)}</td>
-                <td>{setCrime(item, 4)}</td>
-                <td>{setCrime(item, 5)}</td>
-                <td>{setCrime(item, 6)}</td>
-                <td>{setCrime(item, 7)}</td>
-                <td>{setCrime(item, 8)}</td>
-                <td>{setCrime(item, 9)}</td>
-                <td>{setCrime(item, 10)}</td>
-                <td>{setCrime(item, 11)}</td>
-                <td>{crimeWeek(item)}</td>
-                <td>{crimeWeekPercent(item).percent}</td>
-                <td>{crimeWeekPercent(item).trufyPercent}</td>
-                <td>{crimeWeekPercent(item).falsyPercent}</td>
-              </tr>
-            ))}
-            <tr>
-              <th>Общий итог</th>
-              <td>{crimeType(0)}</td>
-              <td>{crimeType(1)}</td>
-              <td>{crimeType(2)}</td>
-              <td>{crimeType(3)}</td>
-              <td>{crimeType(4)}</td>
-              <td>{crimeType(5)}</td>
-              <td>{crimeType(6)}</td>
-              <td>{crimeType(7)}</td>
-              <td>{crimeType(8)}</td>
-              <td>{crimeType(9)}</td>
-              <td>{crimeType(10)}</td>
-              <td>{crimeType(11)}</td>
-              <td>{list.length != 0 ? list.length : 0}</td>
-              <td>{percent}</td>
-              <td>{fullPercent.trufyPercent}</td>
-              <td>{fullPercent.falsyPercent}</td>
-            </tr>
-            <tr>
-              <th>В %</th>
-              <td>{percentType(0)}</td>
-              <td>{percentType(1)}</td>
-              <td>{percentType(2)}</td>
-              <td>{percentType(3)}</td>
-              <td>{percentType(4)}</td>
-              <td>{percentType(5)}</td>
-              <td>{percentType(6)}</td>
-              <td>{percentType(7)}</td>
-              <td>{percentType(8)}</td>
-              <td>{percentType(9)}</td>
-              <td>{percentType(10)}</td>
-              <td>{percentType(11)}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </TableDiv>
-    </Fragment>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell colSpan={17} align="center">
+              <Typography variant="h6">
+                Еженедельный анализ по видам преступлений и дням недели
+                совершённые на улицах с <u>{textDate.fromDate}</u> по{" "}
+                <u>{textDate.toDate}</u> {textDate.year}г.
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <MyTableHead week={true} />
+        <TableBody>
+          {days.map(item => (
+            <TableRow key={item} hover={true}>
+              <TableCell align="center" variant="head">
+                {item}
+              </TableCell>
+              <TableCell align="center">{setCrime(item, 0)}</TableCell>
+              <TableCell align="center">{setCrime(item, 1)}</TableCell>
+              <TableCell align="center">{setCrime(item, 2)}</TableCell>
+              <TableCell align="center">{setCrime(item, 3)}</TableCell>
+              <TableCell align="center">{setCrime(item, 4)}</TableCell>
+              <TableCell align="center">{setCrime(item, 5)}</TableCell>
+              <TableCell align="center">{setCrime(item, 6)}</TableCell>
+              <TableCell align="center">{setCrime(item, 7)}</TableCell>
+              <TableCell align="center">{setCrime(item, 8)}</TableCell>
+              <TableCell align="center">{setCrime(item, 9)}</TableCell>
+              <TableCell align="center">{setCrime(item, 10)}</TableCell>
+              <TableCell align="center">{setCrime(item, 11)}</TableCell>
+              <TableCell align="center">{crimeWeek(item)}</TableCell>
+              <TableCell align="center">
+                {crimeWeekPercent(item).percent}
+              </TableCell>
+              <TableCell align="center">
+                {crimeWeekPercent(item).trufyPercent}
+              </TableCell>
+              <TableCell align="center">
+                {crimeWeekPercent(item).falsyPercent}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell align="center" variant="head">
+              Общий итог
+            </TableCell>
+            <TableCell align="center">{crimeType(0)}</TableCell>
+            <TableCell align="center">{crimeType(1)}</TableCell>
+            <TableCell align="center">{crimeType(2)}</TableCell>
+            <TableCell align="center">{crimeType(3)}</TableCell>
+            <TableCell align="center">{crimeType(4)}</TableCell>
+            <TableCell align="center">{crimeType(5)}</TableCell>
+            <TableCell align="center">{crimeType(6)}</TableCell>
+            <TableCell align="center">{crimeType(7)}</TableCell>
+            <TableCell align="center">{crimeType(8)}</TableCell>
+            <TableCell align="center">{crimeType(9)}</TableCell>
+            <TableCell align="center">{crimeType(10)}</TableCell>
+            <TableCell align="center">{crimeType(11)}</TableCell>
+            <TableCell align="center">
+              {list.length != 0 ? list.length : 0}
+            </TableCell>
+            <TableCell align="center">{percent}</TableCell>
+            <TableCell align="center">{fullPercent.trufyPercent}</TableCell>
+            <TableCell align="center">{fullPercent.falsyPercent}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center" variant="head">
+              В %
+            </TableCell>
+            <TableCell align="center">{percentType(0)}</TableCell>
+            <TableCell align="center">{percentType(1)}</TableCell>
+            <TableCell align="center">{percentType(2)}</TableCell>
+            <TableCell align="center">{percentType(3)}</TableCell>
+            <TableCell align="center">{percentType(4)}</TableCell>
+            <TableCell align="center">{percentType(5)}</TableCell>
+            <TableCell align="center">{percentType(6)}</TableCell>
+            <TableCell align="center">{percentType(7)}</TableCell>
+            <TableCell align="center">{percentType(8)}</TableCell>
+            <TableCell align="center">{percentType(9)}</TableCell>
+            <TableCell align="center">{percentType(10)}</TableCell>
+            <TableCell align="center">{percentType(11)}</TableCell>
+            <TableCell rowSpan={4}></TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 });

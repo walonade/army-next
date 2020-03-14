@@ -1,12 +1,29 @@
 import AdminPanel from "./../../components/admin/AdminPanel";
-import { Grid } from "@material-ui/core";
+import AppBar from "./../../components/AppBar";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles({
+  root: {
+    display: "flex"
+  },
+  drawwer: {
+    width: 300,
+    borderRight: "1px solid #DCDCDC"
+  },
+  content: {
+    flexGrow: 1
+  }
+});
 export default props => {
+  const classes = useStyles();
   return (
-    <Grid container>
-      <Grid item md={2}>
+    <div className={classes.root}>
+      <div className={classes.drawwer}>
         <AdminPanel />
-      </Grid>
-      <Grid item md="auto">{props.children}</Grid>
-    </Grid>
+      </div>
+      <div className={classes.content}>
+        <AppBar />
+        {props.children}
+      </div>
+    </div>
   );
 };

@@ -1,23 +1,28 @@
 import React, { Fragment, useCallback } from "react";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Grid, Divider, IconButton } from "@material-ui/core";
+import { Typography, Grid, Divider, Button} from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import withStore from "./../../../utils/withStore";
 import DatePicker from "./../../DatePicker";
 const useStyle = makeStyles({
   formControl: {
     minWidth: 250
+  },
+  button: {
+    width: 250,
+    marginTop: 20,
+    marginBottom: 20
   }
 });
 const AdminPanel = props => {
   const classes = useStyle();
   const handleChangeDateFrom = useCallback(date => {
-    if (date > dateTo) return;
+    if (date > props.store.toDate) return;
     props.store.setFromDate(moment(date));
   });
   const handleChangeDateTo = useCallback(date => {
-    if (date < dateFrom) return;
+    if (date < props.store.fromDate) return;
     props.store.setToDate(moment(date));
   });
   const updateList = useCallback(() => props.store.CrimeStore.getCrimes());
@@ -49,10 +54,15 @@ const AdminPanel = props => {
           onChange={handleChangeDateTo}
         />
       </Grid>
-      <Grid container justify="flex-end">
-        <IconButton onClick={updateList}>
+      <Grid container justify="center">
+        <Button
+          onClick={updateList}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+        >
           <DescriptionIcon />
-        </IconButton>
+        </Button>
       </Grid>
       <Divider />
     </Fragment>

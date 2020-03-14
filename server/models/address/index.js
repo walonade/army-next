@@ -4,8 +4,7 @@ const Address = sequelize.define("addresses", {
   id: {
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true,
-    type: Sequelize.INTEGER
+    type: Sequelize.UUID
   },
   value: {
     allowNull: false,

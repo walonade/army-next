@@ -1,14 +1,13 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
 import withStore from "./../../utils/withStore.js";
 import { useRouter } from "next/router";
-import { kindOfCrimeData, patrols } from "./../../data";
+import { kindOfCrimeData, patrols, serviceList } from "./../../data";
 import moment from "moment";
 import {
   Typography,
   Grid,
   Divider,
   TextField,
-  IconButton,
   FormControl,
   MenuItem,
   InputLabel,
@@ -27,7 +26,9 @@ const useStyles = makeStyles({
     minWidth: 250
   },
   button: {
-    width: 250
+    width: 250,
+    marginTop: 20,
+    marginBottom: 20
   }
 });
 const Panel = props => {
@@ -101,6 +102,11 @@ const Panel = props => {
       patrol !== ""
     ) {
       props.store.CrimeStore.addToCrimes(data);
+    } else {
+      props.store.NotificationStore.add(
+        "все поля должны быть заполнены",
+        "warning"
+      );
     }
   });
   const getAddresses = useCallback(() =>
@@ -135,10 +141,15 @@ const Panel = props => {
           onChange={handleChangeDateTo}
         />
       </Grid>
-      <Grid container justify="flex-end">
-        <IconButton onClick={updateList}>
+      <Grid container justify="center">
+        <Button
+          onClick={updateList}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+        >
           <DescriptionIcon />
-        </IconButton>
+        </Button>
       </Grid>
       <Divider />
       <br />
@@ -208,7 +219,7 @@ const Panel = props => {
             value={service}
             onChange={handleChangeService}
           >
-            {["не раскрыто", "войсковой наряд", "УП", "совместный"].map(
+            {serviceList.map(
               (item, index) => (
                 <MenuItem key={index} value={item}>
                   {item}

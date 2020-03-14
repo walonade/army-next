@@ -7,9 +7,17 @@ export default class {
   @observable addresses = [];
   @observable addressesForAdmin = [];
   @action async getAdresses() {
-    const response = await fetch("/api/address");
-    const data = await response.json();
-    this.addresses = data;
+    try {
+      const response = await fetch("/api/address");
+      const json = await response.json();
+      if (response.status === 200) {
+        this.addresses = json;
+      } else {
+        throw new Error(json.message);
+      }
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
+    }
   }
   @action async removeAddress(id) {
     try {
@@ -25,37 +33,41 @@ export default class {
         this.addressesForAdmin = this.addressesForAdmin.filter(
           item => item.id !== id
         );
-        this.rootStore.NotificationStore.add("удалено", "success")
+        this.rootStore.NotificationStore.add("удалено", "success");
+      } else {
+        const json = await response.json();
+        throw new Error(json.message);
       }
-      if (response.status === 401 || response.status === 500) {
-        const json = await response.json()
-        this.rootStore.NotificationStore.add(json.message)
-      }
-    } catch (e) {}
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
+    }
   }
-  @action async changeAddress(id) {
+  @action async addAddress(data) {
     try {
-      const response = await fetch(`/api/admin/address/${id}`, {
-        method: "PUT",
+      const response = await fetch("/api/admin/address/add", {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
           "Content-type": "application/json",
           Accept: "application/json"
-        }
+        },
+        body: JSON.stringify(data)
       });
+      const json = await response.json();
       if (response.status === 200) {
-        const json = await response.json();
-        this.addressesForAdmin = this.addressesForAdmin.filter(
-          item => item.id !== id
-        );
         this.addressesForAdmin = [...this.addressesForAdmin, json];
+        this.rootStore.NotificationStore.add("адрес добавлен", "success");
+      } else {
+        throw new Error(json.message);
       }
-    } catch (e) {}
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
+    }
   }
   @action async getAllAddresses() {
     try {
       const response = await fetch("/api/admin/address/get", {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
           "Content-type": "application/json",
@@ -63,13 +75,14 @@ export default class {
         }
       });
       const json = await response.json();
-      this.addressesForAdmin = [...json];
-    } catch (e) {}
-  }
-  @computed get changeAddressList() {
-    return this.addressesForAdmin.map(item => () =>
-      this.changeAddress(item.id)
-    );
+      if (response.status === 200) {
+        this.addressesForAdmin = [...json];
+      } else {
+        this.rootStore.NotificationStore.add(json.message);
+      }
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
+    }
   }
   @computed get deleteInListAddress() {
     return this.addressesForAdmin.map(item => () =>

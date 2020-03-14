@@ -16,11 +16,8 @@ const Element = props => {
         <PinDropIcon />
       </ListItemIcon>
       <ListItemText primary={props.item.value} />
-      <ListItemText primary={`${props.item.lat} ${props.item.lng}`} />
+      <ListItemText primary={`lat: ${props.item.lat} | lng: ${props.item.lng}`} />
       <ListItemSecondaryAction>
-        <IconButton onClick={props.change}>
-          <EditIcon/>
-        </IconButton>
         <IconButton onClick={props.remove}>
           <DeleteIcon />
         </IconButton>

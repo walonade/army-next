@@ -14,6 +14,13 @@ export default withStore(props => {
   );
   const onSubmit = useCallback(event => {
     event.preventDefault();
+    if (data.login === "" || data.password === "") {
+      props.store.NotificationStore.add(
+        "все поля должны быть заполнены",
+        "warning"
+      );
+      return;
+    }
     props.store.UserStore.login("admin", data, true)
   });
   return (

@@ -7,8 +7,21 @@ import WeekTable from "./../../../components/WeekTable";
 import MonthTable from "./../../../components/MonthTable";
 import { withAuthSync } from "./../../../utils/auth.js";
 import withStore from "./../../../utils/withStore.js";
-import Link from "next/link";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    backgroundColor: "#FFFFFF",
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+    paddingBottom: 20
+  }
+})
 const Table = props => {
+  const classes = useStyles()
   let component;
   if (props.store.gapDate == 0) {
     component = (
@@ -22,7 +35,7 @@ const Table = props => {
   } else {
     component = <MonthTable />;
   }
-  return <Fragment>{component}</Fragment>;
+  return <div className={classes.container}>{component}</div>;;
 };
 Table.Layout = CabinetLayout;
 export default withAuthSync(withStore(Table), true);

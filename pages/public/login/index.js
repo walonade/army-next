@@ -14,7 +14,14 @@ export default withStore(props => {
   );
   const onSubmit = useCallback(event => {
     event.preventDefault();
-    props.store.UserStore.login("user", data)
+    if (data.login === "" || data.password === "") {
+      props.store.NotificationStore.add(
+        "все поля должны быть заполнены",
+        "warning"
+      );
+      return;
+    }
+    props.store.UserStore.login("user", data);
   });
   return (
     <Form
@@ -25,4 +32,4 @@ export default withStore(props => {
       onSubmit={onSubmit}
     />
   );
-})
+});

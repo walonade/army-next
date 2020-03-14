@@ -1,9 +1,27 @@
 import React, { Fragment, useMemo } from "react";
-import TableDiv from "./../TableDiv";
 import moment from "moment";
+import {
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableFooter,
+  TableContainer,
+  Paper,
+  Typography
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { kindOfCrimeData, patrols } from "./../../data";
 import withStore from "./../../utils/withStore.js";
+const useStyles = makeStyles({
+  root: {
+    marginTop: 20,
+    marginBottom: 20
+  }
+});
 export default withStore(props => {
+  const classes = useStyles();
   const list = props.store.CrimeStore.updatedCrimes;
   const year = useMemo(() => {
     const fromDate = props.store.fromDate.format("DD.MM.YYYY");
@@ -108,115 +126,189 @@ export default withStore(props => {
     });
     return arr;
   };
-  const sortArrPatrol = mostCriminal().sort((a, b) => b.count - a.count);
+  const sortArrPatrol = useMemo(
+    () => mostCriminal().sort((a, b) => b.count - a.count),
+    [list.length]
+  );
   return (
     <Fragment>
-      <TableDiv>
-        <h2>Анализ</h2>
-        <h3>
-          совершённых преступлений по оперативной сводке на территории г.
-          Павлодар с <u>{year.fromDate}</u> года по <u>{year.toDate}</u> года
-          <br />
-          зарегистрировано на улицах __, в {year.currentYear} году
-          зарегистрировано на улицах __ преступлений.
-          <br />
-          <br />
-          Состояние уличной преступности
-          <br />
-          (по районам несения службы)
-        </h3>
-        <table>
-          <thead>
-            <tr>
-              <td rowSpan={2}>Виды преступления</td>
-              <th colSpan={2}>{patrols[0]} ОП</th>
-              <th colSpan={2}>{patrols[1]} ОП</th>
-              <th colSpan={2}>{patrols[2]} ОП</th>
-              <th>Всего</th>
-            </tr>
-            <tr>
-              <td>{year.lastYear}</td>
-              <td>{year.currentYear}</td>
-              <td>{year.lastYear}</td>
-              <td>{year.currentYear}</td>
-              <td>{year.lastYear}</td>
-              <td>{year.currentYear}</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            {kindOfCrimeData.map(item => (
-              <tr key={item}>
-                <td>{item}</td>
-                <td>{crimeType(item, year.lastYear, patrols[0])}</td>
-                <td>{crimeType(item, year.currentYear, patrols[0])}</td>
-                <td>{crimeType(item, year.lastYear, patrols[1])}</td>
-                <td>{crimeType(item, year.currentYear, patrols[1])}</td>
-                <td>{crimeType(item, year.lastYear, patrols[2])}</td>
-                <td>{crimeType(item, year.currentYear, patrols[2])}</td>
-                <td>{crimeTypeAll(item)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <Typography variant="h5" align="center">
+        Анализ
+      </Typography>
+      <Typography variant="h6" align="center">
+        совершённых преступлений по оперативной сводке на территории г. Павлодар
+        с <u>{year.fromDate}</u> года по <u>{year.toDate}</u> года
         <br />
-        <table>
-          <thead>
-            <tr>
-              <td rowSpan={2}>
-                Район
-                <br />
-                патрулирования
-              </td>
-              <th colSpan={3}>Совершено преступлений на улицах</th>
-            </tr>
-            <tr>
-              <th>{year.lastYear} год</th>
-              <th>{year.currentYear} год</th>
-              <th>%</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{patrols[0]} ОП</td>
-              <td>{crimeForYearAndPatrol(patrols[0], year.lastYear)}</td>
-              <td>{crimeForYearAndPatrol(patrols[0], year.currentYear)}</td>
-              <td>{percentPatrol(patrols[0])}</td>
-            </tr>
-            <tr>
-              <td>{patrols[1]} ОП</td>
-              <td>{crimeForYearAndPatrol(patrols[1], year.lastYear)}</td>
-              <td>{crimeForYearAndPatrol(patrols[1], year.currentYear)}</td>
-              <td>{percentPatrol(patrols[1])}</td>
-            </tr>
-            <tr>
-              <td>{patrols[2]} ОП</td>
-              <td>{crimeForYearAndPatrol(patrols[2], year.lastYear)}</td>
-              <td>{crimeForYearAndPatrol(patrols[2], year.currentYear)}</td>
-              <td>{percentPatrol(patrols[2])}</td>
-            </tr>
-            <tr>
-              <th>Всего</th>
-              <td>{crimesForYear(year.lastYear)}</td>
-              <td>{crimesForYear(year.currentYear)}</td>
-              <td>{allPercent}</td>
-            </tr>
-          </tbody>
-        </table>
-      </TableDiv>
-      <h4>По территориальности креминогенными районами являются:</h4>
-      <h5>
-        <u>{sortArrPatrol[0].name}</u> ОП, где допущено{" "}
-        <u>{sortArrPatrol[0].count}</u> преступлений на улицах
-      </h5>
-      <h5>
-        <u>{sortArrPatrol[1].name}</u> ОП, где допущено{" "}
-        <u>{sortArrPatrol[1].count}</u> преступлений на улицах
-      </h5>
-      <h5>
-        <u>{sortArrPatrol[2].name}</u> ОП, где допущено{" "}
-        <u>{sortArrPatrol[2].count}</u> преступлений на улицах
-      </h5>
+        зарегистрировано на улицах <u>{crimesForYear(year.currentYear)}</u>, в {year.lastYear} году
+        зарегистрировано на улицах <u>{crimesForYear(year.lastYear)}</u> преступлений.
+        <br />
+        <br />
+        Состояние уличной преступности
+        <br />
+        (по районам несения службы)
+      </Typography>
+      <TableContainer component={Paper} className={classes.root}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" rowSpan={2}>
+                Виды преступления
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                {patrols[0]} ОП
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                {patrols[1]} ОП
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                {patrols[2]} ОП
+              </TableCell>
+              <TableCell align="center" rowSpan={2}>
+                Всего
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">{year.lastYear}</TableCell>
+              <TableCell align="center">{year.currentYear}</TableCell>
+              <TableCell align="center">{year.lastYear}</TableCell>
+              <TableCell align="center">{year.currentYear}</TableCell>
+              <TableCell align="center">{year.lastYear}</TableCell>
+              <TableCell align="center">{year.currentYear}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {kindOfCrimeData.map(item => (
+              <TableRow key={item}>
+                <TableCell variant="head" align="center">
+                  {item}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.lastYear, patrols[0])}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.currentYear, patrols[0])}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.lastYear, patrols[1])}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.currentYear, patrols[1])}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.lastYear, patrols[2])}
+                </TableCell>
+                <TableCell align="center">
+                  {crimeType(item, year.currentYear, patrols[2])}
+                </TableCell>
+                <TableCell align="center">{crimeTypeAll(item)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TableContainer component={Paper} className={classes.root}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" rowSpan={2}>
+                Район патрулирования
+              </TableCell>
+              <TableCell align="center" colSpan={3}>
+                Совершено преступлений на улицах
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">{year.lastYear} год</TableCell>
+              <TableCell align="center">{year.currentYear} год</TableCell>
+              <TableCell align="center">%</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell variant="head" align="center">
+                {patrols[0]} ОП
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[0], year.lastYear)}
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[0], year.currentYear)}
+              </TableCell>
+              <TableCell align="center">{percentPatrol(patrols[0])}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell variant="head" align="center">
+                {patrols[1]} ОП
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[1], year.lastYear)}
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[1], year.currentYear)}
+              </TableCell>
+              <TableCell align="center">{percentPatrol(patrols[1])}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell variant="head" align="center">
+                {patrols[2]} ОП
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[2], year.lastYear)}
+              </TableCell>
+              <TableCell align="center">
+                {crimeForYearAndPatrol(patrols[2], year.currentYear)}
+              </TableCell>
+              <TableCell align="center">{percentPatrol(patrols[2])}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell variant="head" align="center">
+                Всего
+              </TableCell>
+              <TableCell align="center">
+                {crimesForYear(year.lastYear)}
+              </TableCell>
+              <TableCell align="center">
+                {crimesForYear(year.currentYear)}
+              </TableCell>
+              <TableCell align="center">{allPercent}</TableCell>
+            </TableRow>
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell variant="head" align="center" colSpan={4}>
+                <Typography variant="overline">По территориальности креминогенными районами являются:</Typography>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center" colSpan={2}>
+                <u>{sortArrPatrol[0].name}</u> ОП
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                где допущено <u>{sortArrPatrol[0].count}</u> преступлений на
+                улицах
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center" colSpan={2}>
+                <u>{sortArrPatrol[1].name}</u> ОП
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                где допущено <u>{sortArrPatrol[1].count}</u> преступлений на
+                улицах
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center" colSpan={2}>
+                <u>{sortArrPatrol[2].name}</u> ОП
+              </TableCell>
+              <TableCell align="center" colSpan={2}>
+                где допущено <u>{sortArrPatrol[2].count}</u> преступлений на
+                улицах
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
     </Fragment>
   );
 });

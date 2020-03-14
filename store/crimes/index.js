@@ -8,61 +8,74 @@ export default class {
   }
   @observable crimes = [];
   @action async getCrimes() {
-    const data = {
-      from: this.rootStore.fromDate,
-      to: this.rootStore.toDate
-    };
-    const url = this.rootStore.isAdmin ? "admin/" : "";
-    const response = await fetch(`/api/${url}crime/get`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${this.rootStore.token}`,
-        "Content-type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-    if (response.status === 200) this.crimes = await response.json();
+    try {
+      const data = {
+        from: this.rootStore.fromDate,
+        to: this.rootStore.toDate
+      };
+      const url = this.rootStore.isAdmin ? "admin/" : "";
+      const response = await fetch(`/api/${url}crime/get`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${this.rootStore.token}`,
+          Accept: "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+      const json = await response.json();
+      if (response.status === 200) {
+        this.crimes = json;
+      } else {
+        throw new Error(json.message);
+      }
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
+    }
   }
   @action async addToCrimes(data) {
-    const response = await fetch("/api/crime/add", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${this.rootStore.token}`,
-        "Content-type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-    if (response.status === 201) {
-      const resData = await response.json();
-      const fixResData = { ...resData.crime, AddressId: resData.addressData };
-      this.crimes = [...this.crimes, fixResData];
-      this.rootStore.NotificationStore.add("добавлено", "success");
-    }
-    if (response.status === 401 || response.status === 500) {
+    try {
+      const response = await fetch("/api/crime/add", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${this.rootStore.token}`,
+          "Content-type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(data)
+      });
       const json = await response.json();
-      this.rootStore.NotificationStore.add(json.message);
+      if (response.status === 201) {
+        const fixResData = { ...json.crime, AddressId: json.addressData };
+        this.crimes = [...this.crimes, fixResData];
+        this.rootStore.NotificationStore.add("добавлено", "success");
+      } else {
+        throw new Error(json.message);
+      }
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
     }
   }
   @action async removeFromCrimes(id) {
-    const response = await fetch(`/api/crime/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${this.rootStore.token}`,
-        "Content-type": "application/json",
-        Accept: "application/json"
+    try {
+      const response = await fetch(`/api/crime/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.rootStore.token}`,
+          "Content-type": "application/json",
+          Accept: "application/json"
+        }
+      });
+      if (response.status === 204) {
+        this.crimes = this.crimes.filter(item => item.id !== id);
+        this.rootStore.NotificationStore.add("удалено", "success");
+      } else {
+        const json = await response.json();
+        throw new Error(json.message);
       }
-    });
-    if (response.status === 204) {
-      this.crimes = this.crimes.filter(item => item.id !== id);
-      this.rootStore.NotificationStore.add("удалено", "success");
-    }
-    if (response.status === 401 || response.status === 500) {
-      const json = await response.json();
-      this.rootStore.NotificationStore.add(json.message);
+    } catch ({ message }) {
+      this.rootStore.NotificationStore.add(message);
     }
   }
   @computed get deleteInListCrimes() {
