@@ -12,11 +12,15 @@ const Address = sequelize.define("addresses", {
   },
   lat: {
     allowNull: false,
-    type: Sequelize.FLOAT
+    type: Sequelize.FLOAT(11)
   },
   lng: {
     allowNull: false,
-    type: Sequelize.FLOAT
+    type: Sequelize.FLOAT(11)
+  },
+  patrol: {
+    allowNull: false,
+    type: Sequelize.STRING
   },
   createdAt: {
     type: Sequelize.DATE

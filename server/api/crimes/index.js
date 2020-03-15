@@ -9,7 +9,7 @@ const { auth } = require("./../../utils/auth.js");
 const isAttach = require("./../../utils/isAttach.js");
 router.post("/add", auth.required, isAttach, async (req, res) => {
   try {
-    const { type, date, address, service, object, kui, patrol } = req.body;
+    const { type, date, address, service, object, kui } = req.body;
     const user = req.currentUser;
     if (!user.isAdmin) {
       const crime = await Crime.create({
@@ -20,8 +20,7 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
         object,
         rota: user.rota,
         kui,
-        service,
-        patrol
+        service
       });
       const addressId = await Address.findOne({
         where: {

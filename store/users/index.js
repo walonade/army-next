@@ -53,7 +53,7 @@ export default class {
   @action async getAllUsers() {
     try {
       const response = await fetch("/api/admin/user/get", {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
           "Content-type": "application/json",

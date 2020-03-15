@@ -10,13 +10,14 @@ import {
   List,
   Paper
 } from "@material-ui/core/";
+import AppBar from "./../../../components/AppBar";
 import { makeStyles } from "@material-ui/core/styles";
 import { withAuthSync } from "./../../../utils/auth.js";
 import SmartInput from "./../../../components/SmartInput";
 import withStore from "./../../../utils/withStore.js";
 import ListItem from "./../../../components/admin/UsersListItem";
 import ListItemAddress from "./../../../components/admin/AddressListItem";
-import FormAddress from "./../../../components/admin/FormAddress"
+import FormAddress from "./../../../components/admin/FormAddress";
 const useStyle = makeStyles(theme => ({
   root: {
     marginTop: 100,
@@ -78,59 +79,78 @@ const AdminPanel = props => {
     props.store.UserStore.createUser(data);
   });
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <form className={classes.form} onSubmit={addUser}>
-          <Typography align="center" variant="h5">Добавить пользователя</Typography>
-          <TextField value={login} label="login" onChange={handleChangeLogin} />
-          <TextField
-            value={password}
-            label="password"
-            onChange={handleChangePassword}
-          />
-          <SmartInput value={rota} onChange={handleChangeRota} />
-          <div className={classes.switch}>
-            <Typography variant="body1">сделать админом</Typography>
-            <Switch
-              checked={isAdmin}
-              onChange={handleSetByAdmin}
-              color="primary"
+    <Fragment>
+      <AppBar />
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <form className={classes.form} onSubmit={addUser}>
+            <Typography align="center" variant="h5">
+              Добавить пользователя
+            </Typography>
+            <TextField
+              value={login}
+              label="логин"
+              onChange={handleChangeLogin}
             />
-          </div>
-          <Button color="primary" type="submit">
-            Добавить
-          </Button>
-        </form>
-        <List className={classes.list}>
-          <Typography align="center" variant="h5">Пользователи</Typography>
-          {props.store.UserStore.users.map((item, index) => {
-            return (
-              <ListItem
-                key={item.id}
-                item={item}
-                remove={props.store.UserStore.deleteInListUser[index]}
+            <TextField
+              value={password}
+              label="пароль"
+              onChange={handleChangePassword}
+            />
+            <SmartInput
+              label="номер роты"
+              value={rota}
+              onChange={handleChangeRota}
+            />
+            <div className={classes.switch}>
+              <Typography variant="body1">сделать админом</Typography>
+              <Switch
+                checked={isAdmin}
+                onChange={handleSetByAdmin}
+                color="primary"
               />
-            );
-          })}
-        </List>
-      </Paper>
-      <Paper className={classes.paper}>
-        <FormAddress/>
-        <Typography align="center" variant="overline">Выберите адрес на карте</Typography>
-        <List className={classes.list}>
-          <Typography align="center" variant="h5">Адреса</Typography>
-          {props.store.AddressStore.addressesForAdmin.map((item, index) => {
-            return (
-              <ListItemAddress
-                key={item.id}
-                item={item}
-                remove={props.store.AddressStore.deleteInListAddress[index]}
-              />
-            );
-          })}
-        </List>
-      </Paper>
-    </div>
+            </div>
+            <Button color="primary" type="submit">
+              Добавить
+            </Button>
+          </form>
+          <List className={classes.list}>
+            <Typography align="center" variant="h5">
+              Пользователи
+            </Typography>
+            {props.store.UserStore.users.map((item, index) => {
+              return (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  remove={props.store.UserStore.deleteInListUser[index]}
+                />
+              );
+            })}
+          </List>
+        </Paper>
+        <Paper className={classes.paper}>
+          <FormAddress />
+          <Typography align="center" variant="overline">
+            Выберите адрес на карте
+          </Typography>
+          <List className={classes.list}>
+            <Typography align="center" variant="h5">
+              Адреса
+            </Typography>
+            {props.store.AddressStore.addressesForAdmin.map((item, index) => {
+              return (
+                <ListItemAddress
+                  key={item.id}
+                  item={item}
+                  remove={props.store.AddressStore.deleteInListAddress[index]}
+                />
+              );
+            })}
+          </List>
+        </Paper>
+      </div>
+    </Fragment>
   );
 };
 AdminPanel.Layout = MainLayout;

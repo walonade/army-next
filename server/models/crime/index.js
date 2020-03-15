@@ -36,10 +36,6 @@ const Crime = sequelize.define("crimes", {
     allowNull: false,
     type: Sequelize.STRING
   },
-  patrol: {
-    allowNull: false,
-    type: Sequelize.STRING
-  },
   createdAt: {
     type: Sequelize.DATE
   },

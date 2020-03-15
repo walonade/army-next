@@ -36,7 +36,7 @@ router.post("/create", auth.required, isAttach, async (req, res) => {
     res.status(500).json({ message: "возникли проблемы с сервером" });
   }
 });
-router.get("/get", auth.required, isAttach, async (req, res) => {
+router.post("/get", auth.required, isAttach, async (req, res) => {
   try {
     const admin = req.currentUser.isAdmin;
     if (admin) {

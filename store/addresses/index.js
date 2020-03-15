@@ -67,7 +67,7 @@ export default class {
   @action async getAllAddresses() {
     try {
       const response = await fetch("/api/admin/address/get", {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
           "Content-type": "application/json",

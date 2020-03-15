@@ -6,7 +6,10 @@ import withStore from "./../../utils/withStore.js";
 import L from "leaflet";
 import MarkerIcon from "./MarkerIcon";
 import Marker from "./Marker";
-const fixStyleMap = { height: "calc(100vh - 50px)", width: "calc(100vw - 300px)" };
+const fixStyleMap = {
+  height: "calc(100vh - 50px)",
+  width: "calc(100vw - 300px)"
+};
 const southWest = L.latLng(-222, 230);
 const northEast = L.latLng(0, 0);
 const bounds = L.latLngBounds(southWest, northEast);
@@ -18,7 +21,7 @@ const addProperty = item =>
   });
 const useStyles = makeStyles({
   root: {
-    overflowX: "hidden",
+    overflowX: "hidden"
   }
 });
 const MapComponent = props => {
@@ -64,7 +67,7 @@ const MapComponent = props => {
             rota={item.rota}
             type={item.type}
             object={item.object}
-            patrol={item.patrol}
+            patrol={item.AddressId.patrol}
             remove={props.store.CrimeStore.deleteInListCrimes[index]}
             showButton={props.store.isAdmin}
           />

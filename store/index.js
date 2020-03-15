@@ -6,16 +6,16 @@ const isServer = typeof window === "undefined";
 import UserStore from "./users";
 import AddressStore from "./addresses";
 import CrimeStore from "./crimes";
-import NotificationStore from "./notification"
-import CrimesTableStore from "./crimesTable"
+import NotificationStore from "./notification";
+import CrimesTableStore from "./crimesTable";
 useStaticRendering(isServer);
 export class Store {
   constructor() {
     this.UserStore = new UserStore(this);
     this.AddressStore = new AddressStore(this);
     this.CrimeStore = new CrimeStore(this);
-    this.NotificationStore = new NotificationStore(this)
-    this.CrimesTableStore = new CrimesTableStore(this)
+    this.NotificationStore = new NotificationStore(this);
+    this.CrimesTableStore = new CrimesTableStore(this);
     this.token = cookie.get("token");
     this.isAdmin = cookie.get("isAdmin");
   }

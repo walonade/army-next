@@ -39,7 +39,7 @@ export default withStore(props => {
     list.forEach(item => {
       if (item.type === crime) {
         if (moment(item.date).get("year") === year) {
-          if (item.patrol === patrol) count = count + 1;
+          if (item.AddressId.patrol === patrol) count = count + 1;
         }
       }
     });
@@ -55,7 +55,7 @@ export default withStore(props => {
   const crimeForYearAndPatrol = (patrol, year) => {
     let count = 0;
     list.forEach(item => {
-      if (item.patrol === patrol) {
+      if (item.AddressId.patrol === patrol) {
         if (moment(item.date).get("year") === year) count = count + 1;
       }
     });
@@ -73,7 +73,7 @@ export default withStore(props => {
     let countCurrent = 0;
     let percent = 0;
     list.forEach(item => {
-      if (item.patrol === patrol) {
+      if (item.AddressId.patrol === patrol) {
         moment(item.date).get("year") === year.currentYear
           ? (countCurrent = countCurrent + 1)
           : (countLast = countLast + 1);
@@ -112,7 +112,7 @@ export default withStore(props => {
     ];
     list.forEach(item => {
       const count = 0;
-      switch (item.patrol) {
+      switch (item.AddressId.patrol) {
         case patrols[0]:
           arr[0].count = arr[0].count + 1;
           break;
@@ -139,8 +139,9 @@ export default withStore(props => {
         совершённых преступлений по оперативной сводке на территории г. Павлодар
         с <u>{year.fromDate}</u> года по <u>{year.toDate}</u> года
         <br />
-        зарегистрировано на улицах <u>{crimesForYear(year.currentYear)}</u>, в {year.lastYear} году
-        зарегистрировано на улицах <u>{crimesForYear(year.lastYear)}</u> преступлений.
+        зарегистрировано на улицах <u>{crimesForYear(year.currentYear)}</u>, в{" "}
+        {year.lastYear} году зарегистрировано на улицах{" "}
+        <u>{crimesForYear(year.lastYear)}</u> преступлений.
         <br />
         <br />
         Состояние уличной преступности
@@ -276,7 +277,9 @@ export default withStore(props => {
           <TableFooter>
             <TableRow>
               <TableCell variant="head" align="center" colSpan={4}>
-                <Typography variant="overline">По территориальности креминогенными районами являются:</Typography>
+                <Typography variant="overline">
+                  По территориальности креминогенными районами являются:
+                </Typography>
               </TableCell>
             </TableRow>
             <TableRow>

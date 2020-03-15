@@ -11,11 +11,11 @@ export default class {
     return Object.values(this.notifications);
   }
   @computed get optimazeRemove() {
-    return this.list.map(node => () => this.remove(node.id))
+    return this.list.map(node => () => this.remove(node.id));
   }
   @action remove(id) {
     if (id in this.notifications) {
-      this.notifications[id].show = false
+      this.notifications[id].show = false;
       delete this.notifications[id];
     }
   }

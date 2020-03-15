@@ -16,7 +16,8 @@ const Element = props => {
         <PinDropIcon />
       </ListItemIcon>
       <ListItemText primary={props.item.value} />
-      <ListItemText primary={`lat: ${props.item.lat} | lng: ${props.item.lng}`} />
+      <ListItemText primary={`${props.item.patrol} отдел`} />
+      <ListItemText primary={`lat: ${props.item.lat}  lng: ${props.item.lng}`} />
       <ListItemSecondaryAction>
         <IconButton onClick={props.remove}>
           <DeleteIcon />

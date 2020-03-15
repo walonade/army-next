@@ -7,21 +7,21 @@ export default class {
   @computed get tableOneNorth() {
     let arr = [];
     this.rootStore.CrimeStore.updatedCrimes.forEach(item => {
-      if (item.patrol === "Северный") arr = [...arr, item];
+      if (item.AddressId.patrol === "Северный") arr = [...arr, item];
     });
     return arr;
   }
   @computed get tableOneCenter() {
     let arr = [];
     this.rootStore.CrimeStore.updatedCrimes.forEach(item => {
-      if (item.patrol === "Центральный") arr = [...arr, item];
+      if (item.AddressId.patrol === "Центральный") arr = [...arr, item];
     });
     return arr;
   }
   @computed get tableOneSouth() {
     let arr = [];
     this.rootStore.CrimeStore.updatedCrimes.forEach(item => {
-      if (item.patrol === "Южный") arr = [...arr, item];
+      if (item.AddressId.patrol === "Южный") arr = [...arr, item];
     });
     return arr;
   }

@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
 import withStore from "./../../utils/withStore.js";
 import { useRouter } from "next/router";
-import { kindOfCrimeData, patrols, serviceList } from "./../../data";
+import { kindOfCrimeData, serviceList } from "./../../data";
 import moment from "moment";
 import {
   Typography,
@@ -39,10 +39,8 @@ const Panel = props => {
   const [suggestions, setSuggestions] = useState([]);
   const [openKindOfCrime, setOpenKindOfCrime] = useState(false);
   const [openService, setOpenService] = useState(false);
-  const [openPatrol, setOpenPatrol] = useState(false);
   const [valueKUI, setValueKUI] = useState(0);
   const [crimeData, setCrimeData] = useState(moment());
-  const [patrol, setPatrol] = useState("");
   const [addressOfCrime, setAddressOfCrime] = useState("");
   const [objectOfCrime, setObjectOfCrime] = useState("");
   const [service, setService] = useState("");
@@ -53,8 +51,6 @@ const Panel = props => {
   const handleOpenKindOfCrime = useCallback(() => setOpenKindOfCrime(true));
   const handleOpenService = useCallback(() => setOpenService(true));
   const handleCloseService = useCallback(() => setOpenService(false));
-  const handleOpenPatrol = useCallback(() => setOpenPatrol(true));
-  const handleClosePatrol = useCallback(() => setOpenPatrol(false));
   const handleChangeDateFrom = useCallback(date => {
     if (date > props.store.dateTo) return;
     props.store.setFromDate(moment(date));
@@ -78,9 +74,6 @@ const Panel = props => {
   const handleChangeService = useCallback(event =>
     setService(event.target.value)
   );
-  const handleChangePatrol = useCallback(event =>
-    setPatrol(event.target.value)
-  );
   const updateList = useCallback(() => props.store.CrimeStore.getCrimes());
   const addToList = useCallback(() => {
     const data = {
@@ -89,8 +82,7 @@ const Panel = props => {
       address: addressOfCrime,
       object: objectOfCrime,
       kui: valueKUI,
-      service,
-      patrol
+      service
     };
     if (
       kindOfCrime &&
@@ -98,8 +90,7 @@ const Panel = props => {
       addressOfCrime &&
       objectOfCrime &&
       valueKUI &&
-      service &&
-      patrol !== ""
+      service !== ""
     ) {
       props.store.CrimeStore.addToCrimes(data);
     } else {
@@ -195,22 +186,6 @@ const Panel = props => {
           className={classes.formControl}
         />
         <FormControl className={classes.formControl}>
-          <InputLabel>Отдел полиции</InputLabel>
-          <Select
-            open={openPatrol}
-            onClose={handleClosePatrol}
-            onOpen={handleOpenPatrol}
-            value={patrol}
-            onChange={handleChangePatrol}
-          >
-            {patrols.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl className={classes.formControl}>
           <InputLabel>Cлужба раскрывшая</InputLabel>
           <Select
             open={openService}
@@ -219,13 +194,11 @@ const Panel = props => {
             value={service}
             onChange={handleChangeService}
           >
-            {serviceList.map(
-              (item, index) => (
-                <MenuItem key={index} value={item}>
-                  {item}
-                </MenuItem>
-              )
-            )}
+            {serviceList.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <TextField
