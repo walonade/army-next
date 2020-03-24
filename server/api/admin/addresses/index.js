@@ -4,7 +4,7 @@ const router = Router();
 const Address = require("./../../../models/address");
 const { auth } = require("./../../../utils/auth.js");
 const isAttach = require("./../../../utils/isAttach.js");
-router.post("/get", auth.required, isAttach, async (req, res) => {
+router.get("/get", auth.required, isAttach, async (req, res) => {
   try {
     const admin = req.currentUser.isAdmin;
     if (admin) {
@@ -26,7 +26,7 @@ router.delete("/:id", auth.required, isAttach, async (req, res) => {
         where: { id: req.params.id }
       });
       address.destroy();
-      res.status(204).json({});
+      res.status(204).json({ message: "удалено" });
     } else {
       res.status(401).json({ message: "вы не администратор" });
     }
@@ -40,15 +40,22 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
     const admin = req.currentUser.isAdmin;
     if (admin) {
       const { value, lat, lng, patrol } = req.body;
-      const address = await Address.create({
-        id: v4(),
-        value,
-        lat,
-        lng,
-        patrol
-      });
-      address.save();
-      res.status(200).json(address);
+      const candidate = await Address.findOne({where: {
+        value
+      }})
+      if(candidate === null) {
+        const address = await Address.create({
+          id: v4(),
+          value,
+          lat,
+          lng,
+          patrol
+        });
+        address.save();
+        res.status(201).json(address);
+      } else {
+        res.status(302).json({message: "уже существует"})
+      }
     } else {
       res.status(401).json({ message: "вы не администратор" });
     }

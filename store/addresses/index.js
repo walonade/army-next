@@ -25,11 +25,10 @@ export default class {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
-          "Content-type": "application/json",
           Accept: "application/json"
         }
       });
-      if (response.status === 200) {
+      if (response.status === 204) {
         this.addressesForAdmin = this.addressesForAdmin.filter(
           item => item.id !== id
         );
@@ -38,8 +37,8 @@ export default class {
         const json = await response.json();
         throw new Error(json.message);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async addAddress(data) {
@@ -54,7 +53,7 @@ export default class {
         body: JSON.stringify(data)
       });
       const json = await response.json();
-      if (response.status === 200) {
+      if (response.status === 201) {
         this.addressesForAdmin = [...this.addressesForAdmin, json];
         this.rootStore.NotificationStore.add("адрес добавлен", "success");
       } else {
@@ -67,10 +66,9 @@ export default class {
   @action async getAllAddresses() {
     try {
       const response = await fetch("/api/admin/address/get", {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
-          "Content-type": "application/json",
           Accept: "application/json"
         }
       });

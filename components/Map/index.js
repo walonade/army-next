@@ -32,14 +32,12 @@ const MapComponent = props => {
   });
   const [zoom, setZoom] = useState(2);
   const mapData = props.store.CrimeStore.crimes.map(item => addProperty(item));
-  const showPosition = useCallback(event => console.log(event.latlng));
   useEffect(() => {
     props.store.CrimeStore.getCrimes();
   }, []);
   return (
     <div className={classes.root}>
       <Map
-        onClick={showPosition}
         maxBounds={bounds}
         crs={L.CRS.Simple}
         minZoom={2.5}
@@ -53,25 +51,25 @@ const MapComponent = props => {
           url="/images/map/{z}-{x}-{y}.jpg"
         />
         {mapData.map((item, index) => (
-          <Marker
-            key={index}
-            position={{
-              lat: item.AddressId.lat,
-              lng: item.AddressId.lng
-            }}
-            icon={item.marker}
-            id={index}
-            address={item.address}
-            date={item.date}
-            kui={item.kui}
-            rota={item.rota}
-            type={item.type}
-            object={item.object}
-            patrol={item.AddressId.patrol}
-            remove={props.store.CrimeStore.deleteInListCrimes[index]}
-            showButton={props.store.isAdmin}
-          />
-        ))}
+            <Marker
+              key={index}
+              position={{
+                lat: item.AddressId.lat,
+                lng: item.AddressId.lng
+              }}
+              icon={item.marker}
+              id={index}
+              address={item.address}
+              date={item.date}
+              kui={item.kui}
+              rota={item.rota}
+              type={item.type}
+              object={item.object}
+              patrol={item.AddressId.patrol}
+              remove={props.store.CrimeStore.deleteInListCrimes[index]}
+              showButton={props.store.isAdmin}
+            />
+          ))}
       </Map>
     </div>
   );

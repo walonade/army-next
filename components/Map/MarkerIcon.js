@@ -1,7 +1,10 @@
 import moment from "moment";
 import L from "leaflet";
 const cutWord = string => {
-  return `${string[0]}${string[1]}`.toUpperCase();
+  const wordsArr = string.split(" ");
+  let finWord = "";
+  wordsArr.forEach(word => finWord = finWord + word[0])
+  return finWord.toUpperCase()
 };
 const changeNumber = number => {
   return number < 10 ? `0${number}` : number;

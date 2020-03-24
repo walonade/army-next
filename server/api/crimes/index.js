@@ -37,11 +37,10 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
     console.log(e);
   }
 });
-router.post("/get", auth.required, isAttach, async (req, res) => {
+router.get("/get", auth.required, isAttach, async (req, res) => {
   try {
     const user = req.currentUser;
-    if (!user.isAdmin) {
-      const { from, to } = req.body;
+      const { from, to } = req.query;
       const format = "YYYY-MM-DD HH:mm:ss";
       const fromBase = moment(from)
         .set("hour", 0)
@@ -62,6 +61,7 @@ router.post("/get", auth.required, isAttach, async (req, res) => {
           .format(format);
         toBaseDiff = toBase.set("year", toBase.get("year") - 1).format(format);
       }
+      const isRota = !user.isAdmin ? {rota: user.rota} : {}
       const search =
         daysDiffrent > 7
           ? {
@@ -73,7 +73,7 @@ router.post("/get", auth.required, isAttach, async (req, res) => {
           : { [Op.between]: [dateFrom, dateTo] };
       const crimes = await Crime.findAll({
         where: {
-          rota: user.rota,
+          ...isRota,
           date: {
             ...search
           }
@@ -81,9 +81,6 @@ router.post("/get", auth.required, isAttach, async (req, res) => {
         include: [{ model: Address, as: "AddressId" }]
       });
       res.status(200).json(crimes);
-    } else {
-      res.status(401).json({ message: "вы не авторизованы" });
-    }
   } catch (e) {
     res.status(500).json({ message: "возникли проблемы с сервером" });
     console.log(e);

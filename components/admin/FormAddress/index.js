@@ -1,4 +1,11 @@
-import React, { Fragment, useState, useCallback } from "react";
+import React, {
+  Fragment,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo
+} from "react";
 import {
   Grid,
   Typography,
@@ -18,7 +25,7 @@ export default withStore(props => {
   const handleChangeAddress = useCallback(event =>
     setAddress(event.target.value)
   );
-  const [position, setPosition] = useState(null);
+  const [position, setPosition] = useState({lat: null, lng: null});
   const [patrol, setPatrol] = useState("");
   const [openPatrol, setOpenPatrol] = useState(false);
   const handleChangePosition = useCallback(event => setPosition(event.latlng));
@@ -28,10 +35,14 @@ export default withStore(props => {
     setPatrol(event.target.value)
   );
   const addAddress = useCallback(() => {
-    if (position !== null || address !== "" || patrol !== "") {
+    if (
+      position !== null &&
+      address !== "" &&
+      patrol !== ""
+    ) {
       const data = {
         patrol,
-        value: address,
+        value: address.trim(),
         lat: position.lat,
         lng: position.lng
       };

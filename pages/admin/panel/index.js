@@ -7,9 +7,10 @@ import {
   TextField,
   Button,
   Switch,
-  List,
-  Paper
+  Paper,
+  List
 } from "@material-ui/core/";
+import { FixedSizeList } from "react-window";
 import AppBar from "./../../../components/AppBar";
 import { makeStyles } from "@material-ui/core/styles";
 import { withAuthSync } from "./../../../utils/auth.js";
@@ -51,6 +52,7 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 const AdminPanel = props => {
+  const listAddress = props.store.AddressStore.addressesForAdmin;
   useEffect(() => {
     props.store.UserStore.getAllUsers();
     props.store.AddressStore.getAllAddresses();
@@ -78,6 +80,14 @@ const AdminPanel = props => {
     if (data.rota === 0) data = { ...data, rota: null };
     props.store.UserStore.createUser(data);
   });
+  const addressRow = ({ index, style }) => (
+    <div style={style} key={listAddress[index].id}>
+      <ListItemAddress
+        item={listAddress[index]}
+        remove={props.store.AddressStore.deleteInListAddress[index]}
+      />
+    </div>
+  );
   return (
     <Fragment>
       <AppBar />
@@ -134,20 +144,17 @@ const AdminPanel = props => {
           <Typography align="center" variant="overline">
             Выберите адрес на карте
           </Typography>
-          <List className={classes.list}>
-            <Typography align="center" variant="h5">
-              Адреса
-            </Typography>
-            {props.store.AddressStore.addressesForAdmin.map((item, index) => {
-              return (
-                <ListItemAddress
-                  key={item.id}
-                  item={item}
-                  remove={props.store.AddressStore.deleteInListAddress[index]}
-                />
-              );
-            })}
-          </List>
+          <Typography align="center" variant="h5">
+            Адреса
+          </Typography>
+          <FixedSizeList
+            height={600}
+            width={500}
+            itemSize={50}
+            itemCount={listAddress.length}
+          >
+            {addressRow}
+          </FixedSizeList>
         </Paper>
       </div>
     </Fragment>

@@ -1,7 +1,7 @@
 const User = require("./../models/user");
 module.exports = async (req, res, next) => {
-  const { tokenData } = req;
   try {
+    const { tokenData } = req;
     const userRecord = await User.findOne({
       where: {
         login: tokenData.login
@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
     });
     req.currentUser = userRecord;
     if (userRecord === null) {
-      return res.status(401).json({ message: "вы не авторизованы" })
+      return res.status(401).json({ message: "вы не авторизованы" });
     } else {
       return next();
     }

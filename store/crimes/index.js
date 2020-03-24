@@ -9,19 +9,14 @@ export default class {
   @observable crimes = [];
   @action async getCrimes() {
     try {
-      const data = {
-        from: this.rootStore.fromDate,
-        to: this.rootStore.toDate
-      };
-      const url = this.rootStore.isAdmin ? "admin/" : "";
-      const response = await fetch(`/api/${url}crime/get`, {
-        method: "POST",
-        credentials: "include",
+      const from = this.rootStore.fromDate.toISOString();
+      const to = this.rootStore.toDate.toISOString();
+      const response = await fetch(`/api/crime/get?from=${from}&to=${to}`, {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
           Accept: "application/json"
-        },
-        body: JSON.stringify(data)
+        }
       });
       const json = await response.json();
       if (response.status === 200) {
@@ -63,7 +58,6 @@ export default class {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${this.rootStore.token}`,
-          "Content-type": "application/json",
           Accept: "application/json"
         }
       });
