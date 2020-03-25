@@ -13,10 +13,10 @@ export default class {
       if (response.status === 200) {
         this.addresses = json;
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async removeAddress(id) {
@@ -34,8 +34,7 @@ export default class {
         );
         this.rootStore.NotificationStore.add("удалено", "success");
       } else {
-        const json = await response.json();
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
     } catch (e) {
       console.log(e);
@@ -57,10 +56,10 @@ export default class {
         this.addressesForAdmin = [...this.addressesForAdmin, json];
         this.rootStore.NotificationStore.add("адрес добавлен", "success");
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async getAllAddresses() {
@@ -76,10 +75,10 @@ export default class {
       if (response.status === 200) {
         this.addressesForAdmin = [...json];
       } else {
-        this.rootStore.NotificationStore.add(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @computed get deleteInListAddress() {

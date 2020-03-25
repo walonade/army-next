@@ -76,9 +76,13 @@ const AdminPanel = props => {
   });
   const addUser = useCallback(event => {
     event.preventDefault();
-    let data = { login, password, rota, isAdmin };
-    if (data.rota === 0) data = { ...data, rota: null };
-    props.store.UserStore.createUser(data);
+    if(login !== "" && password !== "" && (rota !== 0 || isAdmin != false)) {
+      let data = { login, password, rota, isAdmin };
+      if (data.rota === 0) data = { ...data, rota: null };
+      props.store.UserStore.createUser(data);
+    } else {
+      props.store.NotificationStore.add("все поля должны быть заполнены", "warning");
+    }
   });
   const addressRow = ({ index, style }) => (
     <div style={style} key={listAddress[index].id}>

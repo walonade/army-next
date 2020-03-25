@@ -1,24 +1,7 @@
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
 import cookie from "js-cookie";
-import Router, { useRouter } from "next/router";
-export const logout = () => {
-  const isAdmin = cookie.get("isAdmin");
-  let url = "/public";
-  if (isAdmin) {
-    url = "/admin"
-    cookie.remove("isAdmin")
-  }
-  cookie.remove("token");
-  window.localStorage.setItem("logout", Date.now());
-  Router.push(`${url}/login`);
-};
-export const setToken = token => {
-  cookie.set("token", token, { expires: 1 });
-};
-export const setAdmin = boolean => {
-  cookie.set("isAdmin", boolean, { expires: 1 });
-};
+import Router from "next/router";
 export const auth = (ctx, forAdmin) => {
   const { token, isAdmin } = nextCookie(ctx);
   const url = forAdmin ? "admin" : "public";
@@ -55,7 +38,7 @@ export const auth = (ctx, forAdmin) => {
 export const withAuthSync = (WrappedComponent, forAdmin = false) => {
   const Wrapper = props => {
     const syncLogout = event => {
-      const url = forAdmin ? "/admin" : "/public"
+      const url = forAdmin ? "/admin" : "/public";
       if (event.key === "logout") {
         Router.push(`${url}/login`);
       }

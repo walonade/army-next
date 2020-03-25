@@ -1,7 +1,7 @@
 import { action, observable, computed } from "mobx";
 import fetch from "isomorphic-unfetch";
 import Router from "next/router";
-import { setToken, setAdmin } from "./../../utils/auth.js";
+import cookie from "js-cookie";
 export default class {
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -23,10 +23,10 @@ export default class {
         this.users = [...this.users, json];
         this.rootStore.NotificationStore.add("добавлено", "success");
       } else {
-        this.rootStore.NotificationStore.add(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async removeUser(id) {
@@ -34,20 +34,17 @@ export default class {
       const response = await fetch(`/api/admin/user/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${this.rootStore.token}`,
-          "Content-type": "application/json",
-          Accept: "application/json"
+          Authorization: `Bearer ${this.rootStore.token}`
         }
       });
-      if (response.status === 200) {
+      if (response.status === 204) {
         this.users = this.users.filter(item => item.id !== id);
         this.rootStore.NotificationStore.add("удалено", "success");
       } else {
-        const json = await response.json();
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async getAllUsers() {
@@ -63,13 +60,13 @@ export default class {
       if (response.status === 200) {
         this.users = [...json];
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
-  @action async login(url, data, isAdmin = false) {
+  @action async login(url, data) {
     try {
       const response = await fetch(`/api/${url}/login`, {
         method: "POST",
@@ -82,15 +79,17 @@ export default class {
       const json = await response.json();
       if (response.status === 200) {
         const { token } = json;
-        setToken(token);
-        isAdmin ? setAdmin(true) : null;
-        isAdmin ? Router.push("/admin") : Router.push("/public");
+        this.rootStore.setToken(token);
+        url === "admin"
+          ? this.rootStore.setAdmin(true)
+          : this.rootStore.setAdmin(false);
+        url === "admin" ? Router.push("/admin") : Router.push("/public");
         this.rootStore.NotificationStore.add("добро пожаловать", "info");
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @computed get deleteInListUser() {

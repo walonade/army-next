@@ -1,8 +1,8 @@
 const express = require("express");
+require('dotenv').config();
 const { Router } = require("express");
 const next = require("next");
 const sequelize = require("./utils/database.js");
-const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();

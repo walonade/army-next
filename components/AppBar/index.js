@@ -3,7 +3,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import { logout } from "./../../utils/auth.js";
+import withStore from "./../../utils/withStore.js"
 const useStyles = makeStyles({
   toolbar: {
     height: 50,
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     color: "white"
   }
 });
-export default () => {
+export default withStore(props => {
   const classes = useStyles();
   const router = useRouter();
   const back = () => router.back();
@@ -24,10 +24,10 @@ export default () => {
         <IconButton className={classes.button} onClick={back}>
           <ArrowBackIosIcon />
         </IconButton>
-        <IconButton className={classes.button} onClick={logout}>
+        <IconButton className={classes.button} onClick={props.store.logout}>
           <ExitToAppIcon />
         </IconButton>
       </Toolbar>
     </AppBar>
   );
-};
+})

@@ -57,7 +57,7 @@ router.delete("/:id", auth.required, isAttach, async (req, res) => {
     if (admin) {
       const user = await User.findByPk(req.params.id);
       user.destroy();
-      res.status(204);
+      res.status(204).json({message: "удалено"});
     } else {
       res.status(401).json({ message: "вы не администратор" });
     }

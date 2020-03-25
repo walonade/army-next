@@ -61,7 +61,7 @@ const Panel = props => {
   });
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
   const handleChangeCrimeTime = useCallback(time => setCrimeTime(moment(time)));
-  const handleChangeValueKUI = useCallback(event => setValueKUI(event));
+  const handleChangeValueKUI = useCallback(event => setValueKUI(+event));
   const handleChangeAddressOfCrime = useCallback((event, newValue) =>
     setAddressOfCrime(newValue.value)
   );

@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Form from "./../../../components/AuthorizationForm";
-import withStore from "./../../../utils/withStore.js"
+import withStore from "./../../../utils/withStore.js";
+import Router from "next/router";
 export default withStore(props => {
   const [data, setData] = useState({
     login: "",
@@ -21,7 +22,7 @@ export default withStore(props => {
       );
       return;
     }
-    props.store.UserStore.login("admin", data, true)
+    props.store.UserStore.login("admin", data);
   });
   return (
     <Form
@@ -32,4 +33,4 @@ export default withStore(props => {
       onSubmit={onSubmit}
     />
   );
-})
+});

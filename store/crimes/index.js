@@ -22,10 +22,10 @@ export default class {
       if (response.status === 200) {
         this.crimes = json;
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async addToCrimes(data) {
@@ -46,10 +46,10 @@ export default class {
         this.crimes = [...this.crimes, fixResData];
         this.rootStore.NotificationStore.add("добавлено", "success");
       } else {
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @action async removeFromCrimes(id) {
@@ -57,19 +57,17 @@ export default class {
       const response = await fetch(`/api/crime/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${this.rootStore.token}`,
-          Accept: "application/json"
+          Authorization: `Bearer ${this.rootStore.token}`
         }
       });
       if (response.status === 204) {
         this.crimes = this.crimes.filter(item => item.id !== id);
         this.rootStore.NotificationStore.add("удалено", "success");
       } else {
-        const json = await response.json();
-        throw new Error(json.message);
+        this.rootStore.serverMistakes(response.status);
       }
-    } catch ({ message }) {
-      this.rootStore.NotificationStore.add(message);
+    } catch (e) {
+      console.log(e);
     }
   }
   @computed get deleteInListCrimes() {
