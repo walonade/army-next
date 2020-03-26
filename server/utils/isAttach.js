@@ -9,12 +9,12 @@ module.exports = async (req, res, next) => {
     });
     req.currentUser = userRecord;
     if (userRecord === null) {
-      return res.status(401).json({ message: "вы не авторизованы" });
+      return res.status(401).end();
     } else {
       return next();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 };

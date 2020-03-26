@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import Form from "./../../../components/AuthorizationForm";
 import withStore from "./../../../utils/withStore.js";
 import Router from "next/router";
+import Logout from "./../../../components/Logout";
 export default withStore(props => {
   const [data, setData] = useState({
     login: "",
@@ -24,7 +25,8 @@ export default withStore(props => {
     }
     props.store.UserStore.login("admin", data);
   });
-  return (
+  const logout = useCallback(() => props.store.logout())
+  return props.store.token === null || !props.store.isAdmin ? (
     <Form
       loginValue={data.login}
       passwordValue={data.password}
@@ -32,5 +34,7 @@ export default withStore(props => {
       onChangePassword={handleSetPassword}
       onSubmit={onSubmit}
     />
+  ) : (
+    <Logout logout={logout}/>
   );
 });

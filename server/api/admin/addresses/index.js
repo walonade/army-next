@@ -11,10 +11,10 @@ router.get("/get", auth.required, isAttach, async (req, res) => {
       const addresses = await Address.findAll();
       res.status(200).json(addresses);
     } else {
-      res.status(403).json({ message: "вы не администратор" });
+      res.status(403).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });
@@ -26,12 +26,12 @@ router.delete("/:id", auth.required, isAttach, async (req, res) => {
         where: { id: req.params.id }
       });
       address.destroy();
-      res.status(204).json({ message: "удалено" });
+      res.status(204).end();
     } else {
-      res.status(401).json({ message: "вы не администратор" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });
@@ -54,13 +54,13 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
         address.save();
         res.status(201).json(address);
       } else {
-        res.status(302).json({message: "уже существует"})
+        res.status(208).end()
       }
     } else {
-      res.status(401).json({ message: "вы не администратор" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });

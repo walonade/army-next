@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     const addresses = await Address.findAll({attributes: ["value"]})
     res.status(200).json(addresses)
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 })

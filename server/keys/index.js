@@ -1,3 +1,8 @@
-process.env.NODE_ENV === "production"
-  ? (module.exports = require("./production"))
-  : (module.exports = require("./development"));
+module.exports = {
+  PORT: process.env.PORT,
+  SECRET_KEY_TOKEN: process.env.SECRET_KEY_TOKEN,
+  DB_NAME: process.env.DB_NAME,
+  DB_USER: process.env.DB_USER,
+  DB_PASSWORD: process.env.DB_PASSWORD,
+  DB_HOST: process.env.DB_HOST
+}

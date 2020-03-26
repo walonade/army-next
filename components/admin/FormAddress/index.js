@@ -25,7 +25,7 @@ export default withStore(props => {
   const handleChangeAddress = useCallback(event =>
     setAddress(event.target.value)
   );
-  const [position, setPosition] = useState({ lat: null, lng: null });
+  const [position, setPosition] = useState(null);
   const [patrol, setPatrol] = useState("");
   const [openPatrol, setOpenPatrol] = useState(false);
   const handleChangePosition = useCallback(event => setPosition(event.latlng));

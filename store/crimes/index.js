@@ -18,9 +18,8 @@ export default class {
           Accept: "application/json"
         }
       });
-      const json = await response.json();
       if (response.status === 200) {
-        this.crimes = json;
+        this.crimes = await response.json();
       } else {
         this.rootStore.serverMistakes(response.status);
       }
@@ -40,8 +39,8 @@ export default class {
         },
         body: JSON.stringify(data)
       });
-      const json = await response.json();
       if (response.status === 201) {
+        const json = await response.json();
         const fixResData = { ...json.crime, AddressId: json.addressData };
         this.crimes = [...this.crimes, fixResData];
         this.rootStore.NotificationStore.add("добавлено", "success");

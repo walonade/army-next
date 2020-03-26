@@ -3,7 +3,7 @@ const User = require("./../../models/user");
 const bcrypt = require("bcryptjs");
 const router = Router();
 const { generateJWT, auth } = require("./../../utils/auth.js");
-router.post("/login", auth.optional, async (req, res) => {
+router.post("/login", async (req, res) => {
   const { login, password } = req.body;
   try {
     const candidate = await User.findOne({
@@ -18,16 +18,16 @@ router.post("/login", auth.optional, async (req, res) => {
           const token = generateJWT(candidate.id, candidate.login);
           res.status(200).json({ token });
         } else {
-          res.status(404).json({ message: "не верный логин пароль" });
+          res.status(401).end();
         }
       } else {
-        res.status(401).json({ message: "доступ запрещён" });
+        res.status(401).end();
       }
     } else {
-      res.status(404).json({ message: "не верный логин пароль" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e)
   }
 });

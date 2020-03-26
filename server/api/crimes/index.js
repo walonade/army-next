@@ -31,9 +31,11 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
       crime.save();
       const addressData = await crime.getAddressId();
       res.status(201).json({ addressData, crime });
+    } else {
+      res.status(401).end()
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });
@@ -82,7 +84,7 @@ router.get("/get", auth.required, isAttach, async (req, res) => {
       });
       res.status(200).json(crimes);
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });
@@ -93,10 +95,10 @@ router.put("/:id", auth.required, isAttach, async (req, res) => {
       const crime = await Crime.findByPk(req.params.id);
       res.status(201).json(crime);
     } else {
-      res.status(401).json({ message: "вы не авторизованы" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });
@@ -106,13 +108,12 @@ router.delete("/:id", auth.required, isAttach, async (req, res) => {
     if (!user) {
       const crime = await Crime.findByPk(req.params.id);
       crime.destroy();
-      crime.save();
-      res.status(204).json({ message: "удалено" });
+      res.status(204).end();
     } else {
-      res.status(401).json({ message: "вы не авторизованы" });
+      res.status(401).end()
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
     console.log(e);
   }
 });

@@ -9,9 +9,8 @@ export default class {
   @action async getAdresses() {
     try {
       const response = await fetch("/api/address");
-      const json = await response.json();
       if (response.status === 200) {
-        this.addresses = json;
+        this.addresses = await response.json();
       } else {
         this.rootStore.serverMistakes(response.status);
       }
@@ -51,9 +50,11 @@ export default class {
         },
         body: JSON.stringify(data)
       });
-      const json = await response.json();
       if (response.status === 201) {
-        this.addressesForAdmin = [...this.addressesForAdmin, json];
+        this.addressesForAdmin = [
+          ...this.addressesForAdmin,
+          await response.json()
+        ];
         this.rootStore.NotificationStore.add("адрес добавлен", "success");
       } else {
         this.rootStore.serverMistakes(response.status);
@@ -71,9 +72,8 @@ export default class {
           Accept: "application/json"
         }
       });
-      const json = await response.json();
       if (response.status === 200) {
-        this.addressesForAdmin = [...json];
+        this.addressesForAdmin = [...(await response.json())];
       } else {
         this.rootStore.serverMistakes(response.status);
       }

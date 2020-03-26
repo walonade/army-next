@@ -1,5 +1,5 @@
 const express = require("express");
-require('dotenv').config();
+require("dotenv").config();
 const { Router } = require("express");
 const next = require("next");
 const sequelize = require("./utils/database.js");
@@ -9,11 +9,11 @@ const handle = app.getRequestHandler();
 const util = require("util");
 const UserRoute = require("./api/users");
 const AddressRoute = require("./api/addresses");
-const CrimeRoute = require('./api/crimes');
-const AdminRoute = require('./api/admin');
-const AdminRouteUser = require('./api/admin/users');
-const AdminRouteAddress = require('./api/admin/addresses');
-const AdminRouteCrime = require('./api/admin/crimes');
+const CrimeRoute = require("./api/crimes");
+const AdminRoute = require("./api/admin");
+const AdminRouteUser = require("./api/admin/users");
+const AdminRouteAddress = require("./api/admin/addresses");
+const { PORT } = require("./keys");
 app.prepare().then(() => {
   const server = express();
   server.use(express.urlencoded({ extended: true }));
@@ -24,7 +24,6 @@ app.prepare().then(() => {
   server.use("/api/admin", AdminRoute);
   server.use("/api/admin/user", AdminRouteUser);
   server.use("/api/admin/address", AdminRouteAddress);
-  server.use("/api/admin/crime", AdminRouteCrime);
   server.all("*", (req, res) => {
     return handle(req, res);
   });
@@ -36,21 +35,17 @@ app.prepare().then(() => {
       "Origin, Accept, Content-Type, Authorization"
     );
     res.header("Access-Control-Allow-Credentials", "true");
-    if (req.method === "OPTIONS") {
-      res.status(200).end();
-    }
     next();
   });
-  const start = async () => {
+  (async () => {
     try {
       await sequelize.sync();
-      server.listen(port, err => {
+      server.listen(PORT, err => {
         if (err) throw err;
-        console.log(`> Ready on http://localhost:${port}`);
+        console.log(`> Ready on http://localhost:${PORT}`);
       });
     } catch (err) {
-      console.log(error);
+      console.log(err);
     }
-  };
-  start();
+  })();
 });

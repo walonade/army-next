@@ -7,12 +7,6 @@ module.exports.auth = {
     secret: SECRET_KEY_TOKEN,
     userProperty: "tokenData",
     getToken: getTokenFromHeaders
-  }),
-  optional: expjwt({
-    secret: SECRET_KEY_TOKEN,
-    userProperty: "tokenData",
-    getToken: getTokenFromHeaders,
-    credentialsRequired: false
   })
 };
 module.exports.generateJWT = (id, login) => {

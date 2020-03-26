@@ -20,6 +20,9 @@ export class Store {
   }
   serverMistakes = status => {
     switch (status) {
+      case 208:
+        this.NotificationStore.add("уже существует", "info");
+        break;
       case 401:
         this.NotificationStore.add("ошибка авторизации");
         break;
@@ -34,8 +37,8 @@ export class Store {
   @observable light = false;
   @observable fromDate = moment();
   @observable toDate = moment();
-  @observable token = cookie.get("token");
-  @observable isAdmin = cookie.get("isAdmin");
+  @observable token = cookie.get("token") || null;
+  @observable isAdmin = cookie.get("isAdmin") || false;
   @action setToken(token) {
     cookie.set("token", token, { expires: 1 });
     this.token = token;
@@ -46,7 +49,7 @@ export class Store {
       : cookie.remove("isAdmin");
     this.isAdmin = boolean;
   }
-  @action logout() {
+  @action logout = () => {
     const isAdmin = cookie.get("isAdmin");
     let url = "/public";
     if (isAdmin) {
@@ -54,6 +57,8 @@ export class Store {
       cookie.remove("isAdmin");
     }
     cookie.remove("token");
+    this.token = null;
+    this.isAdmin = false
     window.localStorage.setItem("logout", Date.now());
     Router.push(`${url}/login`);
   }

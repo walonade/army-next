@@ -27,13 +27,13 @@ router.post("/create", auth.required, isAttach, async (req, res) => {
         user.save();
         res.status(201).json(user);
       } else {
-        res.status(401).json({ message: "такой пользователь уже существует" });
+        res.status(208).end();
       }
     } else {
-      res.status(401).json({ message: "вы не администратор" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
   }
 });
 router.get("/get", auth.required, isAttach, async (req, res) => {
@@ -45,10 +45,10 @@ router.get("/get", auth.required, isAttach, async (req, res) => {
       });
       res.status(200).json(users);
     } else {
-      res.status(401).json({ message: "вы не администратор" });
+      res.status(401).end();
     }
   } catch (e) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
   }
 });
 router.delete("/:id", auth.required, isAttach, async (req, res) => {
@@ -57,12 +57,12 @@ router.delete("/:id", auth.required, isAttach, async (req, res) => {
     if (admin) {
       const user = await User.findByPk(req.params.id);
       user.destroy();
-      res.status(204).json({message: "удалено"});
+      res.status(204).end();
     } else {
-      res.status(401).json({ message: "вы не администратор" });
+      res.status(401).end();
     }
   } catch (err) {
-    res.status(500).json({ message: "возникли проблемы с сервером" });
+    res.status(500).end();
   }
 });
 module.exports = router;

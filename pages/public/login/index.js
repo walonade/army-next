@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Form from "./../../../components/AuthorizationForm";
+import Logout from "./../../../components/Logout";
 import withStore from "./../../../utils/withStore.js";
 export default withStore(props => {
   const [data, setData] = useState({
@@ -23,7 +24,7 @@ export default withStore(props => {
     }
     props.store.UserStore.login("user", data);
   });
-  return (
+  return props.store.token === null || props.store.isAdmin ? (
     <Form
       loginValue={data.login}
       passwordValue={data.password}
@@ -31,5 +32,7 @@ export default withStore(props => {
       onChangePassword={handleSetPassword}
       onSubmit={onSubmit}
     />
+  ) : (
+    <Logout />
   );
 });
