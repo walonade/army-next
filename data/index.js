@@ -125,7 +125,15 @@ const setTitleDate = date => {
     year: date.get("year")
   };
 };
+const southWestLat = -222
+const southWestLng = 230
+const northEastLat = 0
+const northEastLng = 0
 export {
+  southWestLat,
+  southWestLng,
+  northEastLat,
+  northEastLng,
   kindOfCrimeData,
   timeofCrimes,
   weekDays,

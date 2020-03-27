@@ -1,0 +1,2 @@
+id,login,rota,password,isAdmin,createdAt,updatedAt
+4fdf9852-ae6b-45d1-ad07-a5057228fe18,admin,NULL,$2a$10$e1ZY06r.1CYiR7sdIicIYOmuhyQISrX1jqsL6xDL1qqIgkK61gkua,1,NULL,NULL
