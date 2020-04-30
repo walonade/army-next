@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import nextCookie from "next-cookies";
-import cookie from "js-cookie";
 import Router from "next/router";
 export const auth = (ctx, forAdmin) => {
   const { token, isAdmin } = nextCookie(ctx);

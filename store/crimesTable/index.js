@@ -1,4 +1,4 @@
-import { action, observable, computed } from "mobx";
+import { computed } from "mobx";
 
 export default class {
   constructor(rootStore) {

@@ -8,7 +8,6 @@ import {
 } from "@material-ui/core/";
 import PinDropIcon from "@material-ui/icons/PinDrop";
 import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from '@material-ui/icons/Edit';
 const Element = props => {
   return (
     <ListItem button>

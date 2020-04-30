@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import CabinetLayout from "./../../../layouts/AdminCabinet";
-import { Grid } from "@material-ui/core";
 import DayTableOne from "./../../../components/DayTableOne";
 import DayTableTwo from "./../../../components/DayTableTwo";
 import WeekTable from "./../../../components/WeekTable";

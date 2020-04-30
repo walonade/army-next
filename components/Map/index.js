@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Map, TileLayer } from "react-leaflet";
+import React, { useState} from "react";
+import { Map, TileLayer, withLeaflet } from "react-leaflet";
+import PrintControlDefault from 'react-leaflet-easyprint';
 import { makeStyles } from "@material-ui/core/styles";
 import {
   southWestLat,
@@ -7,7 +8,6 @@ import {
   northEastLat,
   northEastLng
 } from "./../../data";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import withStore from "./../../utils/withStore.js";
 import L from "leaflet";
 import MarkerIcon from "./MarkerIcon";
@@ -30,6 +30,7 @@ const useStyles = makeStyles({
     overflowX: "hidden"
   }
 });
+const PrintControl = withLeaflet(PrintControlDefault)
 const MapComponent = props => {
   const classes = useStyles();
   const [position, setPosition] = useState({
@@ -38,6 +39,13 @@ const MapComponent = props => {
   });
   const [zoom, setZoom] = useState(3);
   const mapData = props.store.CrimeStore.crimes.map(item => addProperty(item));
+  const downloadOptions = {
+    position: 'topleft',
+    sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
+    title: 'Export as PNG',
+    hideControlContainer: false,
+    exportOnly: true
+  };
   return (
     <div className={classes.root}>
       <Map
@@ -53,6 +61,7 @@ const MapComponent = props => {
           attribution="created by Krassavin"
           url="/images/map/{z}-{x}-{y}.jpg"
         />
+        <PrintControl {...downloadOptions} />
         {mapData.map((item, index) => (
           <Marker
             key={index}

@@ -1,7 +1,6 @@
 import { action, observable, computed } from "mobx";
 import fetch from "isomorphic-unfetch";
 import Router from "next/router";
-import cookie from "js-cookie";
 export default class {
   constructor(rootStore) {
     this.rootStore = rootStore;

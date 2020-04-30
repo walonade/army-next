@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import Form from "./../../../components/AuthorizationForm";
 import withStore from "./../../../utils/withStore.js";
-import Router from "next/router";
 import Logout from "./../../../components/Logout";
 export default withStore(props => {
   const [data, setData] = useState({

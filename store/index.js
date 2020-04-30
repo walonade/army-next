@@ -39,6 +39,10 @@ export class Store {
   @observable toDate = moment();
   @observable token = cookie.get("token") || null;
   @observable isAdmin = cookie.get("isAdmin") || false;
+  @observable isPrint = false;
+  @action setPrint(boolean) {
+    this.isPrint = boolean
+  }
   @action setToken(token) {
     cookie.set("token", token, { expires: 1 });
     this.token = token;
@@ -58,7 +62,8 @@ export class Store {
     }
     cookie.remove("token");
     this.token = null;
-    this.isAdmin = false
+    this.isAdmin = false;
+    this.CrimeStore.crimes = [];
     window.localStorage.setItem("logout", Date.now());
     Router.push(`${url}/login`);
   }

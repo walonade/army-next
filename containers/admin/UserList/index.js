@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { List, Typography } from "@material-ui/core/";
 import ListItem from "./../../../components/admin/UsersListItem";
 export default props => {

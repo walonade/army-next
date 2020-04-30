@@ -2,7 +2,7 @@ import CabinetLayout from "./../../../layouts/Cabinet";
 import dynamic from "next/dynamic";
 import { withAuthSync } from "./../../../utils/auth.js";
 const Map = dynamic(import("./../../../components/Map"), { ssr: false });
-const MapPage = props => {
+const MapPage = () => {
   return <Map />;
 };
 MapPage.Layout = CabinetLayout;

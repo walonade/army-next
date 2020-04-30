@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import {
   Table,
   TableCell,
@@ -13,13 +13,13 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import withStore from "./../../utils/withStore.js";
 import moment from "moment";
-import { setTitleDate, tableOneHead, patrols } from "./../../data";
+import { tableOneHead, patrols } from "./../../data";
 const useStyles = makeStyles({
   root: {
     marginTop: 20,
     marginBottom: 20
   }
-})
+});
 const Tr = memo(
   props => {
     const { item, index } = props;
@@ -54,7 +54,7 @@ const EmptyTr = () => {
   );
 };
 export default withStore(props => {
-  const classes = useStyles()
+  const classes = useStyles();
   const {
     tableOneNorth,
     tableOneCenter,
@@ -62,9 +62,6 @@ export default withStore(props => {
   } = props.store.CrimesTableStore;
   let checkMemo = props.store.toDate.get("date");
   const { updatedCrimes } = props.store.CrimeStore;
-  const titleDate = useMemo(() => setTitleDate(props.store.toDate), [
-    checkMemo
-  ]);
   const textDate = useMemo(() => props.store.toDate.format("DD.MM.YYYY"), [
     checkMemo
   ]);
@@ -123,17 +120,13 @@ export default withStore(props => {
   );
   return (
     <TableContainer component={Paper} className={classes.root}>
+      <Typography align="center" variant="h6">
+          Ежедневный анализ криминогенной обстановки по преступлениям
+          совершённых на улицах на{" "}
+          {moment(props.store.toDate).locale("ru").format("LL")}
+      </Typography>
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell colSpan={10} align="center">
-              <Typography variant="h6">
-                Ежедневный анализ криминогенной обстановки по преступлениям
-                совершённых на улицах на «<u> {titleDate.day} </u>»{" "}
-                <u>{titleDate.month}</u> {titleDate.year}г.
-              </Typography>
-            </TableCell>
-          </TableRow>
           <TableRow>{headData}</TableRow>
         </TableHead>
         <TableBody>

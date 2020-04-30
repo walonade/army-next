@@ -12,7 +12,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { kindOfCrimeData, patrols } from "./../../data";
+import { kindOfCrimeData, patrols, city } from "./../../data";
 import withStore from "./../../utils/withStore.js";
 const useStyles = makeStyles({
   root: {
@@ -132,22 +132,24 @@ export default withStore(props => {
   );
   return (
     <Fragment>
-      <Typography variant="h5" align="center">
-        Анализ
-      </Typography>
-      <Typography variant="h6" align="center">
-        совершённых преступлений по оперативной сводке на территории г. Павлодар
-        с <u>{year.fromDate}</u> года по <u>{year.toDate}</u> года
-        <br />
-        зарегистрировано на улицах <u>{crimesForYear(year.currentYear)}</u>, в{" "}
-        {year.lastYear} году зарегистрировано на улицах{" "}
-        <u>{crimesForYear(year.lastYear)}</u> преступлений.
-        <br />
-        <br />
-        Состояние уличной преступности
-        <br />
-        (по районам несения службы)
-      </Typography>
+      <div className="own-list">
+        <Typography variant="h5" align="center">
+          Анализ
+        </Typography>
+        <Typography variant="h6" align="center">
+          совершённых преступлений по оперативной сводке на территории г. {city}
+          {" "}<u>{year.fromDate}</u> года по <u>{year.toDate}</u> года
+          <br />
+          зарегистрировано на улицах <u>{crimesForYear(year.currentYear)}</u>, в{" "}
+          {year.lastYear} году зарегистрировано на улицах{" "}
+          <u>{crimesForYear(year.lastYear)}</u> преступлений.
+          <br />
+          <br />
+          Состояние уличной преступности
+          <br />
+          (по районам несения службы)
+        </Typography>
+      </div>
       <TableContainer component={Paper} className={classes.root}>
         <Table>
           <TableHead>

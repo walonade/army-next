@@ -2,7 +2,6 @@ import React, { memo, useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import { IconButton } from "@material-ui/core";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
 export default memo(
   props => {

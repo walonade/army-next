@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from "react";
+import React, { useMemo } from "react";
 import withStore from "./../../utils/withStore.js";
 import {
   Table,
@@ -9,12 +9,13 @@ import {
   TableFooter,
   TableContainer,
   Paper,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import MyTableHead from "./../TableHead";
-import { weekDays, kindOfCrimeData, days } from "./../../data";
+import { kindOfCrimeData, days } from "./../../data";
 export default withStore(props => {
   const list = props.store.CrimeStore.updatedCrimes;
+  const {isPrint} = props.store
   const textDate = useMemo(() => {
     const { fromDate, toDate } = props.store;
     return {
@@ -25,7 +26,6 @@ export default withStore(props => {
   }, [props.store.fromDate.get("date"), props.store.toDate.get("date")]);
   const setCrime = (weekDay, crimeIndex) => {
     let crimeCount = 0;
-    let fullCrimeCount = 0;
     list.forEach(item => {
       if (item.type === kindOfCrimeData[crimeIndex]) {
         if (item.compDayOfWeek === weekDay) crimeCount = crimeCount + 1;
@@ -61,6 +61,7 @@ export default withStore(props => {
         if (item.service === "не раскрыто") {
           falsy = falsy + 1;
           falsyPercent = Math.floor((falsy / list.length) * 100);
+        } else {
           trufyPercent = 100 - falsyPercent;
         }
       }
@@ -103,7 +104,7 @@ export default withStore(props => {
   };
   return (
     <TableContainer component={Paper}>
-      <Table>
+      <Table padding={ isPrint ? "checkbox" : "default" }>
         <TableHead>
           <TableRow>
             <TableCell colSpan={17} align="center">

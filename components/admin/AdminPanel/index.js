@@ -5,6 +5,9 @@ import { Typography, Grid, Divider, Button} from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import withStore from "./../../../utils/withStore";
 import DatePicker from "./../../DatePicker";
+import PrintIcon from '@material-ui/icons/Print';
+import { useRouter } from 'next/router'
+import ReactToPrint from 'react-to-print';
 const useStyle = makeStyles({
   formControl: {
     minWidth: 250
@@ -17,6 +20,7 @@ const useStyle = makeStyles({
 });
 const AdminPanel = props => {
   const classes = useStyle();
+  const routerHook = useRouter();
   const handleChangeDateFrom = useCallback(date => {
     if (date > props.store.toDate) return;
     props.store.setFromDate(moment(date));
@@ -63,6 +67,21 @@ const AdminPanel = props => {
         >
           <DescriptionIcon />
         </Button>
+        {routerHook.pathname === "/admin/report" ? 
+        <ReactToPrint         
+          trigger={() =>         
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              <PrintIcon />
+            </Button>}
+          onBeforeGetContent={() => props.store.setPrint(true)}
+          onBeforePrint={() => props.store.setPrint(false)}
+          content={() => props.printBlog.current}
+          removeAfterPrint={true}
+          /> : null}
       </Grid>
       <Divider />
     </Fragment>

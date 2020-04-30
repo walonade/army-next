@@ -1,7 +1,6 @@
-import React, { Fragment, useMemo } from "react";
+import React, {  useMemo } from "react";
 import {
   Table,
-  TableHead,
   TableCell,
   TableRow,
   TableBody,
@@ -14,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MyTableHead from "./../TableHead";
 import withStore from "./../../utils/withStore.js";
 import moment from "moment";
-import { setTitleDate, kindOfCrimeData, timeofCrimes } from "./../../data";
+import { kindOfCrimeData, timeofCrimes } from "./../../data";
 const useStyles = makeStyles({
   root: {
     marginTop: 20,
@@ -24,9 +23,7 @@ const useStyles = makeStyles({
 export default withStore(props => {
   const classes = useStyles();
   let list = props.store.CrimeStore.updatedCrimes;
-  const titleDate = useMemo(() => setTitleDate(props.store.toDate), [
-    props.store.toDate.get("date")
-  ]);
+  const {isPrint} = props.store;
   const setCrime = (fromTime, toTime, crimeIndex) => {
     let crimeCount = 0;
     const fromTF = moment(fromTime, "HH:mm");
@@ -55,6 +52,7 @@ export default withStore(props => {
         if (item.service === "не раскрыто") {
           crimeFalsy = crimeFalsy + 1;
           crimeFalsyPercent = Math.floor((crimeFalsy / crimeCount) * 100);
+        } else {
           crimeTrufyPercent = 100 - crimeFalsyPercent;
         }
       }
@@ -83,7 +81,8 @@ export default withStore(props => {
       if (item.service === "не раскрыто") {
         falsy = falsy + 1;
         falsyPercent = Math.floor((falsy / list.length) * 100);
-        trufyPercent = 100 - falsyPercent;
+      } else {
+        trufyPercent = 100 - falsyPercent; 
       }
     });
     return { falsyPercent, trufyPercent };
@@ -101,21 +100,15 @@ export default withStore(props => {
   };
   const memoFullPercent = useMemo(() => fullPercent(), [list.length]);
   return (
-    <TableContainer component={Paper} className={classes.root}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell colSpan={17} align="center">
-              <Typography variant="h6">
+    <TableContainer component={Paper} className={`${classes.root} not-before`}>
+      <Typography variant="h6" align="center">
                 Ежедневный анализ по видам преступлений и времени совершённых на
-                улицах на «<u> {titleDate.day} </u>»&nbsp;
-                <u>{titleDate.month}</u>
-                &nbsp;
-                {titleDate.year}г.
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
+                улицах на{" "}
+                {moment(props.store.toDate)
+                  .locale("ru")
+                  .format("LL")}
+      </Typography>
+      <Table padding={isPrint ? "checkbox" : "default"}>
         <MyTableHead />
         <TableBody>
           {timeofCrimes.map((time, index) => (
@@ -197,7 +190,7 @@ export default withStore(props => {
             </TableCell>
             <TableCell align="center">{list.length !== 0 ? 100 : 0}</TableCell>
             <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
-            <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
+            <TableCell align="center">{memoFullPercent.falsyPercent}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell variant="head" align="center">
@@ -218,7 +211,7 @@ export default withStore(props => {
             <TableCell align="center">{list.length !== 0 ? 100 : 0}</TableCell>
             <TableCell align="center">{list.length !== 0 ? 100 : 0}</TableCell>
             <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
-            <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
+            <TableCell align="center">{memoFullPercent.falsyPercent}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={17} align="center">

@@ -1,6 +1,7 @@
-import React, { Fragment, useState, useCallback, useEffect } from "react";
-import withStore from "./../../utils/withStore.js";
-import { useRouter } from "next/router";
+import React, { Fragment, useState, useCallback } from "react";
+import withStore from "./../../utils/withStore";
+import { useRouter } from 'next/router'
+import ReactToPrint from 'react-to-print';
 import { kindOfCrimeData, serviceList } from "./../../data";
 import moment from "moment";
 import {
@@ -20,7 +21,7 @@ import DatePicker from "./../DatePicker";
 import SmartInput from "./../SmartInput";
 import { makeStyles } from "@material-ui/core/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
-import NoteAddOutlinedIcon from "@material-ui/icons/NoteAddOutlined";
+import PrintIcon from '@material-ui/icons/Print';
 const useStyles = makeStyles({
   formControl: {
     minWidth: 250
@@ -32,11 +33,10 @@ const useStyles = makeStyles({
   }
 });
 const Panel = props => {
+  const routerHook = useRouter();
   const classes = useStyles();
-  const router = useRouter();
   const getAutoItem = useCallback(item => item.value);
   const [kindOfCrime, setKindOfCrime] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
   const [openKindOfCrime, setOpenKindOfCrime] = useState(false);
   const [openService, setOpenService] = useState(false);
   const [valueKUI, setValueKUI] = useState(0);
@@ -60,13 +60,9 @@ const Panel = props => {
     props.store.setToDate(moment(date));
   });
   const handleChangeCrimeData = useCallback(date => setCrimeData(moment(date)));
-  const handleChangeCrimeTime = useCallback(time => setCrimeTime(moment(time)));
   const handleChangeValueKUI = useCallback(event => setValueKUI(+event));
   const handleChangeAddressOfCrime = useCallback((event, newValue) =>
     setAddressOfCrime(newValue.value)
-  );
-  const handleSelectAddressOfCrime = useCallback(value =>
-    setAddressOfCrime(value)
   );
   const handleChangeObjectOfCrime = useCallback(event =>
     setObjectOfCrime(event.target.value)
@@ -141,6 +137,21 @@ const Panel = props => {
         >
           <DescriptionIcon />
         </Button>
+        {routerHook.pathname === "/public/report" ? 
+        <ReactToPrint         
+          trigger={() =>         
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              <PrintIcon />
+            </Button>}
+          onBeforeGetContent={() => props.store.setPrint(true)}
+          onBeforePrint={() => props.store.setPrint(false)}
+          content={() => props.printBlog.current}
+          removeAfterPrint={true}
+          /> : null}
       </Grid>
       <Divider />
       <br />

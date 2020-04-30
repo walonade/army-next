@@ -24,6 +24,7 @@ export default withStore(props => {
     }
     props.store.UserStore.login("user", data);
   });
+  const logout = useCallback(() => props.store.logout())
   return props.store.token === null || props.store.isAdmin ? (
     <Form
       loginValue={data.login}
@@ -33,6 +34,6 @@ export default withStore(props => {
       onSubmit={onSubmit}
     />
   ) : (
-    <Logout />
+    <Logout logout={logout}/>
   );
 });

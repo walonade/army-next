@@ -1,4 +1,5 @@
 import moment from "moment";
+const city = "Павлодар";
 const kindOfCrimeData = [
   "Убийство",
   "УПВЗ",
@@ -12,20 +13,6 @@ const kindOfCrimeData = [
   "Наркотик",
   "Мелкое хищение",
   "Хол. оружие"
-];
-const months = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь"
 ];
 const tableOneHead = [
   "№ п/п",
@@ -117,7 +104,6 @@ const dayOfWeek = date => {
   const dayNumber = moment(date).weekday();
   return dayNumber === 0 ? days[6] : days[dayNumber - 1];
 };
-const monthOfYear = date => `${months[moment(date).month()].toLowerCase()}а`;
 const setTitleDate = date => {
   return {
     day: date.get("date"),
@@ -130,6 +116,7 @@ const southWestLng = 230
 const northEastLat = 0
 const northEastLng = 0
 export {
+  city,
   southWestLat,
   southWestLng,
   northEastLat,
@@ -138,7 +125,6 @@ export {
   timeofCrimes,
   weekDays,
   dayOfWeek,
-  monthOfYear,
   setTitleDate,
   days,
   patrols,
