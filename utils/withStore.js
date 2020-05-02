@@ -1,4 +1,4 @@
-import { observer, inject } from "mobx-react";
+import { observer, inject } from "mobx-react"
 export default Component => {
-  return inject("store")(observer(Component));
-};
+ return inject("store")(observer(Component))
+}

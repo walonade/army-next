@@ -1,67 +1,69 @@
-const { Router } = require("express");
-const { v4 } = require("uuid");
-const router = Router();
-const Address = require("./../../../models/address");
-const { auth } = require("./../../../utils/auth.js");
-const isAttach = require("./../../../utils/isAttach.js");
+const { Router } = require("express")
+const { v4 } = require("uuid")
+const router = Router()
+const Address = require("./../../../models/address")
+const { auth } = require("./../../../utils/auth.js")
+const isAttach = require("./../../../utils/isAttach.js")
 router.get("/get", auth.required, isAttach, async (req, res) => {
-  try {
-    const admin = req.currentUser.isAdmin;
-    if (admin) {
-      const addresses = await Address.findAll();
-      res.status(200).json(addresses);
-    } else {
-      res.status(403).end();
-    }
-  } catch (e) {
-    res.status(500).end();
-    console.log(e);
+ try {
+  const admin = req.currentUser.isAdmin
+  if (admin) {
+   const addresses = await Address.findAll()
+   res.status(200).json(addresses)
+  } else {
+   res.status(403).end()
   }
-});
+ } catch (e) {
+  res.status(500).end()
+  console.log(e)
+ }
+})
 router.delete("/:id", auth.required, isAttach, async (req, res) => {
-  try {
-    const admin = req.currentUser.isAdmin;
-    if (admin) {
-      const address = await Address.findOne({
-        where: { id: req.params.id }
-      });
-      address.destroy();
-      res.status(204).end();
-    } else {
-      res.status(401).end();
-    }
-  } catch (e) {
-    res.status(500).end();
-    console.log(e);
+ try {
+  const admin = req.currentUser.isAdmin
+  if (admin) {
+   const address = await Address.findOne({
+    where: { id: req.params.id },
+   })
+   address.destroy()
+   res.status(204).end()
+  } else {
+   res.status(401).end()
   }
-});
+ } catch (e) {
+  res.status(500).end()
+  console.log(e)
+ }
+})
 router.post("/add", auth.required, isAttach, async (req, res) => {
-  try {
-    const admin = req.currentUser.isAdmin;
-    if (admin) {
-      const { value, lat, lng, patrol } = req.body;
-      const candidate = await Address.findOne({where: {
-        value
-      }})
-      if(candidate === null) {
-        const address = await Address.create({
-          id: v4(),
-          value,
-          lat,
-          lng,
-          patrol
-        });
-        address.save();
-        res.status(201).json(address);
-      } else {
-        res.status(208).end()
-      }
-    } else {
-      res.status(401).end();
-    }
-  } catch (e) {
-    res.status(500).end();
-    console.log(e);
+ try {
+  const admin = req.currentUser.isAdmin
+  if (admin) {
+   const { value, lat, lng, patrol } = req.body
+   const candidate = await Address.findOne({
+    where: {
+     value,
+    },
+   })
+   if (candidate === null) {
+    const address = await Address.create({
+     id: v4(),
+     value,
+     lat,
+     lng,
+     patrol,
+    })
+    address.save()
+    res.status(201).json(address)
+   } else {
+    res.status(208).end()
+   }
+  } else {
+   res.status(401).end()
   }
-});
-module.exports = router;
+ } catch (e) {
+  res.status(500).end()
+  console.log(e)
+ }
+})
+module.exports = router

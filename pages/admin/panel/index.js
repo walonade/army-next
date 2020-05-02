@@ -1,166 +1,170 @@
-import React, { Fragment, useState, useCallback, useEffect } from "react";
-import MainLayout from "./../../../layouts/Main";
-import {
-  Typography,
-  TextField,
-  Button,
-  Switch,
-  Paper,
-  List
-} from "@material-ui/core/";
-import { FixedSizeList } from "react-window";
-import AppBar from "./../../../components/AppBar";
-import { makeStyles } from "@material-ui/core/styles";
-import { withAuthSync } from "./../../../utils/auth.js";
-import SmartInput from "./../../../components/SmartInput";
-import withStore from "./../../../utils/withStore.js";
-import ListItem from "./../../../components/admin/UsersListItem";
-import ListItemAddress from "./../../../components/admin/AddressListItem";
-import FormAddress from "./../../../components/admin/FormAddress";
+import React, { Fragment, useCallback, useEffect } from "react"
+import MainLayout from "./../../../layouts/Main"
+import { Typography, TextField, Button, Paper, List } from "@material-ui/core/"
+import { FixedSizeList } from "react-window"
+import AppBar from "./../../../components/AppBar"
+import { makeStyles } from "@material-ui/core/styles"
+import { withAuthSync } from "./../../../utils/auth.js"
+import SmartInput from "./../../../components/SmartInput"
+import withStore from "./../../../utils/withStore.js"
+import ListItem from "./../../../components/admin/UsersListItem"
+import ListItemAddress from "./../../../components/admin/AddressListItem"
+import FormAddress from "./../../../components/admin/FormAddress"
+import { customUseState } from "../../../utils/customHooks"
+
 const useStyle = makeStyles(theme => ({
-  root: {
-    marginTop: 100,
-    display: "flex",
-    width: "100%",
-    justifyContent: "space-evenly"
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%"
-  },
-  paper: {
-    display: "flex",
-    justifyContent: "center",
-    alignSelf: "flex-start",
-    flexDirection: "column",
-    maxWidth: 500,
-    paddingLeft: 20,
-    paddingRight: 20
-  },
-  switch: {
-    display: "flex",
-    justifyContent: "center",
-    width: 200,
-    alignItems: "center"
-  },
-  list: {
-    textAlign: "center",
-    width: 500
-  }
-}));
+ root: {
+  marginTop: 100,
+  display: "flex",
+  width: "100%",
+  justifyContent: "space-evenly",
+ },
+ form: {
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+ },
+ paper: {
+  display: "flex",
+  justifyContent: "center",
+  alignSelf: "flex-start",
+  flexDirection: "column",
+  maxWidth: 500,
+  paddingLeft: 20,
+  paddingRight: 20,
+ },
+ switch: {
+  display: "flex",
+  justifyContent: "center",
+  width: 200,
+  alignItems: "center",
+ },
+ list: {
+  textAlign: "center",
+  width: 500,
+ },
+}))
 const AdminPanel = props => {
-  const listAddress = props.store.AddressStore.addressesForAdmin;
-  useEffect(() => {
-    props.store.UserStore.getAllUsers();
-    props.store.AddressStore.getAllAddresses();
-  }, []);
-  const classes = useStyle();
-  const [rota, setRota] = useState(0);
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-  const [isAdmin, setByAdmin] = useState(false);
-  const handleChangeLogin = useCallback(event => setLogin(event.target.value));
-  const handleChangePassword = useCallback(event =>
-    setPassword(event.target.value)
-  );
-  const handleSetByAdmin = useCallback(() => {
-    if (rota !== 0) return;
-    setByAdmin(!isAdmin);
-  });
-  const handleChangeRota = useCallback(event => {
-    setRota(+event);
-    setByAdmin(false);
-  });
-  const addUser = useCallback(event => {
-    event.preventDefault();
-    if(login !== "" && password !== "" && (rota !== 0 || isAdmin != false)) {
-      let data = { login, password, rota, isAdmin };
-      if (data.rota === 0) data = { ...data, rota: null };
-      props.store.UserStore.createUser(data);
-    } else {
-      props.store.NotificationStore.add("все поля должны быть заполнены", "warning");
-    }
-  });
-  const addressRow = ({ index, style }) => (
-    <div style={style} key={listAddress[index].id}>
-      <ListItemAddress
-        item={listAddress[index]}
-        remove={props.store.AddressStore.deleteInListAddress[index]}
+ const listAddress = props.store.AddressStore.addressesForAdmin
+ useEffect(() => {
+  props.store.UserStore.getAllUsers()
+  props.store.AddressStore.getAllAddresses()
+ }, [])
+ const classes = useStyle()
+ const [rota, setRota] = customUseState(0)
+ const [login, setLogin] = customUseState("")
+ const [password, setPassword] = customUseState("")
+ const [adminPassword, setAdminPassword] = customUseState("")
+ const [adminPasswordComplete, setAdminPasswordComplete] = customUseState("")
+ const handleChangeLogin = event => setLogin(event.target.value)
+ const handleChangePassword = event => setPassword(event.target.value)
+ const handleChangeRota = event => setRota(+event)
+ const handleChangeAdminPassword = event => setAdminPassword(event.target.value)
+ const handleChangeAdminPasswordComplete = event =>
+  setAdminPasswordComplete(event.target.value)
+ const addUser = useCallback(() => {
+  if (login !== "" && password !== "" && rota !== 0) {
+   let data = { login, password, rota }
+   props.store.UserStore.createUser(data)
+  } else {
+   props.store.NotificationStore.add(
+    "все поля должны быть заполнены",
+    "warning"
+   )
+  }
+ })
+ const changePassword = useCallback(() => {
+  if (
+   adminPassword !== "" &&
+   adminPassword.length > 6 &&
+   adminPassword === adminPasswordComplete
+  )
+   props.store.UserStore.changeAdminPassword(adminPassword)
+ })
+ const addressRow = ({ index, style }) => (
+  <div style={style} key={listAddress[index].id}>
+   <ListItemAddress
+    item={listAddress[index]}
+    remove={props.store.AddressStore.deleteInListAddress[index]}
+   />
+  </div>
+ )
+ return (
+  <Fragment>
+   <AppBar />
+   <div className={classes.root}>
+    <Paper className={classes.paper}>
+     <div className={classes.form}>
+      <Typography align="center" variant="h5">
+       Добавить пользователя
+      </Typography>
+      <TextField value={login} label="логин" onChange={handleChangeLogin} />
+      <TextField
+       value={password}
+       label="пароль"
+       onChange={handleChangePassword}
       />
-    </div>
-  );
-  return (
-    <Fragment>
-      <AppBar />
-      <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <form className={classes.form} onSubmit={addUser}>
-            <Typography align="center" variant="h5">
-              Добавить пользователя
-            </Typography>
-            <TextField
-              value={login}
-              label="логин"
-              onChange={handleChangeLogin}
-            />
-            <TextField
-              value={password}
-              label="пароль"
-              onChange={handleChangePassword}
-            />
-            <SmartInput
-              label="номер роты"
-              value={rota}
-              onChange={handleChangeRota}
-            />
-            <div className={classes.switch}>
-              <Typography variant="body1">сделать админом</Typography>
-              <Switch
-                checked={isAdmin}
-                onChange={handleSetByAdmin}
-                color="primary"
-              />
-            </div>
-            <Button color="primary" type="submit">
-              Добавить
-            </Button>
-          </form>
-          <List className={classes.list}>
-            <Typography align="center" variant="h5">
-              Пользователи
-            </Typography>
-            {props.store.UserStore.users.map((item, index) => {
-              return (
-                <ListItem
-                  key={item.id}
-                  item={item}
-                  remove={props.store.UserStore.deleteInListUser[index]}
-                />
-              );
-            })}
-          </List>
-        </Paper>
-        <Paper className={classes.paper}>
-          <FormAddress />
-          <Typography align="center" variant="overline">
-            Выберите адрес на карте
-          </Typography>
-          <Typography align="center" variant="h5">
-            Адреса
-          </Typography>
-          <FixedSizeList
-            height={600}
-            width={500}
-            itemSize={50}
-            itemCount={listAddress.length}
-          >
-            {addressRow}
-          </FixedSizeList>
-        </Paper>
-      </div>
-    </Fragment>
-  );
-};
-AdminPanel.Layout = MainLayout;
-export default withAuthSync(withStore(AdminPanel), true);
+      <SmartInput label="номер роты" value={rota} onChange={handleChangeRota} />
+      <Button color="primary" onClick={addUser}>
+       Добавить
+      </Button>
+     </div>
+     <List className={classes.list}>
+      <Typography align="center" variant="h5">
+       Пользователи
+      </Typography>
+      {props.store.UserStore.users.map((item, index) => {
+       console.log()
+       return (
+        <ListItem
+         key={item.id}
+         item={item}
+         remove={props.store.UserStore.deleteInListUser[index]}
+        />
+       )
+      })}
+     </List>
+    </Paper>
+    <Paper className={classes.paper}>
+     <div className={classes.form}>
+      <Typography align="center" variant="h5">
+       Изменение пароля администратора
+      </Typography>
+      <TextField
+       value={adminPassword}
+       label="введите новый пароль"
+       onChange={handleChangeAdminPassword}
+      />
+      <TextField
+       value={adminPasswordComplete}
+       label="подтвердите введённый пароль"
+       onChange={handleChangeAdminPasswordComplete}
+      />
+      <Button color="primary" onClick={changePassword}>
+       Изменить
+      </Button>
+     </div>
+    </Paper>
+    <Paper className={classes.paper}>
+     <FormAddress />
+     <Typography align="center" variant="overline">
+      Выберите адрес на карте
+     </Typography>
+     <Typography align="center" variant="h5">
+      Адреса
+     </Typography>
+     <FixedSizeList
+      height={600}
+      width={500}
+      itemSize={50}
+      itemCount={listAddress.length}
+     >
+      {addressRow}
+     </FixedSizeList>
+    </Paper>
+   </div>
+  </Fragment>
+ )
+}
+AdminPanel.Layout = MainLayout
+export default withAuthSync(withStore(AdminPanel), true)
