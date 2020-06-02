@@ -65,6 +65,7 @@ export default class {
  }
  @action async login(url, data) {
   try {
+   this.rootStore.setFetching(true)
    const response = await fetch(`/api/${url}/login`, {
     method: "POST",
     headers: {
@@ -86,11 +87,13 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @action async changeAdminPassword(password) {
   try {
-   console.log(password)
+   this.rootStore.setFetching(true)
    const response = await fetch("/api/admin/user/change_password", {
     method: "PUT",
     headers: {
@@ -107,6 +110,8 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @computed get deleteInListUser() {

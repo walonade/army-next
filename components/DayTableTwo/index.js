@@ -24,13 +24,13 @@ export default withStore(props => {
  const classes = useStyles()
  let list = props.store.CrimeStore.updatedCrimes
  const { isPrint } = props.store
- const setCrime = (fromTime, toTime, crimeIndex) => {
+ const setCrime = (fromTime, toTime, crime) => {
   let crimeCount = 0
   const fromTF = moment(fromTime, "HH:mm")
   const toTF = moment(toTime, "HH:mm")
   list.forEach(item => {
    const itTF = moment(item.compTime, "HH:mm")
-   if (item.type === kindOfCrimeData[crimeIndex]) {
+   if (item.type === crime) {
     if (fromTF <= itTF && itTF < toTF) crimeCount = crimeCount + 1
    }
   })
@@ -64,10 +64,10 @@ export default withStore(props => {
    crimeTrufyPercent,
   }
  }
- const setEnd = crimeIndex => {
+ const setEnd = crime => {
   let count = 0
   list.forEach(item => {
-   if (item.type === kindOfCrimeData[crimeIndex]) {
+   if (item.type === crime) {
     count = count + 1
    }
   })
@@ -87,11 +87,11 @@ export default withStore(props => {
   })
   return { falsyPercent, trufyPercent }
  }
- const fullAll = crimeIndex => {
+ const fullAll = crime => {
   let count = 0
   let percent = 0
   list.forEach(item => {
-   if (item.type === kindOfCrimeData[crimeIndex]) {
+   if (item.type === crime) {
     count = count + 1
     percent = Math.floor((count / list.length) * 100)
    }
@@ -99,6 +99,15 @@ export default withStore(props => {
   return percent
  }
  const memoFullPercent = useMemo(() => fullPercent(), [list.length])
+ const footerTitle = useMemo(() => {
+  let arr = []
+  timeofCrimes.forEach(time => {
+   const percent = setCrimeFull(time.fromTime, time.toTime).crimePercent
+   arr = [...arr, { time: `${time.fromTime}-${time.toTime}`, percent }]
+  })
+  arr = arr.sort((a, b) => b.percent - a.percent)
+  return arr
+ }, [list.length])
  return (
   <TableContainer component={Paper} className={`${classes.root} not-before`}>
    <Typography variant="h6" align="center">
@@ -114,42 +123,11 @@ export default withStore(props => {
         variant="head"
         align="center"
        >{`${time.fromTime}-${time.toTime}`}</TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 0)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 1)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 2)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 3)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 4)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 5)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 6)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 7)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 8)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 9)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 10)}
-       </TableCell>
-       <TableCell align="center">
-        {setCrime(time.fromTime, time.toTime, 11)}
-       </TableCell>
+       {kindOfCrimeData.map(crime => (
+        <TableCell align="center" key={crime}>
+         {setCrime(time.fromTime, time.toTime, crime)}
+        </TableCell>
+       ))}
        <TableCell align="center">
         {setCrimeFull(time.fromTime, time.toTime).crimeCount}
        </TableCell>
@@ -170,18 +148,11 @@ export default withStore(props => {
       <TableCell variant="head" align="center">
        Общий итог
       </TableCell>
-      <TableCell align="center">{setEnd(0)}</TableCell>
-      <TableCell align="center">{setEnd(1)}</TableCell>
-      <TableCell align="center">{setEnd(2)}</TableCell>
-      <TableCell align="center">{setEnd(3)}</TableCell>
-      <TableCell align="center">{setEnd(4)}</TableCell>
-      <TableCell align="center">{setEnd(5)}</TableCell>
-      <TableCell align="center">{setEnd(6)}</TableCell>
-      <TableCell align="center">{setEnd(7)}</TableCell>
-      <TableCell align="center">{setEnd(8)}</TableCell>
-      <TableCell align="center">{setEnd(9)}</TableCell>
-      <TableCell align="center">{setEnd(10)}</TableCell>
-      <TableCell align="center">{setEnd(11)}</TableCell>
+      {kindOfCrimeData.map(crime => (
+       <TableCell key={crime} align="center">
+        {setEnd(crime)}
+       </TableCell>
+      ))}
       <TableCell align="center">
        {list.length !== 0 ? list.length : 0}
       </TableCell>
@@ -193,28 +164,22 @@ export default withStore(props => {
       <TableCell variant="head" align="center">
        в %
       </TableCell>
-      <TableCell align="center">{fullAll(0)}</TableCell>
-      <TableCell align="center">{fullAll(1)}</TableCell>
-      <TableCell align="center">{fullAll(2)}</TableCell>
-      <TableCell align="center">{fullAll(3)}</TableCell>
-      <TableCell align="center">{fullAll(4)}</TableCell>
-      <TableCell align="center">{fullAll(5)}</TableCell>
-      <TableCell align="center">{fullAll(6)}</TableCell>
-      <TableCell align="center">{fullAll(7)}</TableCell>
-      <TableCell align="center">{fullAll(8)}</TableCell>
-      <TableCell align="center">{fullAll(9)}</TableCell>
-      <TableCell align="center">{fullAll(10)}</TableCell>
-      <TableCell align="center">{fullAll(11)}</TableCell>
+      {kindOfCrimeData.map(crime => (
+       <TableCell key={crime} align="center">
+        {fullAll(crime)}
+       </TableCell>
+      ))}
       <TableCell align="center">{list.length !== 0 ? 100 : 0}</TableCell>
       <TableCell align="center">{list.length !== 0 ? 100 : 0}</TableCell>
       <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
       <TableCell align="center">{memoFullPercent.falsyPercent}</TableCell>
      </TableRow>
      <TableRow>
-      <TableCell colSpan={17} align="center">
+      <TableCell colSpan={5 + kindOfCrimeData.length} align="center">
        <Typography variant="h6">
-        Вывод: Ежедневный анализ по видам преступлений и времени показывает __ %
-        совершено с __ часов
+        Вывод: Ежедневный анализ по видам преступлений и времени показывает{" "}
+        {list.length !== 0 ? footerTitle[0].percent : "__"} % совершено с{" "}
+        {list.length !== 0 ? footerTitle[0].time : "__"} часов
        </Typography>
       </TableCell>
      </TableRow>

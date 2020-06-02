@@ -20,6 +20,7 @@ export default class {
  }
  @action async removeAddress(id) {
   try {
+   this.rootStore.setFetching(true)
    const response = await fetch(`/api/admin/address/${id}`, {
     method: "DELETE",
     headers: {
@@ -37,10 +38,13 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @action async addAddress(data) {
   try {
+   this.rootStore.setFetching(true)
    const response = await fetch("/api/admin/address/add", {
     method: "POST",
     headers: {
@@ -58,6 +62,8 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @action async getAllAddresses() {

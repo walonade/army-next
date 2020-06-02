@@ -78,8 +78,15 @@ const AdminPanel = props => {
    adminPassword !== "" &&
    adminPassword.length > 6 &&
    adminPassword === adminPasswordComplete
-  )
+  ) {
    props.store.UserStore.changeAdminPassword(adminPassword)
+  } else if (adminPassword.length < 6) {
+   props.store.NotificationStore.add("пароль должен быть более 6 символов")
+  } else if (adminPassword !== adminPasswordComplete) {
+   props.store.NotificationStore.add("подтвердите пароль")
+  } else {
+   props.store.NotificationStore.add("пароль не валидный")
+  }
  })
  const addressRow = ({ index, style }) => (
   <div style={style} key={listAddress[index].id}>
@@ -132,7 +139,7 @@ const AdminPanel = props => {
       </Typography>
       <TextField
        value={adminPassword}
-       label="введите новый пароль"
+       label="введите новый пароль (более 6 символов)"
        onChange={handleChangeAdminPassword}
       />
       <TextField

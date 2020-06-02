@@ -20,6 +20,10 @@ const Crime = sequelize.define("crimes", {
   allowNull: false,
   type: Sequelize.STRING,
  },
+ addressNote: {
+    allowNull: true,
+    type: Sequelize.STRING,
+ },
  object: {
   allowNull: false,
   type: Sequelize.STRING,

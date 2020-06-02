@@ -17,7 +17,10 @@ export default memo(
      ) : null}
      <h4>{props.type}</h4>
      <h4>{`${props.patrol} отдел полиции`}</h4>
-     <h4>Адрес: {props.address}</h4>
+     <h4>
+      Адрес: {props.address} <br />
+      {props.addressNote}
+     </h4>
      <h4>Дата: {setDate}</h4>
      <h4>Время: {setTime}</h4>
      <h4>Объект: {props.object}</h4>

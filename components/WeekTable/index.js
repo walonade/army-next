@@ -24,19 +24,19 @@ export default withStore(props => {
    year: toDate.format("YYYY"),
   }
  }, [props.store.fromDate.get("date"), props.store.toDate.get("date")])
- const setCrime = (weekDay, crimeIndex) => {
+ const setCrime = (weekDay, crime) => {
   let crimeCount = 0
   list.forEach(item => {
-   if (item.type === kindOfCrimeData[crimeIndex]) {
+   if (item.type === crime) {
     if (item.compDayOfWeek === weekDay) crimeCount = crimeCount + 1
    }
   })
   return crimeCount
  }
- const crimeType = crimeIndex => {
+ const crimeType = crime => {
   let crimeCount = 0
   list.forEach(item => {
-   if (item.type === kindOfCrimeData[crimeIndex]) crimeCount = crimeCount + 1
+   if (item.type === crime) crimeCount = crimeCount + 1
   })
   return crimeCount
  }
@@ -90,17 +90,37 @@ export default withStore(props => {
  const percent = useMemo(() => {
   return list.length !== 0 ? 100 : 0
  }, [list.length])
- const percentType = crimeIndex => {
+ const percentType = crime => {
   let count = 0
   let percent = 0
   list.forEach(item => {
-   if (item.type === kindOfCrimeData[crimeIndex]) {
+   if (item.type === crime) {
     count = count + 1
     percent = Math.floor((count / list.length) * 100)
    }
   })
   return percent
  }
+ const footerTitle = useMemo(() => {
+  let arrDay = []
+  days.forEach(day => {
+   const { percent } = crimeWeekPercent(day)
+   arrDay = [...arrDay, { day, percent }]
+  })
+  arrDay = arrDay.sort((a, b) => b.percent - a.percent)
+  let arrCrime = []
+  kindOfCrimeData.forEach(crime => {
+   const percent = percentType(crime)
+   arrCrime = [...arrCrime, { crime, percent }]
+  })
+  arrCrime = arrCrime.sort((a, b) => b.percent - a.percent)
+  return {
+   day: arrDay[0].day.toLowerCase(),
+   crime: arrCrime[0].crime.toLowerCase(),
+   dayPercent: arrDay[0].percent,
+   crimePercent: arrCrime[0].percent,
+  }
+ }, [list.length])
  return (
   <TableContainer component={Paper}>
    <Table padding={isPrint ? "checkbox" : "default"}>
@@ -117,30 +137,23 @@ export default withStore(props => {
     </TableHead>
     <MyTableHead week={true} />
     <TableBody>
-     {days.map(item => (
-      <TableRow key={item} hover={true}>
+     {days.map(day => (
+      <TableRow key={day} hover={true}>
        <TableCell align="center" variant="head">
-        {item}
+        {day}
        </TableCell>
-       <TableCell align="center">{setCrime(item, 0)}</TableCell>
-       <TableCell align="center">{setCrime(item, 1)}</TableCell>
-       <TableCell align="center">{setCrime(item, 2)}</TableCell>
-       <TableCell align="center">{setCrime(item, 3)}</TableCell>
-       <TableCell align="center">{setCrime(item, 4)}</TableCell>
-       <TableCell align="center">{setCrime(item, 5)}</TableCell>
-       <TableCell align="center">{setCrime(item, 6)}</TableCell>
-       <TableCell align="center">{setCrime(item, 7)}</TableCell>
-       <TableCell align="center">{setCrime(item, 8)}</TableCell>
-       <TableCell align="center">{setCrime(item, 9)}</TableCell>
-       <TableCell align="center">{setCrime(item, 10)}</TableCell>
-       <TableCell align="center">{setCrime(item, 11)}</TableCell>
-       <TableCell align="center">{crimeWeek(item)}</TableCell>
-       <TableCell align="center">{crimeWeekPercent(item).percent}</TableCell>
+       {kindOfCrimeData.map(crime => (
+        <TableCell key={crime} align="center">
+         {setCrime(day, crime)}
+        </TableCell>
+       ))}
+       <TableCell align="center">{crimeWeek(day)}</TableCell>
+       <TableCell align="center">{crimeWeekPercent(day).percent}</TableCell>
        <TableCell align="center">
-        {crimeWeekPercent(item).trufyPercent}
+        {crimeWeekPercent(day).trufyPercent}
        </TableCell>
        <TableCell align="center">
-        {crimeWeekPercent(item).falsyPercent}
+        {crimeWeekPercent(day).falsyPercent}
        </TableCell>
       </TableRow>
      ))}
@@ -150,18 +163,11 @@ export default withStore(props => {
       <TableCell align="center" variant="head">
        Общий итог
       </TableCell>
-      <TableCell align="center">{crimeType(0)}</TableCell>
-      <TableCell align="center">{crimeType(1)}</TableCell>
-      <TableCell align="center">{crimeType(2)}</TableCell>
-      <TableCell align="center">{crimeType(3)}</TableCell>
-      <TableCell align="center">{crimeType(4)}</TableCell>
-      <TableCell align="center">{crimeType(5)}</TableCell>
-      <TableCell align="center">{crimeType(6)}</TableCell>
-      <TableCell align="center">{crimeType(7)}</TableCell>
-      <TableCell align="center">{crimeType(8)}</TableCell>
-      <TableCell align="center">{crimeType(9)}</TableCell>
-      <TableCell align="center">{crimeType(10)}</TableCell>
-      <TableCell align="center">{crimeType(11)}</TableCell>
+      {kindOfCrimeData.map(crime => (
+       <TableCell key={crime} align="center">
+        {crimeType(crime)}
+       </TableCell>
+      ))}
       <TableCell align="center">{list.length != 0 ? list.length : 0}</TableCell>
       <TableCell align="center">{percent}</TableCell>
       <TableCell align="center">{fullPercent.trufyPercent}</TableCell>
@@ -171,19 +177,26 @@ export default withStore(props => {
       <TableCell align="center" variant="head">
        В %
       </TableCell>
-      <TableCell align="center">{percentType(0)}</TableCell>
-      <TableCell align="center">{percentType(1)}</TableCell>
-      <TableCell align="center">{percentType(2)}</TableCell>
-      <TableCell align="center">{percentType(3)}</TableCell>
-      <TableCell align="center">{percentType(4)}</TableCell>
-      <TableCell align="center">{percentType(5)}</TableCell>
-      <TableCell align="center">{percentType(6)}</TableCell>
-      <TableCell align="center">{percentType(7)}</TableCell>
-      <TableCell align="center">{percentType(8)}</TableCell>
-      <TableCell align="center">{percentType(9)}</TableCell>
-      <TableCell align="center">{percentType(10)}</TableCell>
-      <TableCell align="center">{percentType(11)}</TableCell>
-      <TableCell rowSpan={4}></TableCell>
+      {kindOfCrimeData.map(crime => (
+       <TableCell key={crime} align="center">
+        {percentType(crime)}
+       </TableCell>
+      ))}
+      <TableCell></TableCell>
+      <TableCell></TableCell>
+      <TableCell></TableCell>
+      <TableCell></TableCell>
+     </TableRow>
+     <TableRow>
+      <TableCell align="center" colSpan={5 + kindOfCrimeData.length}>
+       <Typography variant="h6">
+        Вывод: Еженедельный анализ по видам показвывает{" "}
+        {list.length != 0 ? `${footerTitle.crimePercent}%` : "__"} преступлений{" "}
+        {list.length != 0 ? footerTitle.crime : "__"},{" "}
+        {list.length != 0 ? `${footerTitle.dayPercent}%` : "__"} совершено в{" "}
+        {list.length != 0 ? footerTitle.day : "__"}.
+       </Typography>
+      </TableCell>
      </TableRow>
     </TableFooter>
    </Table>

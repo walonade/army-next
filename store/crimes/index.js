@@ -9,6 +9,7 @@ export default class {
  @observable crimes = []
  @action async getCrimes() {
   try {
+   this.rootStore.setFetching(true)
    const from = this.rootStore.fromDate.toISOString()
    const to = this.rootStore.toDate.toISOString()
    const response = await fetch(`/api/crime/get?from=${from}&to=${to}`, {
@@ -25,10 +26,13 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @action async addToCrimes(data) {
   try {
+   this.rootStore.setFetching(true)
    const response = await fetch("/api/crime/add", {
     method: "POST",
     credentials: "include",
@@ -52,10 +56,13 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @action async removeFromCrimes(id) {
   try {
+   this.rootStore.setFetching(true)
    const response = await fetch(`/api/crime/${id}`, {
     method: "DELETE",
     headers: {
@@ -70,6 +77,8 @@ export default class {
    }
   } catch (e) {
    console.log(e)
+  } finally {
+   this.rootStore.setFetching(false)
   }
  }
  @computed get deleteInListCrimes() {

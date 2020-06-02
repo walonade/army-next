@@ -23,7 +23,7 @@ const addProperty = item =>
  Object.defineProperty(item, "marker", {
   writable: true,
   enumerable: true,
-  value: MarkerIcon(item.type, item.date),
+  value: MarkerIcon(item.type, item.date, item.service),
  })
 const useStyles = makeStyles({
  root: {
@@ -33,12 +33,12 @@ const useStyles = makeStyles({
 const PrintControl = withLeaflet(PrintControlDefault)
 const MapComponent = props => {
  const classes = useStyles()
- const [position, setPosition] = useState({
+ const [position, _] = useState({
   lat: -126.609375,
   lng: 109.63151025772095,
  })
  const [zoom, setZoom] = useState(3)
- const mapData = props.store.CrimeStore.updatedCrimes.map(item =>
+ const mapData = props.store.CrimeStore.crimes.map(item =>
   addProperty(item)
  )
  const downloadOptions = {
@@ -72,7 +72,7 @@ const MapComponent = props => {
        lng: item.AddressId.lng,
       }}
       icon={item.marker}
-      id={index}
+      id={item.id}
       address={item.address}
       date={item.date}
       kui={item.kui}
@@ -81,6 +81,7 @@ const MapComponent = props => {
       object={item.object}
       patrol={item.AddressId.patrol}
       patrolWay={item.patrolWay}
+      addressNote={item.addressNote}
       remove={props.store.CrimeStore.deleteInListCrimes[index]}
       showButton={props.store.isAdmin}
      />

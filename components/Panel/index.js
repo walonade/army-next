@@ -43,6 +43,7 @@ const Panel = props => {
  const [valueKUI, setValueKUI] = customUseState(0)
  const [crimeData, setCrimeData] = customUseState(moment())
  const [addressOfCrime, setAddressOfCrime] = customUseState("")
+ const [addressNote, setAddressNote] = customUseState("")
  const [objectOfCrime, setObjectOfCrime] = customUseState("")
  const [service, setService] = customUseState("")
  const [patrolWay, setPatrolWay] = customUseState("")
@@ -66,6 +67,7 @@ const Panel = props => {
  const handleChangeAddressOfCrime = (event, newValue) => {
   newValue !== null ? setAddressOfCrime(newValue.value) : setAddressOfCrime("")
  }
+ const handleChangeAddressNote = event => setAddressNote(event.target.value)
  const handleChangeObjectOfCrime = event => setObjectOfCrime(event.target.value)
  const handleChangeService = event => setService(event.target.value)
  const handleChangePatrolWay = event => setPatrolWay(event.target.value)
@@ -75,10 +77,11 @@ const Panel = props => {
    type: kindOfCrime,
    date: crimeData,
    address: addressOfCrime,
+   addressNote: addressNote.length !== 0 ? addressNote : null,
    object: objectOfCrime,
    kui: valueKUI,
    service,
-   patrolWay,
+   patrolWay: patrolWay.length !== 0 ? patrolWay : null,
   }
   if (
    kindOfCrime &&
@@ -191,6 +194,12 @@ const Panel = props => {
      onChange={handleChangeAddressOfCrime}
      value={addressOfCrime}
      className={classes.formControl}
+    />
+    <TextField
+     className={classes.formControl}
+     label="заметки по адресу преступления"
+     value={addressNote}
+     onChange={handleChangeAddressNote}
     />
     <FormControl className={classes.formControl}>
      <InputLabel>Cлужба раскрывшая</InputLabel>

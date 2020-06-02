@@ -12,7 +12,7 @@ import {
  Typography,
 } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { kindOfCrimeData, patrols, city } from "./../../data"
+import { kindOfCrimeData, patrols, city, mostCriminal } from "./../../data"
 import withStore from "./../../utils/withStore.js"
 const useStyles = makeStyles({
  root: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 })
 export default withStore(props => {
  const classes = useStyles()
- const list = props.store.CrimeStore.updatedCrimes
+ const list = props.store.CrimeStore.crimes
  const year = useMemo(() => {
   const fromDate = props.store.fromDate.format("DD.MM.YYYY")
   const toDate = props.store.toDate.format("DD.MM.YYYY")
@@ -94,41 +94,7 @@ export default withStore(props => {
   })
   return percent
  }, [list.length])
- const mostCriminal = () => {
-  let arr = [
-   {
-    name: patrols[0],
-    count: 0,
-   },
-   {
-    name: patrols[1],
-    count: 0,
-   },
-   {
-    name: patrols[2],
-    count: 0,
-   },
-  ]
-  list.forEach(item => {
-   const count = 0
-   switch (item.AddressId.patrol) {
-    case patrols[0]:
-     arr[0].count = arr[0].count + 1
-     break
-    case patrols[1]:
-     arr[1].count = arr[1].count + 1
-     break
-    case patrols[2]:
-     arr[2].count = arr[2].count + 1
-     break
-   }
-  })
-  return arr
- }
- const sortArrPatrol = useMemo(
-  () => mostCriminal().sort((a, b) => b.count - a.count),
-  [list.length]
- )
+ const mostCriminalMemo = useMemo(() => mostCriminal(list), [list.length])
  return (
   <Fragment>
    <div className="own-list">
@@ -156,26 +122,24 @@ export default withStore(props => {
        <TableCell align="center" rowSpan={2}>
         Виды преступления
        </TableCell>
-       <TableCell align="center" colSpan={2}>
-        {patrols[0]} ОП
-       </TableCell>
-       <TableCell align="center" colSpan={2}>
-        {patrols[1]} ОП
-       </TableCell>
-       <TableCell align="center" colSpan={2}>
-        {patrols[2]} ОП
-       </TableCell>
+       {patrols.map(patrol => (
+        <Fragment key={patrol}>
+         <TableCell align="center" colSpan={2}>
+          {patrol} ОП
+         </TableCell>
+        </Fragment>
+       ))}
        <TableCell align="center" rowSpan={2}>
         Всего
        </TableCell>
       </TableRow>
       <TableRow>
-       <TableCell align="center">{year.lastYear}</TableCell>
-       <TableCell align="center">{year.currentYear}</TableCell>
-       <TableCell align="center">{year.lastYear}</TableCell>
-       <TableCell align="center">{year.currentYear}</TableCell>
-       <TableCell align="center">{year.lastYear}</TableCell>
-       <TableCell align="center">{year.currentYear}</TableCell>
+       {patrols.map(patrol => (
+        <Fragment key={patrol}>
+         <TableCell align="center">{year.lastYear}</TableCell>
+         <TableCell align="center">{year.currentYear}</TableCell>
+        </Fragment>
+       ))}
       </TableRow>
      </TableHead>
      <TableBody>
@@ -184,24 +148,16 @@ export default withStore(props => {
         <TableCell variant="head" align="center">
          {item}
         </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.lastYear, patrols[0])}
-        </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.currentYear, patrols[0])}
-        </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.lastYear, patrols[1])}
-        </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.currentYear, patrols[1])}
-        </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.lastYear, patrols[2])}
-        </TableCell>
-        <TableCell align="center">
-         {crimeType(item, year.currentYear, patrols[2])}
-        </TableCell>
+        {patrols.map(patrol => (
+         <Fragment key={patrol}>
+          <TableCell align="center">
+           {crimeType(item, year.lastYear, patrol)}
+          </TableCell>
+          <TableCell align="center">
+           {crimeType(item, year.currentYear, patrol)}
+          </TableCell>
+         </Fragment>
+        ))}
         <TableCell align="center">{crimeTypeAll(item)}</TableCell>
        </TableRow>
       ))}
@@ -226,42 +182,20 @@ export default withStore(props => {
       </TableRow>
      </TableHead>
      <TableBody>
-      <TableRow>
-       <TableCell variant="head" align="center">
-        {patrols[0]} ОП
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[0], year.lastYear)}
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[0], year.currentYear)}
-       </TableCell>
-       <TableCell align="center">{percentPatrol(patrols[0])}</TableCell>
-      </TableRow>
-      <TableRow>
-       <TableCell variant="head" align="center">
-        {patrols[1]} ОП
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[1], year.lastYear)}
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[1], year.currentYear)}
-       </TableCell>
-       <TableCell align="center">{percentPatrol(patrols[1])}</TableCell>
-      </TableRow>
-      <TableRow>
-       <TableCell variant="head" align="center">
-        {patrols[2]} ОП
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[2], year.lastYear)}
-       </TableCell>
-       <TableCell align="center">
-        {crimeForYearAndPatrol(patrols[2], year.currentYear)}
-       </TableCell>
-       <TableCell align="center">{percentPatrol(patrols[2])}</TableCell>
-      </TableRow>
+      {patrols.map(patrol => (
+       <TableRow key={patrol}>
+        <TableCell variant="head" align="center">
+         {patrol} ОП
+        </TableCell>
+        <TableCell align="center">
+         {crimeForYearAndPatrol(patrol, year.lastYear)}
+        </TableCell>
+        <TableCell align="center">
+         {crimeForYearAndPatrol(patrol, year.currentYear)}
+        </TableCell>
+        <TableCell align="center">{percentPatrol(patrol)}</TableCell>
+       </TableRow>
+      ))}
       <TableRow>
        <TableCell variant="head" align="center">
         Всего
@@ -279,30 +213,17 @@ export default withStore(props => {
         </Typography>
        </TableCell>
       </TableRow>
-      <TableRow>
-       <TableCell align="center" colSpan={2}>
-        <u>{sortArrPatrol[0].name}</u> ОП
-       </TableCell>
-       <TableCell align="center" colSpan={2}>
-        где допущено <u>{sortArrPatrol[0].count}</u> преступлений на улицах
-       </TableCell>
-      </TableRow>
-      <TableRow>
-       <TableCell align="center" colSpan={2}>
-        <u>{sortArrPatrol[1].name}</u> ОП
-       </TableCell>
-       <TableCell align="center" colSpan={2}>
-        где допущено <u>{sortArrPatrol[1].count}</u> преступлений на улицах
-       </TableCell>
-      </TableRow>
-      <TableRow>
-       <TableCell align="center" colSpan={2}>
-        <u>{sortArrPatrol[2].name}</u> ОП
-       </TableCell>
-       <TableCell align="center" colSpan={2}>
-        где допущено <u>{sortArrPatrol[2].count}</u> преступлений на улицах
-       </TableCell>
-      </TableRow>
+      {patrols.map((patrol, index) => (
+       <TableRow key={patrol}>
+        <TableCell align="center" colSpan={2}>
+         <u>{mostCriminalMemo[index].name}</u> ОП
+        </TableCell>
+        <TableCell align="center" colSpan={2}>
+         где допущено <u>{mostCriminalMemo[index].count}</u> преступлений на
+         улицах
+        </TableCell>
+       </TableRow>
+      ))}
      </TableFooter>
     </Table>
    </TableContainer>

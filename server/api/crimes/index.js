@@ -9,7 +9,7 @@ const { auth } = require("./../../utils/auth.js")
 const isAttach = require("./../../utils/isAttach.js")
 router.post("/add", auth.required, isAttach, async (req, res) => {
  try {
-  const { type, date, address, service, object, kui, patrolWay } = req.body
+  const { type, date, address, service, object, kui, patrolWay, addressNote } = req.body
   const user = req.currentUser
   if (!user.isAdmin) {
    const crime = await Crime.create({
@@ -22,6 +22,7 @@ router.post("/add", auth.required, isAttach, async (req, res) => {
     kui,
     service,
     patrolWay,
+    addressNote
    })
    const addressId = await Address.findOne({
     where: {
@@ -76,20 +77,6 @@ router.get("/get", auth.required, isAttach, async (req, res) => {
    include: [{ model: Address, as: "AddressId" }],
   })
   res.status(200).json(crimes)
- } catch (e) {
-  res.status(500).end()
-  console.log(e)
- }
-})
-router.put("/:id", auth.required, isAttach, async (req, res) => {
- try {
-  const user = req.currentUser
-  if (!user.isAdmin) {
-   const crime = await Crime.findByPk(req.params.id)
-   res.status(201).json(crime)
-  } else {
-   res.status(401).end()
-  }
  } catch (e) {
   res.status(500).end()
   console.log(e)

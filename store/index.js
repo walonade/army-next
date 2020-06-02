@@ -8,7 +8,6 @@ import UserStore from "./users"
 import AddressStore from "./addresses"
 import CrimeStore from "./crimes"
 import NotificationStore from "./notification"
-import CrimesTableStore from "./crimesTable"
 useStaticRendering(isServer)
 export class Store {
  constructor() {
@@ -16,7 +15,6 @@ export class Store {
   this.AddressStore = new AddressStore(this)
   this.CrimeStore = new CrimeStore(this)
   this.NotificationStore = new NotificationStore(this)
-  this.CrimesTableStore = new CrimesTableStore(this)
  }
  serverMistakes = status => {
   switch (status) {
@@ -40,6 +38,10 @@ export class Store {
  @observable token = cookie.get("token") || null
  @observable isAdmin = cookie.get("isAdmin") || false
  @observable isPrint = false
+ @observable isFetching = false
+ @action setFetching(boolean) {
+  this.isFetching = boolean
+ }
  @action setPrint(boolean) {
   this.isPrint = boolean
  }

@@ -27,7 +27,7 @@ const tableOneHead = [
  "допущены на маршр. патрул в/нарядов",
 ]
 const patrols = ["Северный", "Центральный", "Южный"]
-const serviceList = ["не раскрыто", "войсковой наряд", "УП", "совместный"]
+const serviceList = ["не раскрыто", "войсковой наряд", "УП"]
 const timeofCrimes = [
  {
   id: 0,
@@ -111,6 +111,27 @@ const setTitleDate = date => {
   year: date.get("year"),
  }
 }
+const countCrime = (patrol, array) => {
+    let data = { count: 0, trufy: 0, falsy: 0 }
+    array.forEach(item => {
+     if (item.AddressId.patrol === patrol) {
+      data = { ...data, count: data.count + 1 }
+      item.service === "не раскрыто"
+       ? (data = { ...data, falsy: data.falsy + 1 })
+       : (data = { ...data, trufy: data.trufy + 1 })
+     }
+    })
+    return data
+   }
+const mostCriminal = array => {
+    let sortArr = []
+    patrols.forEach(
+     patrol =>
+      (sortArr = [...sortArr, { name: patrol, count: countCrime(patrol, array).count }])
+    )
+    sortArr.sort((a, b) => b.count - a.count)
+    return sortArr
+}
 const southWestLat = -222
 const southWestLng = 230
 const northEastLat = 0
@@ -130,4 +151,6 @@ export {
  patrols,
  tableOneHead,
  serviceList,
+ countCrime, 
+ mostCriminal
 }

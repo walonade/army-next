@@ -1,14 +1,11 @@
 .circle {
-  font-size: 20px;
   border-radius: 25px;
   display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
-}
-.circle p {
-  margin: 0;
-  padding: 0;
+  position: relative;
+  line-height: 0.8em;
 }
 .blue-circle {
   background-color: blue;
@@ -18,4 +15,24 @@
 }
 .green-circle {
   background-color: green;
+}
+.line {
+  position: absolute;
+  background-color: black;
+  height: 100%;
+  width: 1px;
+  top: 0;
+  left: 50%;
+}
+.date-font {
+  font-size: 9px;
+}
+.type-font {
+  font-size: 20px;
+}
+.to-right {
+  transform: rotate(45deg);
+}
+.to-left {
+  transform: rotate(-45deg);
 }

@@ -44,6 +44,7 @@ export default props => {
      className={classes.field}
     />
     <TextField
+     type="password"
      value={props.passwordValue}
      onChange={props.onChangePassword}
      label="Введите пароль"
