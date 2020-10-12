@@ -33,7 +33,7 @@ const AdminPanel = props => {
  return (
   <Fragment>
    <Grid container justify="center">
-    <Typography variant="h4">Logo</Typography>
+    <Typography variant="h4">АКО</Typography>
    </Grid>
    <br />
    <Divider />

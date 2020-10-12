@@ -33,7 +33,12 @@ export default withStore(props => {
    fromDate,
    toDate,
   }
- }, [props.store.toDate.get("year")])
+ }, [
+  props.store.toDate.get("day"),
+  props.store.fromDate.get("day"),
+  props.store.toDate.get("month"),
+  props.store.fromDate.get("month"),
+ ])
  const crimeType = (crime, year, patrol) => {
   let count = 0
   list.forEach(item => {

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from "react"
+import React, { Fragment, useState, useCallback, useEffect } from "react"
 import {
  Grid,
  Typography,
@@ -9,7 +9,9 @@ import {
  Select,
  MenuItem,
 } from "@material-ui/core/"
+import { FixedSizeList } from "react-window"
 import { patrols } from "./../../../data/index.js"
+import ListItemAddress from "../AddressListItem"
 import withStore from "./../../../utils/withStore.js"
 import dynamic from "next/dynamic"
 const MapAdmin = dynamic(() => import("./../MapAdmin"), { ssr: false })
@@ -41,6 +43,18 @@ export default withStore(props => {
    )
   }
  })
+ const listAddress = props.store.AddressStore.addressesForAdmin
+ const addressRow = ({ index, style }) => (
+     <div style={style} key={listAddress[index].id}>
+      <ListItemAddress
+       item={listAddress[index]}
+       remove={props.store.AddressStore.deleteInListAddress[index]}
+      />
+     </div>
+    )
+    useEffect(() => {
+        props.store.AddressStore.getAllAddresses()
+    }, [])
  return (
   <Fragment>
    <Typography align="center" variant="h5">
@@ -77,8 +91,22 @@ export default withStore(props => {
     <Typography align="center" variant="overline">
      lng: {position !== null ? position.lng : ""}
     </Typography>
-   </Grid>
+   </Grid> 
    <MapAdmin position={position} setPosition={handleChangePosition} />
+   <Typography align="center" variant="overline">
+    Выберите адрес на карте
+   </Typography>
+   <Typography align="center" variant="h5">
+    Адреса
+   </Typography>
+   <FixedSizeList
+    height={600}
+    width="100%"
+    itemSize={50}
+    itemCount={listAddress.length}
+   >
+    {addressRow}
+   </FixedSizeList>
   </Fragment>
  )
 })

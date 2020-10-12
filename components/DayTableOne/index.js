@@ -53,22 +53,10 @@ const Tr = memo(
  (prevProps, nextProps) =>
   prevProps.crime.id === nextProps.crime.id ? true : false
 )
-const EmptyTr = () => {
- const arr = [...Array(10)]
- return (
-  <TableRow hover={true}>
-   {arr.map((item, index) => (
-    <TableCell key={index} align="center">
-     -
-    </TableCell>
-   ))}
-  </TableRow>
- )
-}
 export default withStore(props => {
  const classes = useStyles()
  let checkMemo = props.store.toDate.get("date")
- const { crimes } = props.store.CrimeStore
+ const { crimes, updatedCrimes } = props.store.CrimeStore
  const textDate = useMemo(() => props.store.toDate.format("DD.MM.YYYY"), [
   checkMemo,
  ])
@@ -113,8 +101,8 @@ export default withStore(props => {
          <Typography variant="overline">{patrol} отдел полиции</Typography>
         </TableCell>
        </TableRow>
-       {crimes.length !== 0 ? (
-        crimes.map((crime, index) => {
+       {updatedCrimes.length !== 0 ? (
+        updatedCrimes.map((crime, index) => {
          if (crime.AddressId.patrol === patrol) {
           return <Tr key={crime.id} crime={crime} index={index} />
          }

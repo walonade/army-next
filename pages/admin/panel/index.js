@@ -1,15 +1,13 @@
 import React, { Fragment, useCallback, useEffect } from "react"
 import MainLayout from "./../../../layouts/Main"
 import { Typography, TextField, Button, Paper, List } from "@material-ui/core/"
-import { FixedSizeList } from "react-window"
+import Card from "../../../components/Card"
 import AppBar from "./../../../components/AppBar"
 import { makeStyles } from "@material-ui/core/styles"
 import { withAuthSync } from "./../../../utils/auth.js"
 import SmartInput from "./../../../components/SmartInput"
 import withStore from "./../../../utils/withStore.js"
 import ListItem from "./../../../components/admin/UsersListItem"
-import ListItemAddress from "./../../../components/admin/AddressListItem"
-import FormAddress from "./../../../components/admin/FormAddress"
 import { customUseState } from "../../../utils/customHooks"
 
 const useStyle = makeStyles(theme => ({
@@ -45,10 +43,8 @@ const useStyle = makeStyles(theme => ({
  },
 }))
 const AdminPanel = props => {
- const listAddress = props.store.AddressStore.addressesForAdmin
  useEffect(() => {
   props.store.UserStore.getAllUsers()
-  props.store.AddressStore.getAllAddresses()
  }, [])
  const classes = useStyle()
  const [rota, setRota] = customUseState(0)
@@ -88,14 +84,6 @@ const AdminPanel = props => {
    props.store.NotificationStore.add("пароль не валидный")
   }
  })
- const addressRow = ({ index, style }) => (
-  <div style={style} key={listAddress[index].id}>
-   <ListItemAddress
-    item={listAddress[index]}
-    remove={props.store.AddressStore.deleteInListAddress[index]}
-   />
-  </div>
- )
  return (
   <Fragment>
    <AppBar />
@@ -120,16 +108,13 @@ const AdminPanel = props => {
       <Typography align="center" variant="h5">
        Пользователи
       </Typography>
-      {props.store.UserStore.users.map((item, index) => {
-       console.log()
-       return (
-        <ListItem
-         key={item.id}
-         item={item}
-         remove={props.store.UserStore.deleteInListUser[index]}
-        />
-       )
-      })}
+      {props.store.UserStore.users.map((item, index) => (
+       <ListItem
+        key={item.id}
+        item={item}
+        remove={props.store.UserStore.deleteInListUser[index]}
+       />
+      ))}
      </List>
     </Paper>
     <Paper className={classes.paper}>
@@ -152,23 +137,11 @@ const AdminPanel = props => {
       </Button>
      </div>
     </Paper>
-    <Paper className={classes.paper}>
-     <FormAddress />
-     <Typography align="center" variant="overline">
-      Выберите адрес на карте
-     </Typography>
-     <Typography align="center" variant="h5">
-      Адреса
-     </Typography>
-     <FixedSizeList
-      height={600}
-      width={500}
-      itemSize={50}
-      itemCount={listAddress.length}
-     >
-      {addressRow}
-     </FixedSizeList>
-    </Paper>
+    <Card
+     header="Добавить адрес на карту"
+     image="/images/map-icon.jpg"
+     href="/admin/panel/addaddress"
+    />
    </div>
   </Fragment>
  )

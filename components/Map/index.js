@@ -19,12 +19,6 @@ const fixStyleMap = {
 const southWest = L.latLng(southWestLat, southWestLng)
 const northEast = L.latLng(northEastLat, northEastLng)
 const bounds = L.latLngBounds(southWest, northEast)
-const addProperty = item =>
- Object.defineProperty(item, "marker", {
-  writable: true,
-  enumerable: true,
-  value: MarkerIcon(item.type, item.date, item.service),
- })
 const useStyles = makeStyles({
  root: {
   overflowX: "hidden",
@@ -33,14 +27,11 @@ const useStyles = makeStyles({
 const PrintControl = withLeaflet(PrintControlDefault)
 const MapComponent = props => {
  const classes = useStyles()
- const [position, _] = useState({
+ const [position, setPosition] = useState({
   lat: -126.609375,
   lng: 109.63151025772095,
  })
  const [zoom, setZoom] = useState(3)
- const mapData = props.store.CrimeStore.crimes.map(item =>
-  addProperty(item)
- )
  const downloadOptions = {
   position: "topleft",
   sizeModes: ["Current", "A4Portrait", "A4Landscape"],
@@ -64,28 +55,34 @@ const MapComponent = props => {
      url="/images/map/{z}-{x}-{y}.jpg"
     />
     <PrintControl {...downloadOptions} />
-    {mapData.map((item, index) => (
-     <Marker
-      key={item.id}
-      position={{
-       lat: item.AddressId.lat,
-       lng: item.AddressId.lng,
-      }}
-      icon={item.marker}
-      id={item.id}
-      address={item.address}
-      date={item.date}
-      kui={item.kui}
-      rota={item.rota}
-      type={item.type}
-      object={item.object}
-      patrol={item.AddressId.patrol}
-      patrolWay={item.patrolWay}
-      addressNote={item.addressNote}
-      remove={props.store.CrimeStore.deleteInListCrimes[index]}
-      showButton={props.store.isAdmin}
-     />
-    ))}
+    {props.store.CrimeStore.updatedCrimes.map((item, index) =>
+     item.AddressId !== null ? (
+      <Marker
+       rota={item.rota}
+       key={item.id}
+       position={{
+        lat: item.AddressId.lat,
+        lng: item.AddressId.lng,
+       }}
+       isAdmin={props.store.isAdmin}
+       icon={MarkerIcon.apply(null, [item.type, item.date, item.service])}
+       id={item.id}
+       address={item.address}
+       date={item.date}
+       kui={item.kui}
+       rota={item.rota}
+       type={item.type}
+       object={item.object}
+       patrol={item.AddressId.patrol}
+       patrolWay={item.patrolWay}
+       addressNote={item.addressNote}
+       remove={props.store.CrimeStore.deleteInListCrimes[index]}
+       showButton={props.store.isAdmin}
+       compTime={item.compTime}
+       compDate={item.compDate}
+      />
+     ) : null
+    )}
    </Map>
   </div>
  )

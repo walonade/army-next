@@ -1,4 +1,5 @@
 const express = require("express")
+const os = require("os")
 require("dotenv").config()
 const next = require("next")
 const sequelize = require("./utils/database.js")
@@ -25,7 +26,7 @@ app.prepare().then(() => {
  server.all("*", (req, res) => {
   return handle(req, res)
  })
- server.use((req, res, next) => {
+ server.use((_, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
   res.header(
@@ -35,12 +36,27 @@ app.prepare().then(() => {
   res.header("Access-Control-Allow-Credentials", "true")
   next()
  })
+ const setHost = () => {
+  const networkData = os.networkInterfaces()
+  let host
+  if (networkData["Ethernet"] !== undefined) {
+   networkData["Ethernet"].forEach(ip => {
+    if (ip.family === "IPv4") host = ip.address
+   })
+  } else {
+   networkData["Loopback Pseudo-Interface 1"].forEach(ip => {
+    if (ip.family === "IPv4") host = ip.address
+   })
+  }
+  return host
+ }
+ const host = setHost()
  ;(async () => {
   try {
    await sequelize.sync({ logging: false })
-   server.listen(PORT, err => {
+   server.listen(PORT, host, err => {
     if (err) throw err
-    console.log(`> Ready on http://localhost:${PORT}`)
+    console.log(`> Ready on http://${host}:${PORT}`)
    })
   } catch (err) {
    console.log(err)

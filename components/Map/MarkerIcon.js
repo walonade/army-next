@@ -15,10 +15,8 @@ const showLines = string => {
  switch (string) {
   case serviceList[0]:
    return obj
-   break
   case serviceList[1]:
    return { ...obj, rigthShow: true, leftShow: true }
-   break
   case serviceList[2]:
    return {
     ...obj,
@@ -26,7 +24,6 @@ const showLines = string => {
    }
   default:
    return obj
-   break
  }
 }
 export default (t, d, s) => {
@@ -43,7 +40,7 @@ export default (t, d, s) => {
  } else if (hour >= 0 && hour <= 7) {
   className = "green"
  }
- return L.divIcon({
+ return new L.divIcon({
   html: `<div>
     <span class="type-font">«${type}»</span>
     <span class="date-font">${setDate}</span>
@@ -52,5 +49,7 @@ export default (t, d, s) => {
    <div>`,
   className: `${className}-circle circle`,
   iconSize: [50, 50],
+  iconAnchor: [50, 50],
+  popupAnchor: [-25, -25]
  })
 }
