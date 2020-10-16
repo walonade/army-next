@@ -7,32 +7,44 @@ import moment from "moment"
 import {
  Typography,
  Grid,
- Divider,
  TextField,
  FormControl,
  MenuItem,
  InputLabel,
  Select,
- Button,
+ ButtonBase
 } from "@material-ui/core"
 import AutoComplite from "./../AutoComplite"
 import DateTimePicker from "./../DateTimePicker"
 import DatePicker from "./../DatePicker"
 import SmartInput from "./../SmartInput"
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles, withStyles } from "@material-ui/core/styles"
 import DescriptionIcon from "@material-ui/icons/Description"
 import PrintIcon from "@material-ui/icons/Print"
 import { customUseState } from "../../utils/customHooks"
 const useStyles = makeStyles({
  formControl: {
+  maxWidth: 280,
   minWidth: 250,
- },
- button: {
-  width: 250,
-  marginTop: 20,
-  marginBottom: 20,
- },
+  margin: 0
+ }
 })
+const PanelButton = withStyles({
+    root: {
+        margin: "10px 0",
+        color: "#FFFFFF",
+        maxWidth: 280,
+        minWidth: 250,
+        height: 32,
+        background: "linear-gradient(90.75deg, #3749AA 0%, #202E7B 100%)",
+        boxShadow: "0px 2px 10px 1px rgba(23, 33, 86, 0.9)",
+        borderRadius: 6,
+        fontStyle: "normal",
+        fontWeight: "bold",
+        fontSize: 14,
+        fontFamily: "Roboto"
+    }
+})(ButtonBase)
 const Panel = props => {
  const routerHook = useRouter()
  const classes = useStyles()
@@ -101,19 +113,9 @@ const Panel = props => {
  })
  const getAddresses = useCallback(() => props.store.AddressStore.getAdresses())
  return (
-  <Fragment>
-   <br />
-   <Grid container justify="center">
-    <Typography variant="h4">АКО</Typography>
-   </Grid>
-   <br />
-   <Divider />
-   <br />
-   <Grid container justify="center">
+   <Grid container direction="column" alignItems="center">
+   <Typography variant="h4">АКО</Typography>
     <Typography variant="h6">Сформировать статистику</Typography>
-   </Grid>
-   <br />
-   <Grid container justify="space-around">
     <DatePicker
      className={classes.formControl}
      label="От"
@@ -128,36 +130,24 @@ const Panel = props => {
      value={props.store.toDate}
      onChange={handleChangeDateTo}
     />
-   </Grid>
-   <Grid container justify="center">
-    <Button
+    <PanelButton
      onClick={updateList}
-     variant="contained"
-     color="primary"
-     className={classes.button}
+     className={classes.button, classes.formControl}
     >
      <DescriptionIcon />
-    </Button>
-    {routerHook.pathname === "/public/report" ? (
+    </PanelButton>
+    {routerHook.pathname === "/report" ? (
      <ReactToPrint
       trigger={() => (
-       <Button variant="contained" color="primary" className={classes.button}>
+       <PanelButton variant="contained" color="primary" className={classes.button, classes.formControl}>
         <PrintIcon />
-       </Button>
+       </PanelButton>
       )}
-      onBeforeGetContent={() => props.store.setPrint(true)}
-      onBeforePrint={() => props.store.setPrint(false)}
       content={() => props.printBlog.current}
       removeAfterPrint={true}
      />
     ) : null}
-   </Grid>
-   <Divider />
-   <br />
-   <Grid container justify="center">
-    <Typography variant="h6">Добавление записи</Typography>
-   </Grid>
-   <Grid container justify="center">
+   <Typography variant="h6">Добавление записи</Typography>
     <FormControl className={classes.formControl}>
      <InputLabel>Тип преступления</InputLabel>
      <Select
@@ -229,19 +219,12 @@ const Panel = props => {
      value={patrolWay}
      onChange={handleChangePatrolWay}
     />
-   </Grid>
-   <br />
-   <Grid container justify="center">
-    <Button
+    <PanelButton
      onClick={addToList}
-     variant="contained"
-     color="primary"
-     className={classes.button}
     >
-     Добавить
-    </Button>
+     <Typography variant="button">Добавить</Typography>
+    </PanelButton>
    </Grid>
-  </Fragment>
  )
 }
 

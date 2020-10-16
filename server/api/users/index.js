@@ -12,17 +12,13 @@ router.post("/login", async (req, res) => {
    },
   })
   if (candidate !== null) {
-   if (!candidate.isAdmin) {
     const isSame = await bcrypt.compare(password, candidate.password)
     if (isSame) {
-     const token = generateJWT(candidate.id, candidate.login)
-     res.status(200).json({ token })
+     const token = generateJWT(candidate.id, candidate.login, candidate.isAdmin)
+     res.status(200).json({ token, isAdmin: candidate.isAdmin })
     } else {
      res.status(401).end()
     }
-   } else {
-    res.status(401).end()
-   }
   } else {
    res.status(401).end()
   }

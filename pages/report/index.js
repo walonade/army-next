@@ -1,11 +1,11 @@
 import React, { Fragment } from "react"
-import CabinetLayout from "./../../../layouts/Cabinet"
-import DayTableOne from "./../../../components/DayTableOne"
-import DayTableTwo from "./../../../components/DayTableTwo"
-import WeekTable from "./../../../components/WeekTable"
-import MonthTable from "./../../../components/MonthTable"
-import { withAuthSync } from "./../../../utils/auth.js"
-import withStore from "./../../../utils/withStore.js"
+import CabinetLayout from "../../layouts/Cabinet"
+import DayTableOne from "../../components/DayTableOne"
+import DayTableTwo from "../../components/DayTableTwo"
+import WeekTable from "../../components/WeekTable"
+import MonthTable from "../../components/MonthTable"
+import { withAuthSync } from "../../utils/auth.js"
+import withStore from "../../utils/withStore.js"
 const Table = props => {
  let component
  if (props.store.gapDate == 0) {

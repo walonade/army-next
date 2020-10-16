@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Map, TileLayer, withLeaflet } from "react-leaflet"
+import L from "leaflet"
 import PrintControlDefault from "react-leaflet-easyprint"
 import { makeStyles } from "@material-ui/core/styles"
 import {
@@ -9,9 +10,16 @@ import {
  northEastLng,
 } from "./../../data"
 import withStore from "./../../utils/withStore.js"
-import L from "leaflet"
 import MarkerIcon from "./MarkerIcon"
 import Marker from "./Marker"
+class MyMap extends Map {
+    constructor(props) {
+        super(props)
+    }
+    updateLeafletElement(fromProps, toProps) {
+        console.log(this)
+    }
+}
 const fixStyleMap = {
  height: "calc(100vh - 50px)",
  width: "calc(100vw - 300px)",
@@ -41,7 +49,7 @@ const MapComponent = props => {
  }
  return (
   <div className={classes.root}>
-   <Map
+   <MyMap
     maxBounds={bounds}
     crs={L.CRS.Simple}
     minZoom={2.5}
@@ -83,7 +91,7 @@ const MapComponent = props => {
       />
      ) : null
     )}
-   </Map>
+   </MyMap>
   </div>
  )
 }

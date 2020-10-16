@@ -9,7 +9,7 @@ module.exports.auth = {
   getToken: getTokenFromHeaders,
  }),
 }
-module.exports.generateJWT = (id, login) => {
+module.exports.generateJWT = (id, login, isAdmin) => {
  const today = new Date()
  const expirationDate = new Date(today)
  expirationDate.setDate(today.getDate() + 60)
@@ -17,6 +17,7 @@ module.exports.generateJWT = (id, login) => {
   {
    login,
    id,
+   isAdmin,
    exp: parseInt(expirationDate.getTime() / 1000, 10),
   },
   SECRET_KEY_TOKEN

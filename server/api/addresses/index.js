@@ -1,5 +1,4 @@
 const { Router } = require("express")
-const { v4 } = require("uuid")
 const router = Router()
 const Address = require("./../../models/address")
 router.get("/", async (req, res) => {

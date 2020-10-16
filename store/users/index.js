@@ -66,7 +66,7 @@ export default class {
  @action async login(url, data) {
   try {
    this.rootStore.setFetching(true)
-   const response = await fetch(`/api/${url}/login`, {
+   const response = await fetch("/api/user/login", {
     method: "POST",
     headers: {
      "Content-type": "application/json",
@@ -77,10 +77,7 @@ export default class {
    if (response.status === 200) {
     const { token } = await response.json()
     this.rootStore.setToken(token)
-    url === "admin"
-     ? this.rootStore.setAdmin(true)
-     : this.rootStore.setAdmin(false)
-    url === "admin" ? Router.push("/admin") : Router.push("/public")
+    Router.push("/")
     this.rootStore.NotificationStore.add("добро пожаловать", "info")
    } else {
     this.rootStore.serverMistakes(response.status)

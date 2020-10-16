@@ -36,38 +36,19 @@ export class Store {
  @observable fromDate = moment()
  @observable toDate = moment()
  @observable token = cookie.get("token") || null
- @observable isAdmin = cookie.get("isAdmin") || false
- @observable isPrint = false
  @observable isFetching = false
  @action setFetching(boolean) {
   this.isFetching = boolean
- }
- @action setPrint(boolean) {
-  this.isPrint = boolean
  }
  @action setToken(token) {
   cookie.set("token", token, { expires: 1 })
   this.token = token
  }
- @action setAdmin(boolean) {
-  boolean
-   ? cookie.set("isAdmin", boolean, { expires: 1 })
-   : cookie.remove("isAdmin")
-  this.isAdmin = boolean
- }
  @action logout = () => {
-  const isAdmin = cookie.get("isAdmin")
-  let url = "/public"
-  if (isAdmin) {
-   url = "/admin"
-   cookie.remove("isAdmin")
-  }
   cookie.remove("token")
   this.token = null
-  this.isAdmin = false
   this.CrimeStore.crimes = []
-  window.localStorage.setItem("logout", Date.now())
-  Router.push(`${url}/login`)
+  Router.push("/")
  }
  @action setFromDate(time) {
   this.fromDate = time
