@@ -4,7 +4,6 @@ import {
  Table,
  TableCell,
  TableRow,
- TableHead,
  TableBody,
  TableFooter,
  TableContainer,
@@ -12,9 +11,24 @@ import {
  Typography,
 } from "@material-ui/core"
 import MyTableHead from "./../TableHead"
-import { kindOfCrimeData, days } from "./../../data"
+import { days } from "./../../data"
+import { makeStyles } from "@material-ui/core/styles"
+const useStyles = makeStyles({
+    root: {
+     width: "calc(100vw - 350px)",
+     float: "right",
+     marginRight: 10,
+     marginTop: 10
+    },
+    table: {
+     marginTop: 20,
+     marginBottom: 20
+    }
+   })
 export default withStore(props => {
+const classes = useStyles()
  const list = props.store.CrimeStore.updatedCrimes
+ const {crimesList} = props.store.SistemDataStore.sistemData
  const { isPrint } = props.store
  const textDate = useMemo(() => {
   const { fromDate, toDate } = props.store
@@ -122,19 +136,14 @@ export default withStore(props => {
   }
  }, [list.length])
  return (
-  <TableContainer component={Paper}>
-   <Table padding={isPrint ? "checkbox" : "default"}>
-    <TableHead>
-     <TableRow>
-      <TableCell colSpan={17} align="center">
-       <Typography variant="h6">
+ <Paper elevation={5} className={classes.root}>
+    <Typography variant="h6" align="center">
         Еженедельный анализ по видам преступлений и дням недели совершённые на
         улицах с <u>{textDate.fromDate}</u> по <u>{textDate.toDate}</u>{" "}
         {textDate.year}г.
-       </Typography>
-      </TableCell>
-     </TableRow>
-    </TableHead>
+    </Typography>
+  <TableContainer>
+   <Table padding={isPrint ? "checkbox" : "default"}>
     <MyTableHead week={true} />
     <TableBody>
      {days.map(day => (
@@ -142,7 +151,7 @@ export default withStore(props => {
        <TableCell align="center" variant="head">
         {day}
        </TableCell>
-       {kindOfCrimeData.map(crime => (
+       {crimesList.map(crime => (
         <TableCell key={crime} align="center">
          {setCrime(day, crime)}
         </TableCell>
@@ -177,7 +186,7 @@ export default withStore(props => {
       <TableCell align="center" variant="head">
        В %
       </TableCell>
-      {kindOfCrimeData.map(crime => (
+      {crimesList.map(crime => (
        <TableCell key={crime} align="center">
         {percentType(crime)}
        </TableCell>
@@ -187,19 +196,16 @@ export default withStore(props => {
       <TableCell></TableCell>
       <TableCell></TableCell>
      </TableRow>
-     <TableRow>
-      <TableCell align="center" colSpan={5 + kindOfCrimeData.length}>
-       <Typography variant="h6">
+    </TableFooter>
+   </Table>
+  </TableContainer>
+  <Typography variant="h6" align="center">
         Вывод: Еженедельный анализ по видам показвывает{" "}
         {list.length != 0 ? `${footerTitle.crimePercent}%` : "__"} преступлений{" "}
         {list.length != 0 ? footerTitle.crime : "__"},{" "}
         {list.length != 0 ? `${footerTitle.dayPercent}%` : "__"} совершено в{" "}
         {list.length != 0 ? footerTitle.day : "__"}.
        </Typography>
-      </TableCell>
-     </TableRow>
-    </TableFooter>
-   </Table>
-  </TableContainer>
+  </Paper>
  )
 })

@@ -1,7 +1,7 @@
-import React, { useRef, Fragment } from "react"
+import React, { useRef, Fragment, useEffect } from "react"
 import Panel from "./../../components/Panel"
-import AppBar from "./../../components/AppBar"
 import { makeStyles } from "@material-ui/core/styles"
+import withStore from "../../utils/withStore"
 const useStyles = makeStyles({
  root: {
   display: "flex",
@@ -22,9 +22,12 @@ const useStyles = makeStyles({
   width: "100vw - 305px"
  },
 })
-export default props => {
+export default withStore(props => {
  const classes = useStyles()
  const componentRef = useRef()
+ useEffect(() => {
+    props.store.SistemDataStore.getSistemData()
+  }, [])
  return (
   <div className={classes.root}>
    <div className={classes.drawwer}>
@@ -35,4 +38,4 @@ export default props => {
    </div>
   </div>
  )
-}
+})

@@ -1,19 +1,4 @@
 import moment from "moment"
-const city = "Павлодар"
-const kindOfCrimeData = [
- "Убийство",
- "УПВЗ",
- "Изнасилование",
- "Грабёж",
- "Кража",
- "Разбой",
- "Хулиганство",
- "Угон",
- "Мошенничество",
- "Наркотик",
- "Мелкое хищение",
- "Хол. оружие",
-]
 const tableOneHead = [
  "№ п/п",
  "виды преступления",
@@ -26,8 +11,6 @@ const tableOneHead = [
  "день недели",
  "допущены на маршр. патрул в/нарядов",
 ]
-const patrols = ["Северный", "Центральный", "Южный"]
-const serviceList = ["не раскрыто", "войсковой наряд", "УП"]
 const timeofCrimes = [
  {
   id: 0,
@@ -123,7 +106,7 @@ const countCrime = (patrol, array) => {
     })
     return data
    }
-const mostCriminal = array => {
+const mostCriminal = (array, patrols) => {
     let sortArr = []
     patrols.forEach(
      patrol =>
@@ -137,20 +120,16 @@ const southWestLng = 230
 const northEastLat = 0
 const northEastLng = 0
 export {
- city,
  southWestLat,
  southWestLng,
  northEastLat,
  northEastLng,
- kindOfCrimeData,
  timeofCrimes,
  weekDays,
  dayOfWeek,
  setTitleDate,
  days,
- patrols,
  tableOneHead,
- serviceList,
  countCrime, 
  mostCriminal
 }

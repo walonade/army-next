@@ -1,43 +1,51 @@
 import React, { useMemo } from "react"
 import { TableHead, TableCell, TableRow } from "@material-ui/core"
-import { kindOfCrimeData } from "./../../data"
-export default props => {
+import { withStyles } from "@material-ui/core/styles"
+import withStore from "../../utils/withStore"
+const TableHeader = withStyles({
+    head: {
+      background: "#3749AA",
+      color: "white"
+    }
+  })(TableCell)
+export default withStore(props => {
+  const {crimesList} = props.store.SistemDataStore.sistemData
  const season = props.week ? (
-  <TableCell align="center" variant="head">
+  <TableHeader align="center" variant="head">
    День недели
-  </TableCell>
+  </TableHeader>
  ) : (
-  <TableCell align="center" variant="head">
+  <TableHeader align="center" variant="head">
    Время суток
-  </TableCell>
+  </TableHeader>
  )
  const crimes = useMemo(
   () =>
-   kindOfCrimeData.map(item => (
-    <TableCell align="center" variant="head" key={item}>
+  crimesList.map(item => (
+    <TableHeader align="center" variant="head" key={item}>
      {item}
-    </TableCell>
+    </TableHeader>
    )),
-  [kindOfCrimeData.length]
+  [crimesList.length]
  )
  return (
   <TableHead>
    <TableRow>
     {season}
     {crimes}
-    <TableCell align="center" variant="head">
+    <TableHeader align="center" variant="head">
      итого
-    </TableCell>
-    <TableCell align="center" variant="head">
+    </TableHeader>
+    <TableHeader align="center" variant="head">
      В %
-    </TableCell>
-    <TableCell align="center" variant="head">
+    </TableHeader>
+    <TableHeader align="center" variant="head">
      раскр. %
-    </TableCell>
-    <TableCell align="center" variant="head">
+    </TableHeader>
+    <TableHeader align="center" variant="head">
      нераскр. %
-    </TableCell>
+    </TableHeader>
    </TableRow>
   </TableHead>
  )
-}
+})

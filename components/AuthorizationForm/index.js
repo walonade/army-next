@@ -85,7 +85,7 @@ export default withStore(props => {
      )
      return
     }
-    props.store.UserStore.login("user", data)
+    props.store.UserStore.login(data)
    })
  return (
   <Backdrop className={classes.backDrop} open={true}>

@@ -1,10 +1,10 @@
 import React, { Fragment } from "react"
-import MainLayout from "../../../../layouts/Main"
-import FormAddress from "../../../../components/admin/FormAddress"
+import MainLayout from "../../../layouts/Main"
+import FormAddress from "../../../components/admin/FormAddress"
 import { makeStyles } from "@material-ui/core/styles"
 import { Paper } from "@material-ui/core/"
-import AppBar from "../../../../components/AppBar"
-import { withAuthSync } from "../../../../utils/auth"
+import AppBar from "../../../components/AppBar"
+import { withAuthSync } from "../../../utils/auth"
 const useStyle = makeStyles(theme => ({
  root: {
   marginTop: 100,

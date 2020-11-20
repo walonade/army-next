@@ -8,6 +8,7 @@ import UserStore from "./users"
 import AddressStore from "./addresses"
 import CrimeStore from "./crimes"
 import NotificationStore from "./notification"
+import SistemDataStore from "./sistemData"
 useStaticRendering(isServer)
 export class Store {
  constructor() {
@@ -15,6 +16,7 @@ export class Store {
   this.AddressStore = new AddressStore(this)
   this.CrimeStore = new CrimeStore(this)
   this.NotificationStore = new NotificationStore(this)
+  this.SistemDataStore = new SistemDataStore(this)
  }
  serverMistakes = status => {
   switch (status) {
@@ -66,5 +68,5 @@ export class Store {
  }
 }
 export async function fetchInitialStoreState() {
- return {}
+  return {}
 }

@@ -1,14 +1,14 @@
 import React, { Fragment, useCallback, useEffect } from "react"
-import MainLayout from "./../../../layouts/Main"
+import MainLayout from "../../layouts/Main"
 import { Typography, TextField, Button, Paper, List } from "@material-ui/core/"
-import Card from "../../../components/Card"
-import AppBar from "./../../../components/AppBar"
+import AppBar from "../../components/AppBar"
 import { makeStyles } from "@material-ui/core/styles"
-import { withAuthSync } from "./../../../utils/auth.js"
-import SmartInput from "./../../../components/SmartInput"
-import withStore from "./../../../utils/withStore.js"
-import ListItem from "./../../../components/admin/UsersListItem"
-import { customUseState } from "../../../utils/customHooks"
+import { withAuthSync } from "../../utils/auth.js"
+import SmartInput from "../../components/SmartInput"
+import withStore from "../../utils/withStore.js"
+import UsersListItem from "../../components/admin/UsersListItem"
+import ConfigurationForm from "../../components/admin/ConfigurationForm"
+import { customUseState } from "../../utils/customHooks"
 
 const useStyle = makeStyles(theme => ({
  root: {
@@ -109,7 +109,7 @@ const AdminPanel = props => {
        Пользователи
       </Typography>
       {props.store.UserStore.users.map((item, index) => (
-       <ListItem
+       <UsersListItem
         key={item.id}
         item={item}
         remove={props.store.UserStore.deleteInListUser[index]}
@@ -137,14 +137,12 @@ const AdminPanel = props => {
       </Button>
      </div>
     </Paper>
-    <Card
-     header="Добавить адрес на карту"
-     image="/images/map-icon.jpg"
-     href="/admin/panel/addaddress"
-    />
+    <Paper className={classes.paper}>
+       <ConfigurationForm/>
+    </Paper>
    </div>
   </Fragment>
  )
 }
 AdminPanel.Layout = MainLayout
-export default withAuthSync(withStore(AdminPanel), true)
+export default withAuthSync(withStore(AdminPanel), "admin")

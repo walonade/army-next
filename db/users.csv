@@ -1,5 +1,5 @@
 "id";"login";"rota";"password";"isAdmin";"createdAt";"updatedAt"
 "17b35c21-f150-4802-97ed-57dc2fb3aee5";"1rota";1;"$2a$10$eT9mxoUeqbv1bw1gviqYQOu9yf46nuzgeht89e./jfw2rbrLqGksO";0;"2020-09-24 11:02:18";"2020-09-24 11:02:18"
-"4fdf9852-ae6b-45d1-ad07-a5057228fe18";"admin";0;"$2a$10$V1WgsKy6fTlHYsycCS2VcuOKrl2RxhY/yNW3CvCmyCMSFZIt92e1.";1;"";"2020-05-01 14:38:41"
+"4fdf9852-ae6b-45d1-ad07-a5057228fe18";"admin";0;"$2a$10$V1WgsKy6fTlHYsycCS2VcuOKrl2RxhY/yNW3CvCmyCMSFZIt92e1.";1;"2020-05-01 14:38:41";"2020-05-01 14:38:41"
 "9585c32b-0086-4a32-8b58-a49671a7332c";"3rota";3;"$2a$10$gnOsFYCwdW358soM4.JeQu1RfWW/IrS83AqxxR/zrq8qSsKxrOu8G";0;"2020-08-04 05:27:54";"2020-08-04 05:27:54"
 "a380d26d-b6d8-4628-b6c8-51488b2f7918";"2rota";2;"$2a$10$zZoLqbw1BZZQnLkg.e11NeryY4k6BKLmkUBRjC788AaZXAdJIHAjG";0;"2020-08-04 05:27:42";"2020-08-04 05:27:42"

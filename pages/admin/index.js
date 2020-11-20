@@ -46,4 +46,4 @@ const Admin = () => {
  )
 }
 Admin.Layout = CabinetLayout
-export default withAuthSync(Admin, true)
+export default withAuthSync(Admin)

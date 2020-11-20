@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useMemo, useEffect } from "react"
 import {
  Table,
  TableCell,
@@ -13,14 +13,22 @@ import { makeStyles } from "@material-ui/core/styles"
 import MyTableHead from "./../TableHead"
 import withStore from "./../../utils/withStore.js"
 import moment from "moment"
-import { kindOfCrimeData, timeofCrimes } from "./../../data"
+import { timeofCrimes } from "./../../data"
 const useStyles = makeStyles({
- root: {
-  marginTop: 20,
-  marginBottom: 20,
- },
+    root: {
+        width: "calc(100vw - 360px)",
+        float: "right",
+        marginRight: 10,
+        marginTop: 10,
+        marginBottom: 30
+    },
+    table: {
+        marginTop: 20,
+        marginBottom: 20
+    }
 })
 export default withStore(props => {
+ const {crimesList} = props.store.SistemDataStore.sistemData
  const classes = useStyles()
  let list = props.store.CrimeStore.updatedCrimes
  const { isPrint } = props.store
@@ -109,11 +117,12 @@ export default withStore(props => {
   return arr
  }, [list.length])
  return (
-  <TableContainer component={Paper} className={`${classes.root} not-before`}>
-   <Typography variant="h6" align="center">
+    <Paper elevation={5} className={classes.root}>
+           <Typography variant="h6" align="center">
     Ежедневный анализ по видам преступлений и времени совершённых на улицах на{" "}
     {moment(props.store.toDate).locale("ru").format("LL")}
    </Typography>
+  <TableContainer className={`${classes.table} not-before`}>
    <Table padding={isPrint ? "checkbox" : "default"}>
     <MyTableHead />
     <TableBody>
@@ -123,7 +132,7 @@ export default withStore(props => {
         variant="head"
         align="center"
        >{`${time.fromTime}-${time.toTime}`}</TableCell>
-       {kindOfCrimeData.map(crime => (
+       {crimesList.map(crime => (
         <TableCell align="center" key={crime}>
          {setCrime(time.fromTime, time.toTime, crime)}
         </TableCell>
@@ -148,7 +157,7 @@ export default withStore(props => {
       <TableCell variant="head" align="center">
        Общий итог
       </TableCell>
-      {kindOfCrimeData.map(crime => (
+      {crimesList.map(crime => (
        <TableCell key={crime} align="center">
         {setEnd(crime)}
        </TableCell>
@@ -164,7 +173,7 @@ export default withStore(props => {
       <TableCell variant="head" align="center">
        в %
       </TableCell>
-      {kindOfCrimeData.map(crime => (
+      {crimesList.map(crime => (
        <TableCell key={crime} align="center">
         {fullAll(crime)}
        </TableCell>
@@ -174,17 +183,14 @@ export default withStore(props => {
       <TableCell align="center">{memoFullPercent.trufyPercent}</TableCell>
       <TableCell align="center">{memoFullPercent.falsyPercent}</TableCell>
      </TableRow>
-     <TableRow>
-      <TableCell colSpan={5 + kindOfCrimeData.length} align="center">
-       <Typography variant="h6">
+    </TableFooter>
+   </Table>
+  </TableContainer>
+  <Typography variant="h6" align="center">
         Вывод: Ежедневный анализ по видам преступлений и времени показывает{" "}
         {list.length !== 0 ? footerTitle[0].percent : "__"} % совершено с{" "}
         {list.length !== 0 ? footerTitle[0].time : "__"} часов
        </Typography>
-      </TableCell>
-     </TableRow>
-    </TableFooter>
-   </Table>
-  </TableContainer>
+  </Paper>
  )
 })

@@ -1,8 +1,7 @@
-import React, { Fragment, useState, useCallback } from "react"
+import React, { useCallback, useEffect } from "react"
 import withStore from "./../../utils/withStore"
 import { useRouter } from "next/router"
 import ReactToPrint from "react-to-print"
-import { kindOfCrimeData, serviceList } from "./../../data"
 import moment from "moment"
 import {
  Typography,
@@ -112,6 +111,7 @@ const Panel = props => {
   }
  })
  const getAddresses = useCallback(() => props.store.AddressStore.getAdresses())
+ const { crimesList, serviceList } = props.store.SistemDataStore.sistemData
  return (
    <Grid container direction="column" alignItems="center">
    <Typography variant="h4">АКО</Typography>
@@ -158,7 +158,7 @@ const Panel = props => {
       value={kindOfCrime}
       onChange={handleChangeKindOfCrime}
      >
-      {kindOfCrimeData.map((item, index) => (
+      {crimesList.map((item, index) => (
        <MenuItem key={index} value={item}>
         {item}
        </MenuItem>

@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import {Paper} from "@material-ui/core"
 import { Map, TileLayer, withLeaflet } from "react-leaflet"
 import L from "leaflet"
 import PrintControlDefault from "react-leaflet-easyprint"
@@ -21,8 +22,8 @@ class MyMap extends Map {
     }
 }
 const fixStyleMap = {
- height: "calc(100vh - 50px)",
- width: "calc(100vw - 300px)",
+ height: "calc(100vh - 20px)",
+ width: "calc(100vw - 350px)",
 }
 const southWest = L.latLng(southWestLat, southWestLng)
 const northEast = L.latLng(northEastLat, northEastLng)
@@ -30,6 +31,10 @@ const bounds = L.latLngBounds(southWest, northEast)
 const useStyles = makeStyles({
  root: {
   overflowX: "hidden",
+  width: "calc(100vw - 350px)",
+  float: "right",
+  marginRight: 10,
+  marginTop: 10,
  },
 })
 const PrintControl = withLeaflet(PrintControlDefault)
@@ -48,7 +53,7 @@ const MapComponent = props => {
   exportOnly: true,
  }
  return (
-  <div className={classes.root}>
+  <Paper className={classes.root}>
    <MyMap
     maxBounds={bounds}
     crs={L.CRS.Simple}
@@ -92,7 +97,7 @@ const MapComponent = props => {
      ) : null
     )}
    </MyMap>
-  </div>
+  </Paper>
  )
 }
 export default withStore(MapComponent)

@@ -11,6 +11,7 @@ const AddressRoute = require("./api/addresses")
 const CrimeRoute = require("./api/crimes")
 const AdminRouteUser = require("./api/admin/users")
 const AdminRouteAddress = require("./api/admin/addresses")
+const  SistemDataRoute = require("./api/sistemData")
 const { PORT } = require("./keys")
 app.prepare().then(() => {
  const server = express()
@@ -21,6 +22,7 @@ app.prepare().then(() => {
  server.use("/api/crime", CrimeRoute)
  server.use("/api/admin/user", AdminRouteUser)
  server.use("/api/admin/address", AdminRouteAddress)
+ server.use("/api/sistem_data", SistemDataRoute)
  server.all("*", (req, res) => {
   return handle(req, res)
  })

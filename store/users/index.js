@@ -63,7 +63,7 @@ export default class {
    console.log(e)
   }
  }
- @action async login(url, data) {
+ @action async login(data) {
   try {
    this.rootStore.setFetching(true)
    const response = await fetch("/api/user/login", {

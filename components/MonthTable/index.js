@@ -12,16 +12,23 @@ import {
  Typography,
 } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { kindOfCrimeData, patrols, city, mostCriminal } from "./../../data"
+import { mostCriminal } from "./../../data"
 import withStore from "./../../utils/withStore.js"
 const useStyles = makeStyles({
- root: {
-  marginTop: 20,
-  marginBottom: 20,
- },
+    root: {
+        width: "calc(100vw - 360px)",
+        float: "right",
+        marginRight: 10,
+        marginTop: 10,
+        marginBottom: 30
+    },
+    table: {
+        marginTop: 20,
+    }
 })
 export default withStore(props => {
  const classes = useStyles()
+ const {city, patrols, crimesList} = props.store.SistemDataStore.sistemData
  const list = props.store.CrimeStore.crimes
  const year = useMemo(() => {
   const fromDate = props.store.fromDate.format("DD.MM.YYYY")
@@ -99,9 +106,9 @@ export default withStore(props => {
   })
   return percent
  }, [list.length])
- const mostCriminalMemo = useMemo(() => mostCriminal(list), [list.length])
+ const mostCriminalMemo = useMemo(() => mostCriminal(list, patrols), [list.length])
  return (
-  <Fragment>
+  <Paper elevation={5} className={classes.root}>
    <div className="own-list">
     <Typography variant="h5" align="center">
      Анализ
@@ -120,7 +127,7 @@ export default withStore(props => {
      (по районам несения службы)
     </Typography>
    </div>
-   <TableContainer component={Paper} className={classes.root}>
+   <TableContainer elevation={3} component={Paper} className={classes.table}>
     <Table>
      <TableHead>
       <TableRow>
@@ -148,7 +155,7 @@ export default withStore(props => {
       </TableRow>
      </TableHead>
      <TableBody>
-      {kindOfCrimeData.map(item => (
+      {crimesList.map(item => (
        <TableRow key={item}>
         <TableCell variant="head" align="center">
          {item}
@@ -169,7 +176,7 @@ export default withStore(props => {
      </TableBody>
     </Table>
    </TableContainer>
-   <TableContainer component={Paper} className={classes.root}>
+   <TableContainer component={Paper} elevation={3} className={classes.table}>
     <Table>
      <TableHead>
       <TableRow>
@@ -232,6 +239,6 @@ export default withStore(props => {
      </TableFooter>
     </Table>
    </TableContainer>
-  </Fragment>
+  </Paper>
  )
 })

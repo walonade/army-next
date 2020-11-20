@@ -1,4 +1,4 @@
-import React, { memo, useMemo, Fragment } from "react"
+import React, { memo, useMemo, Fragment, useState } from "react"
 import {
  Table,
  TableCell,
@@ -7,25 +7,40 @@ import {
  TableBody,
  TableFooter,
  TableContainer,
+ TablePagination,
  Paper,
  Typography,
 } from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles, withStyles } from "@material-ui/core/styles"
 import withStore from "./../../utils/withStore.js"
 import moment from "moment"
 import {
  tableOneHead,
- patrols,
- city,
  countCrime,
  mostCriminal,
 } from "./../../data"
 const useStyles = makeStyles({
  root: {
-  marginTop: 20,
-  marginBottom: 20,
+  width: "calc(100vw - 360px)",
+  float: "right",
+  marginRight: 10,
+  marginTop: 10,
  },
+ table: {
+  marginTop: 20,
+  marginBottom: 20
+ },
+ pagination: {
+   width: 500,
+   float: "right"
+ }
 })
+const TableHeader = withStyles({
+  head: {
+    background: "#3749AA",
+    color: "white"
+  }
+})(TableCell)
 const Tr = memo(
  props => {
   const { crime, index } = props
@@ -54,9 +69,18 @@ const Tr = memo(
   prevProps.crime.id === nextProps.crime.id ? true : false
 )
 export default withStore(props => {
- const classes = useStyles()
- let checkMemo = props.store.toDate.get("date")
  const { crimes, updatedCrimes } = props.store.CrimeStore
+const {city, patrols} = props.store.SistemDataStore.sistemData
+ const classes = useStyles()
+ const patrolPage = () => {
+  let obj = {}
+  patrols.forEach(patrol => {
+    obj = {...obj, [patrol]: 0}
+  })
+  return obj
+ }
+ const [page, setPage] = useState({...patrolPage()})
+ let checkMemo = props.store.toDate.get("date")
  const textDate = useMemo(() => props.store.toDate.format("DD.MM.YYYY"), [
   checkMemo,
  ])
@@ -73,23 +97,39 @@ export default withStore(props => {
    crimeWord(crimes.length, ["преступление", "преступления", "преступлений"]),
   [crimes.length]
  )
- const mostCriminalMemo = useMemo(() => mostCriminal(crimes), [crimes.length])
+ const mostCriminalMemo = useMemo(() => mostCriminal(crimes, patrols), [crimes.length])
  const headData = useMemo(
   () =>
    tableOneHead.map(item => (
-    <TableCell key={item} variant="head" align="center">
+    <TableHeader size="small" key={item} variant="head" align="center">
      {item}
-    </TableCell>
+    </TableHeader>
    )),
   [tableOneHead.length]
  )
+ const countOnPage = patrol => {
+  let count = 0
+  if(updatedCrimes.length == 0) return count
+  updatedCrimes.forEach(crime => {
+    if(crime.AddressId.patrol === patrol) count = count + 1
+  });
+  return count
+}
+const patrolArrCrimes = patrol => {
+  let arr = []
+  updatedCrimes.forEach(crime => {
+    if (crime.AddressId.patrol === patrol) arr = [...arr, crime]
+   })
+   return arr
+}
  return (
-  <TableContainer component={Paper} className={classes.root}>
+   <Paper elevation={5} className={classes.root}>
+  <TableContainer className={classes.table}>
    <Typography align="center" variant="h6">
     Ежедневный анализ криминогенной обстановки по преступлениям совершённых на
     улицах на {moment(props.store.toDate).locale("ru").format("LL")}
    </Typography>
-   <Table>
+   <Table stickyHeader={true}>
     <TableHead>
      <TableRow>{headData}</TableRow>
     </TableHead>
@@ -97,23 +137,35 @@ export default withStore(props => {
      {patrols.map(patrol => (
       <Fragment key={patrol}>
        <TableRow>
-        <TableCell align="center" colSpan={10}>
+        <TableCell size="small" align="center" colSpan={10}>
          <Typography variant="overline">{patrol} отдел полиции</Typography>
         </TableCell>
        </TableRow>
        {updatedCrimes.length !== 0 ? (
-        updatedCrimes.map((crime, index) => {
-         if (crime.AddressId.patrol === patrol) {
-          return <Tr key={crime.id} crime={crime} index={index} />
-         }
-        })
+            patrolArrCrimes(patrol)
+            .map((crime, index) => (<Tr key={crime.id} crime={crime} index={index} />))
+            .slice(page[patrol] * 5, page[patrol] * 5 + 5)
        ) : null}
+       <TableRow>
+         <TableCell colSpan={10}>
+          <TablePagination 
+                  rowsPerPageOptions={[]}
+                  rowsPerPage={5}
+                  component="div"
+                  className={classes.pagination}
+                  count={countOnPage(patrol)}
+                  page={page[patrol]}
+                  onChangePage={(_, newPage) => {
+                    console.log(newPage)
+                    setPage({...page, [patrol]: +newPage})}}/>
+         </TableCell>
+       </TableRow>
       </Fragment>
      ))}
     </TableBody>
     <TableFooter>
      <TableRow>
-      <TableCell colSpan={10} align="right">
+      <TableCell size="small" colSpan={10} align="right">
        <Typography>
         За <u>{textDate}</u> совершено <u>{crimes.length}</u> {memoizeWord} на
         улицах г. {city}, <br />
@@ -132,5 +184,6 @@ export default withStore(props => {
     </TableFooter>
    </Table>
   </TableContainer>
+  </Paper>
  )
 })

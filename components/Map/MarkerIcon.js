@@ -1,6 +1,5 @@
 import moment from "moment"
 import L from "leaflet"
-import { serviceList } from "../../data"
 const cutWord = string => {
  const wordsArr = string.split(" ")
  let finWord = ""
@@ -13,17 +12,15 @@ const showLines = string => {
   leftShow: false,
  }
  switch (string) {
-  case serviceList[0]:
+  case "не раскрыто":
    return obj
-  case serviceList[1]:
+  case "войсковой наряд":
    return { ...obj, rigthShow: true, leftShow: true }
-  case serviceList[2]:
+  default:
    return {
     ...obj,
     rigthShow: true,
    }
-  default:
-   return obj
  }
 }
 export default (t, d, s) => {
