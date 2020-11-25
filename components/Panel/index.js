@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect } from "react"
+import React, { Fragment, useCallback, useEffect, useState } from "react"
 import withStore from "./../../utils/withStore"
 import { useRouter } from "next/router"
-import ReactToPrint from "react-to-print"
 import moment from "moment"
 import {
  Typography,
@@ -45,6 +44,16 @@ const PanelButton = withStyles({
     }
 })(ButtonBase)
 const Panel = props => {
+  const {sistemData, changeSistemData} = props.store.SistemDataStore
+  const { crimesList, serviceList } = props.store.SistemDataStore.sistemData
+  const [printBlog, setPrintBlog] = useState(null)
+  const [southWestLat, setSouthWestLat] = customUseState(0)
+  const [southWestLng, setSouthWestLng] = customUseState(0)
+  const [northEastLat, setNorthEastLat] = customUseState(0)
+  const [northEastLng, setNorthEastLng] = customUseState(0)
+  useEffect(() => {
+    setPrintBlog(props.printBlog.current)
+  }, [props.printBlog.current])
  const routerHook = useRouter()
  const classes = useStyles()
  const getAutoItem = useCallback(item => item.value)
@@ -82,6 +91,7 @@ const Panel = props => {
  const handleChangeObjectOfCrime = event => setObjectOfCrime(event.target.value)
  const handleChangeService = event => setService(event.target.value)
  const handleChangePatrolWay = event => setPatrolWay(event.target.value)
+ const downloadReport = useCallback(() => props.store.sendHtmlToServer(printBlog))
  const updateList = useCallback(() => props.store.CrimeStore.getCrimes())
  const addToList = useCallback(() => {
   const data = {
@@ -110,8 +120,11 @@ const Panel = props => {
    )
   }
  })
+ const setBounds = () => {
+  const bounds = {southWestLat, southWestLng, northEastLat, northEastLng}
+  changeSistemData({...JSON.parse(JSON.stringify(sistemData)), bounds})
+ }
  const getAddresses = useCallback(() => props.store.AddressStore.getAdresses())
- const { crimesList, serviceList } = props.store.SistemDataStore.sistemData
  return (
    <Grid container direction="column" alignItems="center">
    <Typography variant="h4">АКО</Typography>
@@ -137,16 +150,12 @@ const Panel = props => {
      <DescriptionIcon />
     </PanelButton>
     {routerHook.pathname === "/report" ? (
-     <ReactToPrint
-      trigger={() => (
-       <PanelButton variant="contained" color="primary" className={classes.button, classes.formControl}>
+       <PanelButton variant="contained" color="primary" className={classes.button, classes.formControl} onClick={downloadReport}>
         <PrintIcon />
        </PanelButton>
-      )}
-      content={() => props.printBlog.current}
-      removeAfterPrint={true}
-     />
     ) : null}
+    { props.isAdmin != undefined && !props.isAdmin ?
+    <Fragment>
    <Typography variant="h6">Добавление записи</Typography>
     <FormControl className={classes.formControl}>
      <InputLabel>Тип преступления</InputLabel>
@@ -200,9 +209,9 @@ const Panel = props => {
       value={service}
       onChange={handleChangeService}
      >
-      {serviceList.map((item, index) => (
-       <MenuItem key={index} value={item}>
-        {item}
+      {serviceList.map(item => (
+       <MenuItem key={item.name} value={item.name}>
+        {item.name}
        </MenuItem>
       ))}
      </Select>
@@ -224,6 +233,21 @@ const Panel = props => {
     >
      <Typography variant="button">Добавить</Typography>
     </PanelButton>
+    </Fragment>
+    : null 
+    }
+    {props.isAdmin ? (
+      <Fragment>
+        <Typography variant="h6">Корректировка границ карты</Typography>
+        <SmartInput label="southWestLat" value={southWestLat} onChange={event => setSouthWestLat(+event)}/>
+        <SmartInput label="southWestLng" value={southWestLng} onChange={event => setSouthWestLng(+event)}/>
+        <SmartInput label="northEastLat" value={northEastLat} onChange={event => setNorthEastLat(+event)}/>
+        <SmartInput label="northEastLng" value={northEastLng} onChange={event => setNorthEastLng(+event)}/>
+        <PanelButton onClick={setBounds}>
+          <Typography variant="button">Изменить</Typography>
+        </PanelButton>
+      </Fragment>
+    ) : null}
    </Grid>
  )
 }

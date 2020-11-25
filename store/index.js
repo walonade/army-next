@@ -1,6 +1,7 @@
 import { action, observable, computed } from "mobx"
 import { useStaticRendering } from "mobx-react"
 import cookie from "js-cookie"
+import nextCookie from "next-cookies"
 import moment from "moment"
 const isServer = typeof window === "undefined"
 import Router from "next/router"
@@ -9,6 +10,7 @@ import AddressStore from "./addresses"
 import CrimeStore from "./crimes"
 import NotificationStore from "./notification"
 import SistemDataStore from "./sistemData"
+import jwtDecode from "jwt-decode"
 useStaticRendering(isServer)
 export class Store {
  constructor() {
@@ -54,6 +56,25 @@ export class Store {
  }
  @action setFromDate(time) {
   this.fromDate = time
+ }
+ @action async sendHtmlToServer(html) {
+  this.setFetching(true)
+  const response = await fetch("/api/download/get", {
+      method: "POST",
+      headers: {
+          Authorization: `Bearer ${this.token}`,
+          Accept: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "Content-type": "application/json",
+      },
+      body: JSON.stringify({html: html.innerHTML})
+  })
+  if(response.status === 200) {
+    this.setFetching(false)
+    this.NotificationStore.add("выполнено успешно", "success")
+  } else {
+    this.setFetching(false)
+    this.serverMistakes(response.status)
+  }
  }
  @action setToDate(time) {
   this.toDate = time

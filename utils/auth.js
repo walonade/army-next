@@ -11,10 +11,12 @@ export const auth = (ctx, forAdmin) => {
  }
  if (!token) {
   if (typeof window === "undefined") {
-   ctx.res.writeHead(302, { Location: `/` })
-   ctx.res.end()
+   if(ctx.req.url !== "/") {
+      ctx.res.writeHead(302, { Location: `/` })
+      ctx.res.end()
+   }
   } else {
-   Router.push(`/`)
+   if(Router.pathname !== "/") Router.push("/")
   }
  }
  if(forAdmin === "admin") {

@@ -1,10 +1,11 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import Main from "../layouts/Main"
 import { makeStyles, withStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
 import Link from "next/link"
 import AuthorizationForm from "../components/AuthorizationForm"
 import withStore from "../utils/withStore"
+import { withAuthSync } from "../utils/auth"
 const useStyles = makeStyles({
  root: {
   width: "100vw",
@@ -20,7 +21,8 @@ const useStyles = makeStyles({
     justifyItems: "flex-end"
  },
  card: {
-    cursor: "pointer"
+    cursor: "pointer",
+    maxHeight: 400
  }
 })
 const MyTypography = withStyles({
@@ -44,7 +46,8 @@ const data = [
 ]
 const Public = props => {
  const classes = useStyles()
- const isAuthorization = props.store.token === null ? true : false
+ const isAuthorization = props.token === undefined ? true : false
+ const isAdmin = props.isAdmin != undefined && props.isAdmin != false
  return (
      <>
    <div className={classes.root}>
@@ -55,6 +58,13 @@ const Public = props => {
      <img className={classes.card} src={item.image}/>
     </Link>
    ))}
+      { 
+      isAdmin ?
+         <Link href="/panel">
+         <img className={classes.card} src="/images/admin-panel.png"/>
+         </Link>
+      : null 
+      }
   </div>
   </div>
    {isAuthorization ? <AuthorizationForm/> : null}
@@ -62,4 +72,4 @@ const Public = props => {
  )
 }
 Public.Layout = Main
-export default withStore(Public)
+export default withAuthSync(withStore(Public))

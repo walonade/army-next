@@ -25,20 +25,14 @@ router.post("/change", auth.required, isAttach, async (req, res) => {
     try {
         const user = req.currentUser
         if(user.isAdmin) {
-            const {name} = req.body
-            const isUse = await CrimesList.findOne({
-                where: {
-                    name
-                }
-            })
-            if(isUse === null) {
-                const crime = await CrimesList.create({
-                    name
-                })
-                res.status(201).json({"message": "OK"})
-            } else {
-                res.status(201).json({"message": "ранее создано"})
-            }
+            fs.truncate("server/config.json", 0, () => {
+                fs.writeFile("server/config.json", JSON.stringify(req.body), (err) => {
+                    if (err) {
+                        throw new Error(err)
+                    }
+                    res.status(201).json(req.body)
+                });
+            });
         } else {
             res.status(401).end()
         }

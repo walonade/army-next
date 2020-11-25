@@ -12,19 +12,18 @@ const showLines = string => {
   leftShow: false,
  }
  switch (string) {
-  case "не раскрыто":
+  case "withoutLine":
    return obj
-  case "войсковой наряд":
+  case "twoLine":
    return { ...obj, rigthShow: true, leftShow: true }
+  case "oneLine":
+    return { ...obj, rigthShow: true }
   default:
-   return {
-    ...obj,
-    rigthShow: true,
-   }
+    return obj
  }
 }
-export default (t, d, s) => {
- const styleLine = showLines(s)
+export default (t, d, it) => {
+ const styleLine = showLines(it)
  const date = moment(d)
  const setDate = moment(d).format("DD.MM.YYYY").toString()
  const hour = date.hour()

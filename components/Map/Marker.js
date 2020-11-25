@@ -7,7 +7,7 @@ export default memo(
   return (
    <Marker position={props.position} icon={props.icon}>
     <Popup position={props.position}>
-     {!props.showButton ? (
+     {!props.isAdmin ? (
       <IconButton onClick={props.remove}>
        <DeleteOutlineIcon />
       </IconButton>

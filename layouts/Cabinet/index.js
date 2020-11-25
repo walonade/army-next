@@ -12,11 +12,12 @@ const useStyles = makeStyles({
   position: "fixed",
   top: 5,
   left: 5,
-  height: "95%",
+  maxHeight: "100%",
   width: 300,
   padding: 10,
   background: "#FFFFFF",
-  boxShadow: "1px 1px 20px 2px rgba(0, 0, 0, 0.25)"
+  boxShadow: "1px 1px 20px 2px rgba(0, 0, 0, 0.25)",
+  overflow: "auto",
  },
  content: {
   width: "100vw - 305px"
@@ -31,10 +32,10 @@ export default withStore(props => {
  return (
   <div className={classes.root}>
    <div className={classes.drawwer}>
-    <Panel printBlog={componentRef} />
+    <Panel printBlog={componentRef} {...props.children.props}/>
    </div>
    <div className={classes.content}>
-    <Fragment ref={componentRef}>{props.children}</Fragment>
+    <div ref={componentRef}>{props.children}</div>
    </div>
   </div>
  )

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, Fragment, useState } from "react"
+import React, { memo, useMemo, Fragment, useState, useEffect } from "react"
 import {
  Table,
  TableCell,
@@ -72,14 +72,18 @@ export default withStore(props => {
  const { crimes, updatedCrimes } = props.store.CrimeStore
 const {city, patrols} = props.store.SistemDataStore.sistemData
  const classes = useStyles()
- const patrolPage = () => {
-  let obj = {}
-  patrols.forEach(patrol => {
-    obj = {...obj, [patrol]: 0}
-  })
-  return obj
- }
- const [page, setPage] = useState({...patrolPage()})
+
+ const [page, setPage] = useState({})
+ useEffect(() => {
+  const patrolPage = () => {
+    let obj = {}
+    patrols.forEach(patrol => {
+      obj = {...obj, [patrol]: 0}
+    })
+    return obj
+   }
+  setPage(patrolPage())
+ }, [patrols.length])
  let checkMemo = props.store.toDate.get("date")
  const textDate = useMemo(() => props.store.toDate.format("DD.MM.YYYY"), [
   checkMemo,
