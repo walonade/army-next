@@ -10,7 +10,6 @@ import AddressStore from "./addresses"
 import CrimeStore from "./crimes"
 import NotificationStore from "./notification"
 import SistemDataStore from "./sistemData"
-import jwtDecode from "jwt-decode"
 useStaticRendering(isServer)
 export class Store {
  constructor() {

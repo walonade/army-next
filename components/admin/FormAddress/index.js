@@ -10,12 +10,12 @@ import {
  MenuItem,
 } from "@material-ui/core/"
 import { FixedSizeList } from "react-window"
-import { patrols } from "./../../../data/index.js"
 import ListItemAddress from "../AddressListItem"
 import withStore from "./../../../utils/withStore.js"
 import dynamic from "next/dynamic"
 const MapAdmin = dynamic(() => import("./../MapAdmin"), { ssr: false })
 export default withStore(props => {
+ const patrols = props.store.SistemDataStore.sistemData.patrols
  const [address, setAddress] = useState("")
  const handleChangeAddress = useCallback(event =>
   setAddress(event.target.value)

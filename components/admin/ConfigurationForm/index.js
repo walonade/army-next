@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import {customUseState} from "../../../utils/customHooks"
 import withStore from "../../../utils/withStore";
+import Router from "next/router"
 export default withStore((props) => {
     const {sistemData, changeSistemData} = props.store.SistemDataStore
     const [openPatrols, setOpenPatrols] = customUseState(false)
@@ -204,6 +205,12 @@ export default withStore((props) => {
                             ))}
                         </List>
                 </Collapse>
+                <ListItem button onClick={() => Router.push("/panel/addaddress")}>
+                    <ListItemText primary="добавить адрес" />
+                </ListItem>
+                <ListItem button onClick={() => Router.push("/panel/addpatrolway")}>
+                    <ListItemText primary="добавить маршрут патрулирования" />
+                </ListItem>
             </List>
         </Fragment> 
     )
