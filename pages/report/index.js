@@ -4,6 +4,7 @@ import DayTableOne from "../../components/DayTableOne"
 import DayTableTwo from "../../components/DayTableTwo"
 import WeekTable from "../../components/WeekTable"
 import MonthTable from "../../components/MonthTable"
+import Head from "next/head"
 import { withAuthSync } from "../../utils/auth.js"
 import withStore from "../../utils/withStore.js"
 const Table = props => {
@@ -20,7 +21,12 @@ const Table = props => {
  } else {
   component = <MonthTable />
  }
- return component
+ return <>
+    <Head>
+        <title>Отчёт</title>
+    </Head>
+    {component}
+ </>
 }
 Table.Layout = CabinetLayout
 export default withAuthSync(withStore(Table))

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState, useMemo } from "react"
 import {Paper} from "@material-ui/core"
 import { Map, TileLayer, withLeaflet } from "react-leaflet"
 import L from "leaflet"
@@ -33,10 +33,7 @@ const PrintControl = withLeaflet(PrintControlDefault)
 const MapComponent = props => {
  const classes = useStyles()
  const {southWestLat, southWestLng, northEastLat, northEastLng} = props.store.SistemDataStore.sistemData.bounds
- const [position, setPosition] = useState({
-  lat: -126.609375,
-  lng: 109.63151025772095,
- })
+ const {center} = props.store.SistemDataStore.sistemData
  const latLngBounds = L.latLngBounds(L.latLng(southWestLat, southWestLng), L.latLng(northEastLat, northEastLng)) 
  const [zoom, setZoom] = useState(3)
  const downloadOptions = {
@@ -53,14 +50,13 @@ const MapComponent = props => {
     })
     return obj
  })()
- return (
-  <Paper className={classes.root}>
-   <MyMap
+ const MemoMap = useMemo(() => (
+    <MyMap
     maxBounds={latLngBounds}
     crs={L.CRS.Simple}
     minZoom={2.5}
     maxZoom={7}
-    center={position}
+    center={center}
     zoom={zoom}
     style={fixStyleMap}
    >
@@ -97,6 +93,10 @@ const MapComponent = props => {
      ) : null
     )}
    </MyMap>
+ ), [southWestLat, southWestLng, northEastLat, northEastLng])
+ return (
+  <Paper className={classes.root}>
+      {southWestLat !== undefined ? MemoMap : null}
   </Paper>
  )
 }

@@ -7,15 +7,18 @@ import {
  FormControl,
  InputLabel,
  Select,
- MenuItem,
+ MenuItem
 } from "@material-ui/core/"
 import { FixedSizeList } from "react-window"
 import ListItemAddress from "../AddressListItem"
 import withStore from "./../../../utils/withStore.js"
 import dynamic from "next/dynamic"
-const MapAdmin = dynamic(() => import("./../MapAdmin"), { ssr: false })
 export default withStore(props => {
- const patrols = props.store.SistemDataStore.sistemData.patrols
+    let [MapAdmin, setMapAdmin] = useState(null)
+    useEffect(() => {
+        setMapAdmin(dynamic(import("./../MapAdmin"), {ssr: false}))
+    }, [])
+ const {bounds, center, patrols} = props.store.SistemDataStore.sistemData
  const [address, setAddress] = useState("")
  const handleChangeAddress = useCallback(event =>
   setAddress(event.target.value)
@@ -91,8 +94,8 @@ export default withStore(props => {
     <Typography align="center" variant="overline">
      lng: {position !== null ? position.lng : ""}
     </Typography>
-   </Grid> 
-   <MapAdmin position={position} setPosition={handleChangePosition} />
+   </Grid>
+   {MapAdmin !== null ? <MapAdmin bounds={bounds} center={center} setPosition={handleChangePosition} /> : null}
    <Typography align="center" variant="overline">
     Выберите адрес на карте
    </Typography>

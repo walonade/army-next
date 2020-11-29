@@ -56,25 +56,6 @@ export class Store {
  @action setFromDate(time) {
   this.fromDate = time
  }
- @action async sendHtmlToServer(html) {
-  this.setFetching(true)
-  const response = await fetch("/api/download/get", {
-      method: "POST",
-      headers: {
-          Authorization: `Bearer ${this.token}`,
-          Accept: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "Content-type": "application/json",
-      },
-      body: JSON.stringify({html: html.innerHTML})
-  })
-  if(response.status === 200) {
-    this.setFetching(false)
-    this.NotificationStore.add("выполнено успешно", "success")
-  } else {
-    this.setFetching(false)
-    this.serverMistakes(response.status)
-  }
- }
  @action setToDate(time) {
   this.toDate = time
  }

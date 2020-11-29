@@ -45,12 +45,32 @@ const PanelButton = withStyles({
 })(ButtonBase)
 const Panel = props => {
   const {sistemData, changeSistemData} = props.store.SistemDataStore
-  const { crimesList, serviceList } = props.store.SistemDataStore.sistemData
+  const { crimesList, serviceList, center } = props.store.SistemDataStore.sistemData
   const [printBlog, setPrintBlog] = useState(null)
   const [southWestLat, setSouthWestLat] = customUseState(0)
   const [southWestLng, setSouthWestLng] = customUseState(0)
   const [northEastLat, setNorthEastLat] = customUseState(0)
   const [northEastLng, setNorthEastLng] = customUseState(0)
+  if(southWestLat !== sistemData.bounds.southWestLat) {
+    setSouthWestLat(sistemData.bounds.southWestLat)
+  }
+  if(southWestLng !== sistemData.bounds.southWestLng) {
+    setSouthWestLng(sistemData.bounds.southWestLng)
+  }
+  if(northEastLat !== sistemData.bounds.northEastLat) {
+    setNorthEastLat(sistemData.bounds.northEastLat)
+  }
+  if(northEastLng !== sistemData.bounds.northEastLng) {
+    setNorthEastLng(sistemData.bounds.northEastLng)
+  }
+  const [latCenter, setLatCenter] = customUseState(0)
+  const [lngCenter, setLngCenter] = customUseState(0)
+  if(latCenter !== center.lat) {
+    setLatCenter(center.lat)
+  }
+  if(lngCenter !== center.lng) {
+    setLngCenter(center.lng)
+  }
   useEffect(() => {
     setPrintBlog(props.printBlog.current)
   }, [props.printBlog.current])
@@ -91,7 +111,6 @@ const Panel = props => {
  const handleChangeObjectOfCrime = event => setObjectOfCrime(event.target.value)
  const handleChangeService = event => setService(event.target.value)
  const handleChangePatrolWay = event => setPatrolWay(event.target.value)
- const downloadReport = useCallback(() => props.store.sendHtmlToServer(printBlog))
  const updateList = useCallback(() => props.store.CrimeStore.getCrimes())
  const addToList = useCallback(() => {
   const data = {
@@ -122,7 +141,7 @@ const Panel = props => {
  })
  const setBounds = () => {
   const bounds = {southWestLat, southWestLng, northEastLat, northEastLng}
-  changeSistemData({...JSON.parse(JSON.stringify(sistemData)), bounds})
+  changeSistemData({...JSON.parse(JSON.stringify(sistemData)), bounds, center: {lat: latCenter, lng: lngCenter}})
  }
  const getAddresses = useCallback(() => props.store.AddressStore.getAdresses())
  return (
@@ -150,7 +169,7 @@ const Panel = props => {
      <DescriptionIcon />
     </PanelButton>
     {routerHook.pathname === "/report" ? (
-       <PanelButton variant="contained" color="primary" className={classes.button, classes.formControl} onClick={downloadReport}>
+       <PanelButton variant="contained" color="primary" className={classes.button, classes.formControl} onClick={() => {}}>
         <PrintIcon />
        </PanelButton>
     ) : null}
@@ -236,13 +255,17 @@ const Panel = props => {
     </Fragment>
     : null 
     }
-    {props.isAdmin ? (
+    {props.isAdmin && routerHook.pathname !== "/report" ? (
       <Fragment>
-        <Typography variant="h6">Корректировка границ карты</Typography>
-        <SmartInput label="southWestLat" value={southWestLat} onChange={event => setSouthWestLat(+event)}/>
-        <SmartInput label="southWestLng" value={southWestLng} onChange={event => setSouthWestLng(+event)}/>
-        <SmartInput label="northEastLat" value={northEastLat} onChange={event => setNorthEastLat(+event)}/>
-        <SmartInput label="northEastLng" value={northEastLng} onChange={event => setNorthEastLng(+event)}/>
+        <Typography variant="h5">Конфигурация карты</Typography>
+        <Typography variant="h6">границы карты</Typography>
+        <TextField label="southWestLat" value={southWestLat} onChange={event => setSouthWestLat(+event.target.value)}/>
+        <TextField label="southWestLng" value={southWestLng} onChange={event => setSouthWestLng(+event.target.value)}/>
+        <TextField label="northEastLat" value={northEastLat} onChange={event => setNorthEastLat(+event.target.value)}/>
+        <TextField label="northEastLng" value={northEastLng} onChange={event => setNorthEastLng(+event.target.value)}/>
+        <Typography variant="h6">центр карты</Typography>
+        <TextField label="latCenter" value={latCenter} onChange={event => setLatCenter(+event.target.value)}/>
+        <TextField label="lngCenter" value={lngCenter} onChange={event => setLngCenter(+event.target.value)}/>
         <PanelButton onClick={setBounds}>
           <Typography variant="button">Изменить</Typography>
         </PanelButton>

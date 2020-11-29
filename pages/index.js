@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from "react"
 import Main from "../layouts/Main"
 import { makeStyles, withStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
@@ -6,6 +5,7 @@ import Link from "next/link"
 import AuthorizationForm from "../components/AuthorizationForm"
 import withStore from "../utils/withStore"
 import { withAuthSync } from "../utils/auth"
+import Head from "next/head"
 const useStyles = makeStyles({
  root: {
   width: "100vw",
@@ -50,6 +50,9 @@ const Public = props => {
  const isAdmin = props.isAdmin != undefined && props.isAdmin != false
  return (
      <>
+     <Head>
+        <title>Главная</title>
+     </Head>
    <div className={classes.root}>
    <MyTypography variant="h1">Выберите действие</MyTypography>
   <div className={classes.cards}>

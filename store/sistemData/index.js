@@ -11,7 +11,8 @@ export default class {
         patrols: [],
         serviceList: [],
         crimesList : [],
-        bounds: {}
+        bounds: {},
+        center: {}
     }
     @action async getSistemData() {
         const response = await fetch("/api/sistem_data/get", {

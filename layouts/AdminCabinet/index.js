@@ -1,6 +1,5 @@
 import React, { useRef } from "react"
 import AdminPanel from "./../../components/admin/AdminPanel"
-import AppBar from "./../../components/AppBar"
 import { makeStyles } from "@material-ui/core/styles"
 const useStyles = makeStyles({
  root: {
@@ -23,7 +22,6 @@ export default props => {
     <AdminPanel printBlog={componentRef} />
    </div>
    <div className={classes.content}>
-    <AppBar />
     <div ref={componentRef}>{props.children}</div>
    </div>
   </div>

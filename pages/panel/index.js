@@ -1,9 +1,9 @@
 import React, { Fragment, useCallback, useEffect } from "react"
 import MainLayout from "../../layouts/Main"
 import { Typography, TextField, Button, Paper, List } from "@material-ui/core/"
-import AppBar from "../../components/AppBar"
 import { makeStyles } from "@material-ui/core/styles"
 import { withAuthSync } from "../../utils/auth.js"
+import Head from "next/head"
 import SmartInput from "../../components/SmartInput"
 import withStore from "../../utils/withStore.js"
 import UsersListItem from "../../components/admin/UsersListItem"
@@ -86,7 +86,9 @@ const AdminPanel = props => {
  })
  return (
   <Fragment>
-   <AppBar />
+      <Head>
+        <title>Панель администратора</title>
+     </Head>
    <div className={classes.root}>
     <Paper className={classes.paper}>
      <div className={classes.form}>

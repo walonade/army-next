@@ -1,37 +1,26 @@
-import React, { Fragment } from "react"
 import MainLayout from "../../../layouts/Main"
 import FormAddress from "../../../components/admin/FormAddress"
 import { makeStyles } from "@material-ui/core/styles"
 import { Paper } from "@material-ui/core/"
-import AppBar from "../../../components/AppBar"
 import { withAuthSync } from "../../../utils/auth"
-const useStyle = makeStyles(theme => ({
- root: {
-  marginTop: 100,
-  display: "flex",
-  width: "100%",
-  justifyContent: "center",
- },
+const useStyle = makeStyles({
  paper: {
   display: "flex",
   justifyContent: "center",
   flexDirection: "column",
   alignSelf: "flex-start",
-  paddingLeft: 20,
-  paddingRight: 20,
+  padding: 20,
   width: "100%",
+  margin: 20
  },
-}))
+})
 const AddAddressPage = () => {
  const classes = useStyle()
  return (
-  <Fragment>
-    <AppBar/>
-   <Paper className={classes.paper}>
+   <Paper className={classes.paper} elevation={7}>
     <FormAddress />
    </Paper>
-  </Fragment>
  )
 }
 AddAddressPage.Layout = MainLayout
-export default withAuthSync(AddAddressPage, true)
+export default withAuthSync(AddAddressPage, "admin")
