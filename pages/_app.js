@@ -14,22 +14,10 @@ export default class App extends NextApp {
  state = {
   store: new Store(),
  }
- static async getInitialProps(appContext) {
-  const initialStoreState = await fetchInitialStoreState()
-  const appProps = await NextApp.getInitialProps(appContext)
-  return {
-   initialStoreState,
-   ...appProps,
-  }
- }
  componentDidMount() {
   const jssStyles = document.querySelector("#jss-server-side")
   if (jssStyles && jssStyles.parentNode)
    jssStyles.parentNode.removeChild(jssStyles)
- }
- static getDerivedStateFromProps(props, state) {
-  state.store.hydrate(props.initialStoreState)
-  return state
  }
  render() {
   const { Component, pageProps } = this.props

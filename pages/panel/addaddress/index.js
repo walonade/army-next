@@ -1,8 +1,9 @@
 import MainLayout from "../../../layouts/Main"
-import FormAddress from "../../../components/admin/FormAddress"
 import { makeStyles } from "@material-ui/core/styles"
 import { Paper } from "@material-ui/core/"
 import { withAuthSync } from "../../../utils/auth"
+import dynamic from "next/dynamic"
+const FormAddress = dynamic(import("../../../components/admin/FormAddress"), {ssr: false})
 const useStyle = makeStyles({
  paper: {
   display: "flex",
@@ -18,7 +19,7 @@ const AddAddressPage = () => {
  const classes = useStyle()
  return (
    <Paper className={classes.paper} elevation={7}>
-    <FormAddress />
+    <FormAddress /> 
    </Paper>
  )
 }

@@ -208,9 +208,6 @@ export default withStore((props) => {
                 <ListItem button onClick={() => Router.push("/panel/addaddress")}>
                     <ListItemText primary="добавить адрес" />
                 </ListItem>
-                <ListItem button onClick={() => Router.push("/panel/addpatrolway")}>
-                    <ListItemText primary="добавить маршрут патрулирования" />
-                </ListItem>
             </List>
         </Fragment> 
     )

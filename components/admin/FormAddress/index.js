@@ -13,11 +13,8 @@ import { FixedSizeList } from "react-window"
 import ListItemAddress from "../AddressListItem"
 import withStore from "./../../../utils/withStore.js"
 import dynamic from "next/dynamic"
+const MapAdmin = dynamic(import("./../MapAdmin"), {ssr: false})
 export default withStore(props => {
-    let [MapAdmin, setMapAdmin] = useState(null)
-    useEffect(() => {
-        setMapAdmin(dynamic(import("./../MapAdmin"), {ssr: false}))
-    }, [])
  const {bounds, center, patrols} = props.store.SistemDataStore.sistemData
  const [address, setAddress] = useState("")
  const handleChangeAddress = useCallback(event =>
@@ -95,7 +92,7 @@ export default withStore(props => {
      lng: {position !== null ? position.lng : ""}
     </Typography>
    </Grid>
-   {MapAdmin !== null ? <MapAdmin bounds={bounds} center={center} setPosition={handleChangePosition} /> : null}
+   <MapAdmin bounds={bounds} center={center} setPosition={handleChangePosition} /> 
    <Typography align="center" variant="overline">
     Выберите адрес на карте
    </Typography>

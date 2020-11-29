@@ -1,6 +1,6 @@
 module.exports = {
  devIndicators: {
-  autoPrerender: false,
+  autoPrerender: true,
  },
  trailingSlash: true,
  distDir: "build",
